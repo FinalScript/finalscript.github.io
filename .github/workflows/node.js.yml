@@ -27,7 +27,7 @@ jobs:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
     - run: yarn install
-    - run: yarn run build && yarn run export && touch ./out/.nojekyll
+    - run: yarn run build && yarn run export && touch ./out/.nojekyll && touch ./out/CNAME && echo finalscript.github.io > ./out/CNAME
     - name: Deploy
       uses: peaceiris/actions-gh-pages@v3
       with:
