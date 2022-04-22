@@ -209,7 +209,7 @@ const Home: NextPage = () => {
                         {blockchain.account ? (
                             <>
                                 <button
-                                    disabled={!((contractData.presaleOpen && contractData.isWhiteListed) || contractData.baseSalesOpen)}
+                                    disabled={!((contractData.presaleOpen && contractData.isWhiteListed) || contractData.baseSalesOpen || !blockchain.isRightNetwork)}
                                     onClick={() => {
                                         if (!blockchain.isRightNetwork) {
                                             switchNetwork();
@@ -217,7 +217,7 @@ const Home: NextPage = () => {
                                             mint();
                                         }
                                     }}
-                                    title={contractData.isWhiteListed ? '' : "You're not whitelisted"}
+                                    title={contractData.isWhiteListed && !blockchain.isRightNetwork ? '' : "You're not whitelisted"}
                                     className={
                                         'w-full font-bold border-0 py-2 px-8 disabled:cursor-not-allowed focus:outline-none rounded text-lg ' +
                                         (blockchain.isRightNetwork
