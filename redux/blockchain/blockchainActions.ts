@@ -72,6 +72,16 @@ export const switchNetwork = async () => {
     }
 };
 
+export const checkBalance = (address: string) => {
+    return async (dispatch: Dispatch) => {
+        const web3 = new Web3(window.ethereum);
+
+        web3.eth.getBalance(address).then((res) => {
+            dispatch(updateAccountBalance(Web3.utils.fromWei(res)));
+        });
+    };
+};
+
 export const checkConnection = () => {
     return async (dispatch: Dispatch) => {
         const { ethereum } = window;
@@ -126,7 +136,6 @@ export const checkConnection = () => {
                 if (code) {
                     dispatch(updateNetwork(parseInt(code)));
 
-                    console.log(code, networkConfig.chainId);
                     if (code === networkConfig.chainId) {
                         const SmartContractObj = new web3.eth.Contract(minerAbi as AbiItem[], minerConfig.contractAddress);
 

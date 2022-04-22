@@ -19,8 +19,8 @@ export const WalletButton = () => {
                             }
                         }}
                         className={
-                            'text-gray-900 rounded-lg px-3 py-2 shadow-center-lg shadow-red-700 ' +
-                            (blockchain.isRightNetwork ? 'bg-gray-50 outline outline-1 outline-red-600' : 'bg-red-600 cursor-pointer')
+                            ' rounded-lg px-3 py-2 shadow-center-lg shadow-red-700 ' +
+                            (blockchain.isRightNetwork ? 'bg-gray-50 outline outline-1 outline-red-600 text-gray-900' : 'bg-red-600 text-white cursor-pointer')
                         }>
                         {blockchain.isRightNetwork ? `🔺 ${networkConfig.chainName}` : '⚠️ Wrong Network'}
                     </div>
