@@ -119,7 +119,7 @@ const Home: NextPage = () => {
 
     return (
         <section className='text-gray-400 bg-gray-900 body-font h-screen flex items-center'>
-            <div className='container mx-auto flex px-5 py-24 md:flex-row justify-center items-center'>
+            <div className='container mx-auto flex px-5 md:flex-row justify-center items-center'>
                 <div className='w-400px bg-gray-800 bg-opacity-50 rounded-lg p-8 flex flex-col mt-10 md:mt-0'>
                     <h2 className='text-white text-center text-lg font-medium title-font mb-5'>Buy Miners</h2>
                     <div className='relative mb-4 flex flex-col items-center'>
