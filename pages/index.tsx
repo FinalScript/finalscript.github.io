@@ -2,7 +2,7 @@ import type { NextPage } from 'next';
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import Web3 from 'web3';
-import { minerConfig, networkConfig } from '../config';
+import { minerConfig } from '../config';
 import { checkBalance, connect, switchNetwork } from '../redux/blockchain/blockchainActions';
 import { BlockchainState, ContractDataState } from '../types';
 import Image from 'next/image';
@@ -165,6 +165,7 @@ const Home: NextPage = () => {
                         </label>
                         <input
                             disabled={!((contractData.presaleOpen && contractData.isWhiteListed) || contractData.baseSalesOpen)}
+                            title={contractData.isWhiteListed ? '' : "You're not whitelisted"}
                             type='text'
                             id='quantity'
                             name='quantity'
@@ -216,6 +217,7 @@ const Home: NextPage = () => {
                                             mint();
                                         }
                                     }}
+                                    title={contractData.isWhiteListed ? '' : "You're not whitelisted"}
                                     className={
                                         'w-full font-bold border-0 py-2 px-8 disabled:cursor-not-allowed focus:outline-none rounded text-lg ' +
                                         (blockchain.isRightNetwork

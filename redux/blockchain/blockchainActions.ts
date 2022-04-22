@@ -48,7 +48,7 @@ const updateSmartContract = (smartContract: Contract | null) => {
     };
 };
 
-const connectFailed = (errorMsg: string) => {
+export const connectFailed = (errorMsg: string) => {
     return {
         type: 'CONNECTION_FAILED',
         payload: { errorMsg },
@@ -161,7 +161,7 @@ export const checkConnection = () => {
                 }
             });
         } else {
-            dispatch(connectFailed('Install Metamask.'));
+            dispatch(connectFailed('Web3 Unavailable. Please Install Metamask'));
         }
     };
 };
@@ -182,7 +182,7 @@ export const connect = () => {
                 console.log(err);
             }
         } else {
-            dispatch(connectFailed('Install Metamask.'));
+            dispatch(connectFailed('Web3 Unavailable. Please Install Metamask'));
         }
     };
 };
