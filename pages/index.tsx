@@ -102,7 +102,7 @@ const Home: NextPage = () => {
     }, [blockchain.account, blockchain.network]);
 
     useEffect(() => {
-        if (quantity != '') {
+        if (quantity !== '') {
             setTotalPrice(parseFloat(contractData.price) * parseFloat(quantity) + parseFloat(contractData.nftTax));
         } else {
             setTotalPrice(0.0);
@@ -178,9 +178,14 @@ const Home: NextPage = () => {
                             }}
                             value={quantity}
                             onChange={(e) => {
-                                let { value, min, max } = e.target;
-                                value = Math.max(Number(min), Math.min(Number(max), Number(value))).toString();
-                                setQuantity(value === '0' ? '' : value);
+                                let { value, min, max }:any = e.target;
+
+                                if (!isNaN(value)) {
+                                    value = Math.max(Number(min), Math.min(Number(max), Number(value))).toString();
+                                    setQuantity(value === '0' ? '' : value);
+                                } else {
+                                    setQuantity('');
+                                }
                             }}
                             placeholder={`Max ${contractData.maxPerMint} at a time`}
                             className='w-full text-center disabled:cursor-not-allowed bg-gray-600 bg-opacity-20 focus:bg-transparent focus:ring-2 focus:ring-indigo-900 rounded border border-gray-600 focus:border-indigo-500 text-base outline-none text-gray-100 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out'
@@ -209,7 +214,9 @@ const Home: NextPage = () => {
                         {blockchain.account ? (
                             <>
                                 <button
-                                    disabled={!((contractData.presaleOpen && contractData.isWhiteListed) || contractData.baseSalesOpen || !blockchain.isRightNetwork)}
+                                    disabled={
+                                        !((contractData.presaleOpen && contractData.isWhiteListed) || contractData.baseSalesOpen || !blockchain.isRightNetwork)
+                                    }
                                     onClick={() => {
                                         if (!blockchain.isRightNetwork) {
                                             switchNetwork();
