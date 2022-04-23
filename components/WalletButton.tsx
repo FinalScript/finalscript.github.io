@@ -3,13 +3,17 @@ import { useDispatch, useSelector } from 'react-redux';
 import { networkConfig } from '../config';
 import { shortenAddress } from '../utils/shortenAddress';
 import { connect, switchNetwork } from '../redux/blockchain/blockchainActions';
+import { motion } from 'framer-motion';
 
 export const WalletButton = () => {
     const dispatch = useDispatch<any>();
     const blockchain = useSelector((state: any) => state.blockchain);
 
     return (
-        <div className='flex space-x-4 select-none'>
+        <motion.div
+            initial={{ opacity: 0, translateX: 200 }}
+            animate={{ opacity: 1, translateX: 0, transition: { duration: 0.6 } }}
+            className='flex space-x-4 select-none'>
             {blockchain.account ? (
                 <>
                     <div
@@ -42,6 +46,6 @@ export const WalletButton = () => {
                     Connect Wallet
                 </button>
             )}
-        </div>
+        </motion.div>
     );
 };

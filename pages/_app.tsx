@@ -10,6 +10,7 @@ import { ErrorAlert } from '../components/ErrorAlert';
 import { BlockchainState } from '../types';
 import { useRouter } from 'next/router';
 import Image from 'next/image';
+import { AnimatePresence, motion } from 'framer-motion';
 
 function MyApp({ Component, pageProps }: AppProps) {
     const dispatch = useDispatch<any>();
@@ -27,7 +28,7 @@ function MyApp({ Component, pageProps }: AppProps) {
                 payload: { isLoading: false },
             });
             setPageLoading(false);
-        }, 1000);
+        }, 1500);
     }, []);
 
     useEffect(() => {
@@ -43,7 +44,7 @@ function MyApp({ Component, pageProps }: AppProps) {
         const handleComplete = () => {
             setTimeout(() => {
                 setPageLoading(false);
-            }, 700);
+            }, 1000);
         };
 
         router.events.on('routeChangeStart', handleStart);
@@ -76,16 +77,45 @@ function MyApp({ Component, pageProps }: AppProps) {
                     }}
                     errorMsg={blockchain.errorMsg}
                 />
-                {pageLoading && (
-                    <div className='relative'>
-                        <div className='fixed z-40 w-full h-full bg-gray-800 opacity-80'></div>
-                        <div className='fixed z-50 w-screen h-screen flex justify-center items-center'>
-                            <div className='relative h-72 w-72 mx-auto'>
-                                <Image src='/assets/images/spinning-diamond.gif' objectFit='contain' layout='fill' />
-                            </div>
-                        </div>
-                    </div>
-                )}
+
+                <div className='relative select-none'>
+                    <AnimatePresence>
+                        {pageLoading && (
+                            <>
+                                <motion.div
+                                    key={'diamondLoadingBackground'}
+                                    initial={{ opacity: 0 }}
+                                    animate={{ opacity: 0.8 }}
+                                    exit={{ opacity: 0, transition: { duration: 0.7 } }}
+                                    hidden={!pageLoading}
+                                    className='fixed z-40 w-full h-full bg-gray-800 opacity-80'></motion.div>
+                                <motion.div exit={{ opacity: 0 }} className='fixed z-50 w-screen h-screen flex justify-center items-center'>
+                                    <motion.div
+                                        key={'diamondLoading'}
+                                        exit={{ scale: 0.0 }}
+                                        initial='hidden'
+                                        animate='visible'
+                                        variants={{
+                                            hidden: {
+                                                scale: 0.8,
+                                                opacity: 0,
+                                            },
+                                            visible: {
+                                                scale: 1,
+                                                opacity: 1,
+                                                transition: {
+                                                    delay: 0.3,
+                                                },
+                                            },
+                                        }}
+                                        className='relative h-72 w-72 mx-auto'>
+                                        <Image src='/assets/images/spinning-diamond.gif' objectFit='contain' layout='fill' />
+                                    </motion.div>
+                                </motion.div>
+                            </>
+                        )}
+                    </AnimatePresence>
+                </div>
                 <Component {...pageProps} />
             </>
         </Provider>

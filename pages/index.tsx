@@ -6,9 +6,9 @@ import { minerConfig } from '../config';
 import { checkBalance, connect, switchNetwork } from '../redux/blockchain/blockchainActions';
 import { BlockchainState, ContractDataState, GeneralState } from '../types';
 import Image from 'next/image';
+import Link from 'next/link';
 import { checkIsWhiteListed, fetchData } from '../redux/data/dataActions';
 import { TransactionAlert } from '../components/TransactionAlert';
-import Link from 'next/link';
 
 const Home: NextPage = () => {
     const dispatch = useDispatch<any>();
@@ -147,10 +147,12 @@ const Home: NextPage = () => {
 
     return (
         <div className='relative'>
-            <div className='fixed -z-30 w-screen h-screen overflow-hidden'>
+            <div className='fixed -z-30 w-screen h-screen overflow-hidden select-none'>
                 <Image src='/assets/images/mine-entrance.jpg' layout='fill' objectFit='cover' />
             </div>
+
             <div className='fixed -z-20 w-full h-full bg-gray-800 opacity-30'></div>
+
             <section className='text-gray-400 body-font h-screen flex items-center'>
                 <TransactionAlert
                     hidden={transactionAlert.hidden}
@@ -164,7 +166,9 @@ const Home: NextPage = () => {
                 />
 
                 <div className='container mx-auto flex px-5 md:flex-row justify-center items-center'>
-                    <div hidden={generalReducer.isLoading} className='w-400px min-w-400px bg-zinc-900 text-gray-200 bg-opacity-40 rounded-xl backdrop-blur-sm shadow-center-xl shadow-zinc-800 px-6 py-5 md:mt-0'>
+                    <div
+                        hidden={generalReducer.isLoading}
+                        className='w-400px min-w-400px bg-zinc-900 text-gray-200 bg-opacity-40 rounded-xl backdrop-blur-sm shadow-center-lg shadow-zinc-800 px-6 py-5 md:mt-0'>
                         <h2 className='text-white bg-neutral-900 text-center text-lg font-medium title-font rounded-t-xl py-2 -mx-6 -my-5 mb-4'>
                             <span>Buy Miners</span>
                         </h2>

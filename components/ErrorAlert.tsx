@@ -12,7 +12,7 @@ export const ErrorAlert = ({ hidden, setHidden, errorMsg }: Props) => {
     const dispatch = useDispatch();
 
     return (
-        <div className='relative'>
+        <div className='relative select-none'>
             <div
                 id='alert-border-2'
                 className={

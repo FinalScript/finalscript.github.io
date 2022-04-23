@@ -10,7 +10,7 @@ interface Props {
 
 export const TransactionAlert = ({ hidden, setHidden, link, hash }: Props) => {
     return (
-        <div className='relative'>
+        <div className='relative select-none'>
             <div
                 id='alert-border-3'
                 className={
