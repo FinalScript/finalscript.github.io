@@ -4,8 +4,12 @@ module.exports = {
         extend: {
             boxShadow: {
                 'center-lg': '0px 0px 10px 2px',
+                'center-xl': '0px 0px 15px 4px',
             },
             width: {
+                '400px': '400px',
+            },
+            minWidth: {
                 '400px': '400px',
             },
         },

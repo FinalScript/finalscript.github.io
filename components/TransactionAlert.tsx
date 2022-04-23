@@ -14,7 +14,7 @@ export const TransactionAlert = ({ hidden, setHidden, link, hash }: Props) => {
             <div
                 id='alert-border-3'
                 className={
-                    'flex p-4 mb-4 bg-green-100 border-t-4 border-green-500 dark:bg-green-200 fixed bottom-5 transition-all ' +
+                    'flex z-10 p-4 mb-4 bg-green-100 border-t-4 border-green-500 dark:bg-green-200 fixed bottom-5 transition-all ' +
                     (hidden ? '-translate-x-full -left-5' : 'translate-x-0 left-5')
                 }
                 role='alert'>

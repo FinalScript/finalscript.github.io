@@ -62,6 +62,8 @@ export const fetchData = () => {
 
                 const maxPresaleSupply = await smartContract?.methods.MAX_PRESALE_SUPPLY().call();
 
+                const totalSupply = await smartContract?.methods.totalSupply().call();
+
                 const presaleOpen = await smartContract?.methods.presaleOpen().call();
 
                 const baseSalesOpen = await smartContract?.methods.baseSalesOpen().call();
@@ -85,7 +87,8 @@ export const fetchData = () => {
                         presaleSupply: parseInt(presaleSupply),
                         maxBaseSupply: parseInt(maxBaseSupply),
                         maxPresaleSupply: parseInt(maxPresaleSupply),
-                        totalSupply: parseInt(maxBaseSupply) + parseInt(maxPresaleSupply),
+                        maxTotalSupply: parseInt(maxBaseSupply) + parseInt(maxPresaleSupply),
+                        totalSupply,
                         presaleOpen,
                         baseSalesOpen,
                         gameStarted,

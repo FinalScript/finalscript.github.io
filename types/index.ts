@@ -31,6 +31,7 @@ export interface ContractData {
     presaleSupply: number;
     maxPresaleSupply: number;
     maxBaseSupply: number;
+    maxTotalSupply: number;
     totalSupply: number;
     maxPerMint: number;
     nftTax: string;
@@ -42,4 +43,12 @@ export interface ContractData {
 
 export interface ContractDataState {
     contractData: ContractData;
+}
+
+export interface GeneralData {
+    isLoading: boolean;
+}
+
+export interface GeneralState {
+    general: GeneralData;
 }
