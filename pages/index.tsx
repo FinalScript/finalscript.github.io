@@ -248,8 +248,8 @@ const Home: NextPage = () => {
                         <h5 className='font-extrabold text-center mb-2'>Sale Details</h5>
                         {saleDetails.map((detail, index) => {
                             return (
-                                <h5 key={index} className='flex space-x-2'>
-                                    <span>💎</span> <span>{detail}</span>
+                                <h5 key={index} className='flex justify-between'>
+                                    <span>💎</span> <span>{detail}</span>  <span>💎</span>
                                 </h5>
                             );
                         })}
