@@ -14,7 +14,7 @@ export const Nav = () => {
                 <motion.header
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1, transition: { duration: 1 } }}
-                    className='text-gray-400 bg-transparent body-font fixed w-full'>
+                    className='text-gray-400 bg-transparent body-font fixed z-40 w-full'>
                     <div className='container mx-auto flex flex-wrap justify-between flex-col md:flex-row items-center'>
                         <Link href={'/'}>
                             <div className='flex cursor-pointer title-font font-medium items-center text-white p-2 mb-4 md:mb-0'>
