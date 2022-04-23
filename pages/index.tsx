@@ -144,14 +144,14 @@ const Home: NextPage = () => {
                     <h2 className='text-white bg-neutral-900 text-center text-lg font-medium title-font rounded-t-xl py-2 -mx-6 -my-5 mb-4'>Buy Miners</h2>
                     <div className='relative mb-3 text-sm flex space-y-2 flex-col items-center'>
                         <h5>Welcome to MineVerse, gameplay starts at ___</h5>
-                        <div className='w-1/3'>
+                        <div className='w-2/5'>
                             <Image src={MinerTrioImg} />
                         </div>
                     </div>
                     <div className='relative mb-3'>
                         <div className='flex justify-end mb-1'>
                             <span className='text-xs font-medium text-gray-400'>
-                                {getSupplyPercentage() + (contractData.presaleOpen ? ' - presale supply' : '  - base supply')}
+                                {getSupplyPercentage() + (contractData.baseSalesOpen ? ' - base supply' : '  - presale supply')}
                             </span>
                         </div>
                         <div className='w-full bg-gray-200 rounded-full h-1.5 dark:bg-gray-700'>

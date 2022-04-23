@@ -70,10 +70,10 @@ export const fetchData = () => {
 
                 let price = 0;
 
-                if (presaleOpen) {
-                    price = await smartContract?.methods.PRESALE_MINT_PRICE().call();
-                } else if (baseSalesOpen) {
+                if (baseSalesOpen) {
                     price = await smartContract?.methods.BASE_MINT_PRICE().call();
+                } else {
+                    price = await smartContract?.methods.PRESALE_MINT_PRICE().call();
                 }
 
                 dispatch(
