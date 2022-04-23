@@ -1,14 +1,15 @@
+import { BlockchainData } from '../../types';
+
 const initialState = {
-    account: null,
-    balance: null,
-    network: null,
+    account: '',
+    balance: '',
+    network: '',
     isRightNetwork: false,
-    smartContract: null,
-    web3: null,
-    errorMsg: '',
+    smartContract: undefined,
+    web3: undefined,
 };
 
-const blockchainReducer = (state = initialState, action: any) => {
+const blockchainReducer = (state: BlockchainData = initialState, action: any) => {
     switch (action.type) {
         case 'CONNECTION_FAILED':
             return {

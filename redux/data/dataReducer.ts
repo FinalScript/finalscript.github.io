@@ -1,3 +1,5 @@
+import { ContractData } from '../../types';
+
 const initialState = {
     isWhiteListed: false,
     gameStarted: false,
@@ -17,7 +19,7 @@ const initialState = {
     errorMsg: '',
 };
 
-const dataReducer = (state = initialState, action: any) => {
+const dataReducer = (state: ContractData = initialState, action: any) => {
     switch (action.type) {
         case 'FETCH_DATA_SUCCESS':
             return {

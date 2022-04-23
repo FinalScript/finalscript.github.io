@@ -23,12 +23,12 @@ export const WalletButton = () => {
                             }
                         }}
                         className={
-                            ' rounded-lg px-3 py-2 shadow-center-lg shadow-red-700 ' +
+                            ' rounded-lg px-3 py-2 shadow-center-lg shadow-red-700 whitespace-nowrap ' +
                             (blockchain.isRightNetwork ? 'bg-gray-50 outline outline-1 outline-red-600 text-gray-900' : 'bg-red-600 text-white cursor-pointer')
                         }>
                         {blockchain.isRightNetwork ? `🔺 ${networkConfig.chainName}` : '⚠️ Wrong Network'}
                     </div>
-                    <div className='rounded-lg flex text-gray-900 font-semibold bg-amber-600'>
+                    <div className='rounded-lg flex text-gray-900 font-semibold bg-amber-600  whitespace-nowrap'>
                         {blockchain.isRightNetwork && (
                             <p className='bg-amber-600 px-3 py-2 rounded-l-lg'>
                                 {parseFloat(blockchain.balance || '0').toFixed(3)} {networkConfig.nativeCurrency.symbol}

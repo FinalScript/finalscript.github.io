@@ -13,7 +13,6 @@ export interface BlockchainData {
     balance?: string;
     network?: string;
     isRightNetwork: boolean;
-    errorMsg?: string;
     smartContract?: Contract;
     web3?: Web3;
 }
@@ -37,16 +36,23 @@ export interface ContractData {
     nftTax: string;
     price: string;
     superPercentage: number;
-    error: boolean;
-    errorMsg: string;
 }
 
 export interface ContractDataState {
     contractData: ContractData;
 }
 
+export interface CustomAlert {
+    isError: boolean;
+    key: string;
+    link?: string;
+    hash?: string;
+    errorMsg?: string;
+}
+
 export interface GeneralData {
     isLoading: boolean;
+    alerts: CustomAlert[];
 }
 
 export interface GeneralState {

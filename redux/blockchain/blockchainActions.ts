@@ -5,6 +5,7 @@ import Web3 from 'web3';
 import minerAbi from '../../config/miner-abi.json';
 import { networkConfig, minerConfig } from '../../config/index';
 import { Dispatch } from 'redux';
+import { addAlert } from '../general/generalActions';
 
 const updateAccount = (account: string | null) => {
     return {
@@ -45,13 +46,6 @@ const updateSmartContract = (smartContract: Contract | null) => {
     return {
         type: 'UPDATE_SMARTCONTRACT',
         payload: { smartContract },
-    };
-};
-
-export const connectFailed = (errorMsg: string) => {
-    return {
-        type: 'CONNECTION_FAILED',
-        payload: { errorMsg },
     };
 };
 
@@ -161,7 +155,7 @@ export const checkConnection = () => {
                 }
             });
         } else {
-            dispatch(connectFailed('Web3 Unavailable. Please Install Metamask'));
+            dispatch(addAlert({ key: 'MetamaskError', isError: true, errorMsg: 'Web3 Unavailable. Please Install Metamask' }));
         }
     };
 };
@@ -175,14 +169,16 @@ export const connect = () => {
             web3.eth.setProvider(ethereum);
             dispatch(updateWeb3(web3));
             try {
-                const accounts = await ethereum.request({
+                await ethereum.request({
                     method: 'eth_requestAccounts',
                 });
-            } catch (err) {
-                console.log(err);
+            } catch (err: any) {
+                if (err.code === 4001) {
+                    dispatch(addAlert({ key: err.message, isError: true, errorMsg: err.message }));
+                }
             }
         } else {
-            dispatch(connectFailed('Web3 Unavailable. Please Install Metamask'));
+            dispatch(addAlert({ key: 'MetamaskError', isError: true, errorMsg: 'Web3 Unavailable. Please Install Metamask' }));
         }
     };
 };
