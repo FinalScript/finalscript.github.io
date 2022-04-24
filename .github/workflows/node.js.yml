@@ -8,6 +8,9 @@ on:
     branches: [ master ]
   pull_request:
     branches: [ master ]
+    
+env:
+  SITE_PASSWORD: ${{ secrets.SITE_PASSWORD }}
 
 jobs:
   build:
@@ -27,7 +30,8 @@ jobs:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
     - run: yarn install
-    - run: yarn run build && yarn run export && touch ./out/.nojekyll && touch ./out/CNAME && echo minerverse.app > ./out/CNAME
+    - run: yarn run build
+    - run: yarn run export && touch ./out/.nojekyll && touch ./out/CNAME && echo minerverse.app > ./out/CNAME
     - name: Deploy
       uses: peaceiris/actions-gh-pages@v3
       with:
