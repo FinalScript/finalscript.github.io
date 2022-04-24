@@ -21,7 +21,7 @@ export const Nav = () => {
                                 <div className='w-16 h-16 mb-4 relative'>
                                     <Image src='/assets/images/diamond.png' layout='fill' alt='nav-logo' />
                                 </div>
-                                <h2 className='ml-3 text-4xl font-bold'>MinerVerse</h2>
+                                <h2 className='ml-3 text-4xl font-bold text-shadow-white'>MinerVerse</h2>
                             </div>
                         </Link>
 

@@ -18,10 +18,6 @@ a {
     letter-spacing: 0.1em;
 }
 
-.font-press-start {
-    font-family: 'Press Start 2P', cursive;
-}
-
-.font-rye {
-    font-family: 'Rye', cursive;
+.text-shadow-white {
+    text-shadow: rgb(255, 255, 255) 0px 0px 12px;
 }

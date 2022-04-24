@@ -49,6 +49,13 @@ const updateSmartContract = (smartContract: Contract | null) => {
     };
 };
 
+const updateHasMetaMask = (hasMetaMask: boolean) => {
+    return {
+        type: 'UPDATE_HASMETAMASK',
+        payload: { hasMetaMask },
+    };
+};
+
 export const switchNetwork = async () => {
     try {
         await window.ethereum.request({
@@ -155,7 +162,7 @@ export const checkConnection = () => {
                 }
             });
         } else {
-            dispatch(addAlert({ key: 'MetamaskError', isError: true, errorMsg: 'Web3 Unavailable. Please Install Metamask' }));
+            dispatch(updateHasMetaMask(false));
         }
     };
 };
@@ -178,7 +185,7 @@ export const connect = () => {
                 }
             }
         } else {
-            dispatch(addAlert({ key: 'MetamaskError', isError: true, errorMsg: 'Web3 Unavailable. Please Install Metamask' }));
+            dispatch(updateHasMetaMask(false));
         }
     };
 };

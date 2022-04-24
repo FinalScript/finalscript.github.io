@@ -5,6 +5,7 @@ const initialState = {
     balance: '',
     network: '',
     isRightNetwork: false,
+    hasMetaMask: true,
     smartContract: undefined,
     web3: undefined,
 };
@@ -45,6 +46,11 @@ const blockchainReducer = (state: BlockchainData = initialState, action: any) =>
             return {
                 ...state,
                 smartContract: action.payload.smartContract,
+            };
+        case 'UPDATE_HASMETAMASK':
+            return {
+                ...state,
+                hasMetaMask: action.payload.hasMetaMask,
             };
         default:
             return state;

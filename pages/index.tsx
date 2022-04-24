@@ -8,9 +8,9 @@ import { BlockchainState, ContractDataState, GeneralState } from '../types';
 import Image from 'next/image';
 import Link from 'next/link';
 import { checkIsWhiteListed, fetchData } from '../redux/data/dataActions';
-import { TransactionAlert } from '../components/TransactionAlert';
-import { AnimatePresence, motion } from 'framer-motion';
+import {  motion } from 'framer-motion';
 import { addAlert } from '../redux/general/generalActions';
+import { InstallMetaMask } from '../components/InstallMetaMask';
 
 const Home: NextPage = () => {
     const dispatch = useDispatch<any>();
@@ -19,8 +19,6 @@ const Home: NextPage = () => {
     const generalReducer = useSelector((state: GeneralState) => state.general);
     const [quantity, setQuantity] = useState('');
     const [totalPrice, setTotalPrice] = useState(0.0);
-    const [error, setError] = useState('');
-    const [transactionAlert, setTransactionAlert] = useState({ hidden: true, link: '', hash: '' });
     const saleDetails = [
         'Fair sale (first come, first serve)',
         `Price: ${Web3.utils.fromWei(contractData.price)} AVAX 🔺`,
@@ -31,11 +29,9 @@ const Home: NextPage = () => {
     ];
 
     const mint = () => {
-        setError('');
-
         setTimeout(() => {
             if (quantity === '') {
-                setError(`Enter a quantity (0-${contractData.maxPerMint})`);
+                dispatch(addAlert({ key: 'QuantityInputError', isError: true, errorMsg: `Enter a quantity (0-${contractData.maxPerMint})` }));
             }
 
             if (blockchain.smartContract && blockchain.account && quantity !== '') {
@@ -108,7 +104,6 @@ const Home: NextPage = () => {
     }, [blockchain.smartContract]);
 
     useEffect(() => {
-        setError('');
         setQuantity('');
 
         if (blockchain.account) {
@@ -193,7 +188,8 @@ const Home: NextPage = () => {
                                             delay: 0.3,
                                         },
                                     },
-                                }} className='absolute -z-20 w-[650px] min-w-[650px] h-[740px] min-h-[740px] overflow-hidden select-none'>
+                                }}
+                                className='absolute -z-20 w-[650px] min-w-[650px] h-[740px] min-h-[740px] overflow-hidden select-none'>
                                 <Image src='/assets/images/parchment.png' layout='fill' objectFit='contain' />
                             </motion.div>
                             <motion.div
@@ -233,7 +229,7 @@ const Home: NextPage = () => {
                                         <div className='flex justify-end mb-1'>
                                             <span className='text-sm font-medium text-gray-900'>{getSupplyFraction()}</span>
                                         </div>
-                                        <div className='w-full bg-gray-900 rounded-full h-1.5'>
+                                        <div className='w-full bg-yellow-900 rounded-full h-1.5'>
                                             <div className='bg-green-500 h-1.5 rounded-full' style={{ width: getSupplyPercentage() }}></div>
                                         </div>
                                     </div>
@@ -244,7 +240,7 @@ const Home: NextPage = () => {
                                         </label>
                                         <input
                                             disabled={!((contractData.presaleOpen && contractData.isWhiteListed) || contractData.baseSalesOpen)}
-                                            title={contractData.isWhiteListed ? '' : "You're not whitelisted"}
+                                            title={contractData.isWhiteListed || !contractData.baseSalesOpen ? '' : "You're not whitelisted"}
                                             type='text'
                                             id='quantity'
                                             name='quantity'
@@ -289,42 +285,50 @@ const Home: NextPage = () => {
                                         </h5>
                                     </div>
 
-                                    <div className='relative mb-2'>
-                                        {blockchain.account ? (
-                                            <>
-                                                <button
-                                                    disabled={
-                                                        !(
-                                                            (contractData.presaleOpen && contractData.isWhiteListed) ||
-                                                            contractData.baseSalesOpen ||
-                                                            !blockchain.isRightNetwork
-                                                        )
-                                                    }
-                                                    onClick={() => {
-                                                        if (!blockchain.isRightNetwork) {
-                                                            switchNetwork();
-                                                        } else {
-                                                            mint();
+                                    <div className='relative mb-4'>
+                                        {blockchain.hasMetaMask ? (
+                                            blockchain.account ? (
+                                                <>
+                                                    <button
+                                                        disabled={
+                                                            !(
+                                                                (contractData.presaleOpen && contractData.isWhiteListed) ||
+                                                                contractData.baseSalesOpen ||
+                                                                !blockchain.isRightNetwork
+                                                            )
                                                         }
+                                                        onClick={() => {
+                                                            if (!blockchain.isRightNetwork) {
+                                                                switchNetwork();
+                                                            } else {
+                                                                mint();
+                                                            }
+                                                        }}
+                                                        title={
+                                                            contractData.isWhiteListed || !contractData.baseSalesOpen || !blockchain.isRightNetwork
+                                                                ? ''
+                                                                : "You're not whitelisted"
+                                                        }
+                                                        className={
+                                                            'w-full text-white text-shadow-white font-bold border-0 py-2 px-8 disabled:cursor-not-allowed focus:outline-none rounded text-lg shadow-center-lg ' +
+                                                            (blockchain.isRightNetwork
+                                                                ? 'bg-cyan-400  hover:bg-cyan-500 shadow-cyan-500'
+                                                                : ' bg-red-600 cursor-pointer shadow-red-700')
+                                                        }>
+                                                        {blockchain.isRightNetwork ? `Mint` : 'Switch Network 🔺'}
+                                                    </button>
+                                                </>
+                                            ) : (
+                                                <button
+                                                    onClick={() => {
+                                                        dispatch(connect());
                                                     }}
-                                                    title={contractData.isWhiteListed && !blockchain.isRightNetwork ? '' : "You're not whitelisted"}
-                                                    className={
-                                                        'w-full font-bold border-0 py-2 px-8 disabled:cursor-not-allowed focus:outline-none rounded text-lg ' +
-                                                        (blockchain.isRightNetwork
-                                                            ? 'bg-cyan-400  hover:bg-cyan-500 text-gray-900'
-                                                            : ' bg-red-600 cursor-pointer shadow-center-lg shadow-red-700 text-white')
-                                                    }>
-                                                    {blockchain.isRightNetwork ? `Mint` : 'Switch Network 🔺'}
+                                                    className='w-full bg-cyan-400 hover:bg-cyan-500 shadow-center-lg shadow-cyan-500 font-semibold text-gray-900 rounded-lg px-3 py-2 '>
+                                                    Connect Wallet
                                                 </button>
-                                            </>
+                                            )
                                         ) : (
-                                            <button
-                                                onClick={() => {
-                                                    dispatch(connect());
-                                                }}
-                                                className='w-full bg-cyan-500  hover:bg-rose-600 font-semibold text-gray-900 rounded-lg px-3 py-2 '>
-                                                Connect Wallet
-                                            </button>
+                                            <InstallMetaMask />
                                         )}
                                     </div>
                                     <div className='relative flex flex-col text-sm '>

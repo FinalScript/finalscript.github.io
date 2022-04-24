@@ -13,6 +13,7 @@ export interface BlockchainData {
     balance?: string;
     network?: string;
     isRightNetwork: boolean;
+    hasMetaMask: boolean;
     smartContract?: Contract;
     web3?: Web3;
 }
