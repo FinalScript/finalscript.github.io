@@ -1,5 +1,5 @@
 import '../styles/styles.css';
-import type { AppProps } from 'next/app';
+import type { AppContext, AppProps } from 'next/app';
 import { Nav } from '../components/Nav';
 import { Provider, useDispatch, useSelector } from 'react-redux';
 import { wrapper, store } from '../redux/store';
@@ -13,6 +13,11 @@ import Image from 'next/image';
 import { AnimatePresence, motion } from 'framer-motion';
 import { removeAlert } from '../redux/general/generalActions';
 import { TransactionAlert } from '../components/TransactionAlert';
+
+import Login from '../components/Login';
+import Cookies from 'universal-cookie';
+import consts from '../constants';
+import App from 'next/app';
 
 function MyApp({ Component, pageProps }: AppProps) {
     const dispatch = useDispatch<any>();
@@ -55,6 +60,10 @@ function MyApp({ Component, pageProps }: AppProps) {
         router.events.on('routeChangeComplete', handleComplete);
         router.events.on('routeChangeError', handleComplete);
     }, [router]);
+
+    if (!pageProps.hasReadPermission) {
+        return <Login redirectPath={router.asPath} />;
+    }
 
     return (
         <Provider store={store}>
@@ -147,5 +156,18 @@ function MyApp({ Component, pageProps }: AppProps) {
         </Provider>
     );
 }
+
+MyApp.getInitialProps = async (appContext: AppContext) => {
+    const appProps = await App.getInitialProps(appContext);
+
+    const cookies = new Cookies(appContext?.ctx?.req?.headers.cookie);
+    const password = cookies.get(consts.SiteReadCookie) ?? '';
+
+    if (password === process.env.SITE_PASSWORD) {
+        appProps.pageProps.hasReadPermission = true;
+    }
+
+    return { ...appProps };
+};
 
 export default wrapper.withRedux(MyApp);

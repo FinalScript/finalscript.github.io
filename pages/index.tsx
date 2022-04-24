@@ -8,7 +8,7 @@ import { BlockchainState, ContractDataState, GeneralState } from '../types';
 import Image from 'next/image';
 import Link from 'next/link';
 import { checkIsWhiteListed, fetchData } from '../redux/data/dataActions';
-import {  motion } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { addAlert } from '../redux/general/generalActions';
 import { InstallMetaMask } from '../components/InstallMetaMask';
 
@@ -24,7 +24,7 @@ const Home: NextPage = () => {
         `Price: ${Web3.utils.fromWei(contractData.price)} AVAX 🔺`,
         `Presale Supply: ${contractData.maxPresaleSupply} Miners`,
         `Total Supply: ${contractData.maxTotalSupply} Miners`,
-        `${100 - contractData.superPercentage}% chance to mint a Regular Miner`,
+        `${blockchain.hasMetaMask ? 100 - contractData.superPercentage : 0}% chance to mint a Regular Miner`,
         `${contractData.superPercentage}% chance to mint a Super Miner`,
     ];
 
