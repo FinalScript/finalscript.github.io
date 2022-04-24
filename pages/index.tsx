@@ -43,7 +43,7 @@ const Home: NextPage = () => {
                     blockchain.smartContract?.methods
                         .mintBase(parseInt(quantity))
                         .send({
-                            gasLimit: String(285000),
+                            gasLimit: String(855000),
                             to: minerConfig.contractAddress,
                             from: blockchain.account,
                             value: totalPrice,
@@ -72,7 +72,7 @@ const Home: NextPage = () => {
                     blockchain.smartContract?.methods
                         .presaleMintBase(parseInt(quantity))
                         .send({
-                            gasLimit: String(285000),
+                            gasLimit: String(855000),
                             to: minerConfig.contractAddress,
                             from: blockchain.account,
                             value: totalPrice,
@@ -163,157 +163,183 @@ const Home: NextPage = () => {
     return (
         <div className='relative overflow-auto'>
             <div className='fixed -z-30 w-screen h-screen overflow-hidden select-none'>
-                <Image src='/assets/images/mine-entrance.jpg' layout='fill' objectFit='cover' objectPosition={'70%'} />
+                <Image src='/assets/images/mine-entrance.png' layout='fill' objectFit='cover' objectPosition={'70%'} />
             </div>
 
             <div className='fixed -z-20 w-full h-full bg-gray-800 opacity-30'></div>
 
             <section className='text-gray-400 body-font h-screen flex items-center'>
-                <div className='container mx-auto mt-56 sm:mt-44 md:mt-0 flex px-5 md:flex-row justify-center items-center'>
+                <div className='container relative mx-auto mt-56 sm:mt-44 md:mt-0 flex px-5 md:flex-row justify-center items-center'>
                     {!generalReducer.isLoading && (
-                        <motion.div
-                            key={'minting-container'}
-                            exit={{
-                                opacity: 0,
-                                scale: 0.0,
-                            }}
-                            initial='hidden'
-                            animate='visible'
-                            variants={{
-                                hidden: {
-                                    scale: 0.8,
+                        <>
+                            <motion.div
+                                key={'minting-container-background'}
+                                exit={{
                                     opacity: 0,
-                                },
-                                visible: {
-                                    scale: 1,
-                                    opacity: 1,
-                                    transition: {
-                                        duration: 0.3,
-                                        delay: 0.3,
+                                    scale: 0.0,
+                                }}
+                                initial='hidden'
+                                animate='visible'
+                                variants={{
+                                    hidden: {
+                                        scale: 0.8,
+                                        opacity: 0,
                                     },
-                                },
-                            }}
-                            className='w-400px min-w-400px bg-zinc-900 text-gray-200 bg-opacity-50 rounded-xl backdrop-blur-sm shadow-center-lg shadow-zinc-800 px-6 py-5 md:mt-0'>
-                            <h2 className='text-white bg-neutral-900 text-center text-lg font-medium title-font rounded-t-xl py-2 -mx-6 -my-5 mb-4'>
-                                <span>Buy Miners</span>
-                            </h2>
-                            <div className='flex flex-col'>
-                                <div className='relative mb-3 text-sm flex space-y-2 flex-col items-center'>
-                                    <h5>Welcome to MineVerse, gameplay starts at ___</h5>
-                                    <div className='w-2/5 h-28 relative'>
-                                        <Image src='/assets/images/MinerTrio.png' objectFit='contain' layout='fill' />
+                                    visible: {
+                                        scale: 1,
+                                        opacity: 1,
+                                        transition: {
+                                            duration: 0.3,
+                                            delay: 0.3,
+                                        },
+                                    },
+                                }} className='absolute -z-20 w-[650px] min-w-[650px] h-[740px] min-h-[740px] overflow-hidden select-none'>
+                                <Image src='/assets/images/parchment.png' layout='fill' objectFit='contain' />
+                            </motion.div>
+                            <motion.div
+                                key={'minting-container'}
+                                exit={{
+                                    opacity: 0,
+                                    scale: 0.0,
+                                }}
+                                initial='hidden'
+                                animate='visible'
+                                variants={{
+                                    hidden: {
+                                        scale: 0.8,
+                                        opacity: 0,
+                                    },
+                                    visible: {
+                                        scale: 1,
+                                        opacity: 1,
+                                        transition: {
+                                            duration: 0.3,
+                                            delay: 0.3,
+                                        },
+                                    },
+                                }}
+                                className='w-[420px] relative min-w-[420px]  text-gray-900 rounded-xl pb-4 md:mt-0'>
+                                <div className='flex flex-col'>
+                                    <h2 className='text-center text-2xl font-bold title-font rounded-t-xl mb-1'>
+                                        <span>Mint Miners</span>
+                                    </h2>
+                                    <div className='relative text-md flex space-y-2 flex-col items-center'>
+                                        <h5>Welcome to MinerVerse, gameplay starts at ___</h5>
+                                        <div className='w-2/5 h-28 relative'>
+                                            <Image src='/assets/images/MinerTrio.png' objectFit='contain' layout='fill' />
+                                        </div>
                                     </div>
-                                </div>
-                                <div className='relative mb-3'>
-                                    <div className='flex justify-end mb-1'>
-                                        <span className='text-xs font-medium text-gray-400'>{getSupplyFraction()}</span>
+                                    <div className='relative mb-3'>
+                                        <div className='flex justify-end mb-1'>
+                                            <span className='text-sm font-medium text-gray-900'>{getSupplyFraction()}</span>
+                                        </div>
+                                        <div className='w-full bg-gray-900 rounded-full h-1.5'>
+                                            <div className='bg-green-500 h-1.5 rounded-full' style={{ width: getSupplyPercentage() }}></div>
+                                        </div>
                                     </div>
-                                    <div className='w-full bg-gray-200 rounded-full h-1.5 dark:bg-gray-700'>
-                                        <div className='bg-green-500 h-1.5 rounded-full' style={{ width: getSupplyPercentage() }}></div>
-                                    </div>
-                                </div>
-                                <div className='relative mb-3'>
-                                    <label htmlFor='quantity' className='leading-7 mb-1 text-xs text-gray-400 flex justify-between'>
-                                        <span className='font-bold'>Quantity</span>
-                                        <span>MAX ({contractData.maxPerMint})</span>
-                                    </label>
-                                    <input
-                                        disabled={!((contractData.presaleOpen && contractData.isWhiteListed) || contractData.baseSalesOpen)}
-                                        title={contractData.isWhiteListed ? '' : "You're not whitelisted"}
-                                        type='text'
-                                        id='quantity'
-                                        name='quantity'
-                                        min={0}
-                                        max={contractData.maxPerMint}
-                                        onSelect={(e) => {
-                                            if (quantity === '0') {
-                                                setQuantity('');
-                                            }
-                                        }}
-                                        value={quantity}
-                                        onChange={(e) => {
-                                            let { value, min, max }: any = e.target;
-
-                                            if (!isNaN(value)) {
-                                                value = Math.max(Number(min), Math.min(Number(max), Number(value))).toString();
-                                                setQuantity(value === '0' ? '' : value);
-                                            } else {
-                                                setQuantity('');
-                                            }
-                                        }}
-                                        placeholder={`Max ${contractData.maxPerMint} at a time`}
-                                        className='w-full text-center disabled:cursor-not-allowed bg-gray-600 bg-opacity-20 focus:bg-transparent focus:ring-2 focus:ring-indigo-900 rounded border border-gray-600 focus:border-indigo-500 text-base outline-none text-gray-100 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out'
-                                    />
-                                </div>
-                                <div className='relative mb-2 flex justify-between text-xs'>
-                                    <h5>NFT Tax</h5>
-                                    <h5>{totalPrice === 0 ? '--' : Web3.utils.fromWei(contractData.nftTax) + ' AVAX'}</h5>
-                                </div>
-                                <div className='relative mb-2 flex justify-between text-sm font-bold'>
-                                    <h5>Total</h5>
-                                    <h5>{totalPrice === 0 ? '--' : Web3.utils.fromWei(totalPrice.toString()) + ' AVAX'} </h5>
-                                </div>
-                                <div className='relative mb-4 flex justify-between'>
-                                    <h5 className='text-xs text-gray-400'>
-                                        Miners are utility NFTs solely intended for playing MinerVerse that carry no expectation of profit and have no
-                                        guaranteed resale value. By buying you agree to the{' '}
-                                        <Link href={'/tos'}>
-                                            <span className='font-bold text-blue-400 cursor-pointer'>Terms of Service</span>
-                                        </Link>
-                                        .
-                                    </h5>
-                                </div>
-
-                                <div className='relative mb-4'>
-                                    {blockchain.account ? (
-                                        <>
-                                            <button
-                                                disabled={
-                                                    !(
-                                                        (contractData.presaleOpen && contractData.isWhiteListed) ||
-                                                        contractData.baseSalesOpen ||
-                                                        !blockchain.isRightNetwork
-                                                    )
+                                    <div className='relative mb-3'>
+                                        <label htmlFor='quantity' className='leading-7 mb-1 text-sm text-gray-900 flex justify-between'>
+                                            <span className='font-bold'>Quantity</span>
+                                            <span className='tracking-widest'>MAX ({contractData.maxPerMint})</span>
+                                        </label>
+                                        <input
+                                            disabled={!((contractData.presaleOpen && contractData.isWhiteListed) || contractData.baseSalesOpen)}
+                                            title={contractData.isWhiteListed ? '' : "You're not whitelisted"}
+                                            type='text'
+                                            id='quantity'
+                                            name='quantity'
+                                            min={0}
+                                            max={contractData.maxPerMint}
+                                            onSelect={(e) => {
+                                                if (quantity === '0') {
+                                                    setQuantity('');
                                                 }
-                                                onClick={() => {
-                                                    if (!blockchain.isRightNetwork) {
-                                                        switchNetwork();
-                                                    } else {
-                                                        mint();
-                                                    }
-                                                }}
-                                                title={contractData.isWhiteListed && !blockchain.isRightNetwork ? '' : "You're not whitelisted"}
-                                                className={
-                                                    'w-full font-bold border-0 py-2 px-8 disabled:cursor-not-allowed focus:outline-none rounded text-lg ' +
-                                                    (blockchain.isRightNetwork
-                                                        ? 'bg-cyan-400 hover:bg-cyan-500 text-gray-900'
-                                                        : ' bg-red-600 cursor-pointer shadow-center-lg shadow-red-700 text-white')
-                                                }>
-                                                {blockchain.isRightNetwork ? `Mint` : 'Switch Network 🔺'}
-                                            </button>
-                                        </>
-                                    ) : (
-                                        <button
-                                            onClick={() => {
-                                                dispatch(connect());
                                             }}
-                                            className='w-full bg-cyan-400 font-semibold text-gray-900 rounded-lg px-3 py-2 '>
-                                            Connect Wallet
-                                        </button>
-                                    )}
+                                            value={quantity}
+                                            onChange={(e) => {
+                                                let { value, min, max }: any = e.target;
+
+                                                if (!isNaN(value)) {
+                                                    value = Math.max(Number(min), Math.min(Number(max), Number(value))).toString();
+                                                    setQuantity(value === '0' ? '' : value);
+                                                } else {
+                                                    setQuantity('');
+                                                }
+                                            }}
+                                            placeholder={`Max ${contractData.maxPerMint} at a time`}
+                                            className='w-full text-center disabled:cursor-not-allowed placeholder:text-gray-700 bg-zinc-400 bg-opacity-20 focus:bg-transparent focus:ring-2 rounded border border-gray-600  text-base outline-none py-1 px-3 leading-8 transition-colors duration-200 ease-in-out'
+                                        />
+                                    </div>
+                                    <div className='relative tracking-widest mb-2 flex justify-between text-sm font-bold'>
+                                        <h5>NFT Tax</h5>
+                                        <h5>{totalPrice === 0 ? '--' : Web3.utils.fromWei(contractData.nftTax) + ' AVAX'}</h5>
+                                    </div>
+                                    <div className='relative tracking-widest mb-2 flex justify-between text-md font-bold'>
+                                        <h5>Total</h5>
+                                        <h5>{totalPrice === 0 ? '--' : Web3.utils.fromWei(totalPrice.toString()) + ' AVAX'} </h5>
+                                    </div>
+                                    <div className='relative mb-4 flex justify-between'>
+                                        <h5 className='text-xs text-gray-800'>
+                                            Miners are utility NFTs solely intended for playing MinerVerse that carry no expectation of profit and have no
+                                            guaranteed resale value. By buying you agree to the{' '}
+                                            <Link href={'/tos'}>
+                                                <span className='font-bold text-blue-600 cursor-pointer'>Terms of Service</span>
+                                            </Link>
+                                            .
+                                        </h5>
+                                    </div>
+
+                                    <div className='relative mb-2'>
+                                        {blockchain.account ? (
+                                            <>
+                                                <button
+                                                    disabled={
+                                                        !(
+                                                            (contractData.presaleOpen && contractData.isWhiteListed) ||
+                                                            contractData.baseSalesOpen ||
+                                                            !blockchain.isRightNetwork
+                                                        )
+                                                    }
+                                                    onClick={() => {
+                                                        if (!blockchain.isRightNetwork) {
+                                                            switchNetwork();
+                                                        } else {
+                                                            mint();
+                                                        }
+                                                    }}
+                                                    title={contractData.isWhiteListed && !blockchain.isRightNetwork ? '' : "You're not whitelisted"}
+                                                    className={
+                                                        'w-full font-bold border-0 py-2 px-8 disabled:cursor-not-allowed focus:outline-none rounded text-lg ' +
+                                                        (blockchain.isRightNetwork
+                                                            ? 'bg-cyan-400  hover:bg-cyan-500 text-gray-900'
+                                                            : ' bg-red-600 cursor-pointer shadow-center-lg shadow-red-700 text-white')
+                                                    }>
+                                                    {blockchain.isRightNetwork ? `Mint` : 'Switch Network 🔺'}
+                                                </button>
+                                            </>
+                                        ) : (
+                                            <button
+                                                onClick={() => {
+                                                    dispatch(connect());
+                                                }}
+                                                className='w-full bg-cyan-500  hover:bg-rose-600 font-semibold text-gray-900 rounded-lg px-3 py-2 '>
+                                                Connect Wallet
+                                            </button>
+                                        )}
+                                    </div>
+                                    <div className='relative flex flex-col text-sm '>
+                                        <h5 className='font-bold text-lg text-center mb-2'>Sale Details</h5>
+                                        {saleDetails.map((detail, index) => {
+                                            return (
+                                                <h5 key={index} className='flex justify-between'>
+                                                    <span>💎</span> <span>{detail}</span> <span>💎</span>
+                                                </h5>
+                                            );
+                                        })}
+                                    </div>
                                 </div>
-                                <div className='relative flex flex-col text-xs px-7'>
-                                    <h5 className='font-extrabold text-center mb-2'>Sale Details</h5>
-                                    {saleDetails.map((detail, index) => {
-                                        return (
-                                            <h5 key={index} className='flex justify-between'>
-                                                <span>💎</span> <span>{detail}</span> <span>💎</span>
-                                            </h5>
-                                        );
-                                    })}
-                                </div>
-                            </div>
-                        </motion.div>
+                            </motion.div>
+                        </>
                     )}
                 </div>
             </section>

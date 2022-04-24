@@ -15,7 +15,7 @@ export const TransactionAlert = ({ deleteBy, link, hash }: Props) => {
     return (
         <div
             id='alert-border-3'
-            className={'flex p-4 mb-4 bg-green-100 border-t-4 border-green-500 dark:bg-green-200 transition-all '}
+            className={'flex tracking-widest p-4 mb-4 bg-green-100 border-t-4 border-green-500 dark:bg-green-200 transition-all '}
             role='alert'>
             <svg className='flex-shrink-0 w-5 h-5 text-green-700' fill='currentColor' viewBox='0 0 20 20' xmlns='http://www.w3.org/2000/svg'>
                 <path

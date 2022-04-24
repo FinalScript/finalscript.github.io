@@ -11,7 +11,7 @@ export const ErrorAlert = ({ deleteBy, errorMsg }: Props) => {
     const dispatch = useDispatch();
 
     return (
-        <div id='alert-border-2' className={'flex p-4 mb-4 bg-red-100 border-t-4 border-red-500 dark:bg-red-200 transition-all duration-300 '} role='alert'>
+        <div id='alert-border-2' className={'flex tracking-widest p-4 mb-4 bg-red-100 border-t-4 border-red-500 dark:bg-red-200 transition-all duration-300 '} role='alert'>
             <svg className='flex-shrink-0 w-5 h-5 text-red-700' fill='currentColor' viewBox='0 0 20 20' xmlns='http://www.w3.org/2000/svg'>
                 <path
                     fillRule='evenodd'

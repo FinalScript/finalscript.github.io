@@ -28,9 +28,9 @@ export const WalletButton = () => {
                         }>
                         {blockchain.isRightNetwork ? `🔺 ${networkConfig.chainName}` : '⚠️ Wrong Network'}
                     </div>
-                    <div className='rounded-lg flex text-gray-900 font-semibold bg-amber-600  whitespace-nowrap'>
+                    <div className='rounded-lg flex text-gray-900 font-semibold bg-rose-500  whitespace-nowrap'>
                         {blockchain.isRightNetwork && (
-                            <p className='bg-amber-600 px-3 py-2 rounded-l-lg'>
+                            <p className='bg-rose-500 px-3 py-2 rounded-l-lg'>
                                 {parseFloat(blockchain.balance || '0').toFixed(3)} {networkConfig.nativeCurrency.symbol}
                             </p>
                         )}

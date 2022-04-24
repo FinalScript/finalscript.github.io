@@ -8,6 +8,8 @@ const Document = () => {
                 <link rel='preconnect' href='https://fonts.gstatic.com' crossOrigin={'true'} />
                 <link href='https://fonts.googleapis.com/css2?family=Rye&display=swap' rel='stylesheet' />
                 <link href='https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap' rel='stylesheet' />
+                <link href='/assets/fonts/Retro-Gaming.ttf' rel='stylesheet' /> 
+                <link href='/assets/fonts/VPPixel-Simplified.otf' rel='stylesheet' />
             </Head>
             <body>
                 <Main />

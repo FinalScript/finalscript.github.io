@@ -24,16 +24,17 @@ function MyApp({ Component, pageProps }: AppProps) {
     useEffect(() => {
         dispatch(connect());
         dispatch(checkConnection());
+
         setTimeout(() => {
             dispatch({
                 type: 'SET_LOADING',
                 payload: { isLoading: false },
             });
-        }, 1500);
+        }, 1600);
 
         setTimeout(() => {
             setPageLoading(false);
-        }, 1400);
+        }, 1500);
     }, []);
 
     useEffect(() => {
@@ -77,19 +78,19 @@ function MyApp({ Component, pageProps }: AppProps) {
                 <div className='absolute z-40 bottom-5 left-5'>
                     {generalReducer.alerts.map((alert: CustomAlert) => {
                         return (
-                            <>
+                            <div key={alert.key}>
                                 {alert.isError ? (
-                                    <ErrorAlert key={alert.key} deleteBy={alert.key} errorMsg={alert.errorMsg} />
+                                    <ErrorAlert deleteBy={alert.key} errorMsg={alert.errorMsg} />
                                 ) : (
-                                    <TransactionAlert key={alert.key} hash={alert.hash} link={alert.link} deleteBy={alert.key} />
+                                    <TransactionAlert hash={alert.hash} link={alert.link} deleteBy={alert.key} />
                                 )}
-                            </>
+                            </div>
                         );
                     })}
                 </div>
 
                 <div className='relative select-none'>
-                    <AnimatePresence>
+                    <AnimatePresence exitBeforeEnter>
                         {pageLoading && (
                             <>
                                 <motion.div
@@ -140,7 +141,6 @@ function MyApp({ Component, pageProps }: AppProps) {
                                             className='relative h-72 w-72 mx-auto'>
                                             <Image src='/assets/images/spinning-diamond.gif' objectFit='contain' layout='fill' />
                                         </motion.div>
-                                        {/* <h2 className='text-amber-500 text-5xl stroke-black stroke-2 font-press-start font-bold'>MinerVerse</h2> */}
                                     </div>
                                 </motion.div>
                             </>
