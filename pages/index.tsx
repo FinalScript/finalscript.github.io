@@ -20,11 +20,11 @@ const Home: NextPage = () => {
     const [quantity, setQuantity] = useState('');
     const [totalPrice, setTotalPrice] = useState(0.0);
     const saleDetails = [
-        'Fair sale (first come, first serve)',
+        // 'Fair sale (first come, first serve)',
         `Price: ${Web3.utils.fromWei(contractData.price)} AVAX 🔺`,
         `Presale Supply: ${contractData.maxPresaleSupply} Miners`,
         `Total Supply: ${contractData.maxTotalSupply} Miners`,
-        `${blockchain.hasMetaMask ? 100 - contractData.superPercentage : 0}% chance to mint a Regular Miner`,
+        // `${blockchain.hasMetaMask ? 100 - contractData.superPercentage : 0}% chance to mint a Regular Miner`,
         `${contractData.superPercentage}% chance to mint a Super Miner`,
     ];
 
@@ -189,8 +189,8 @@ const Home: NextPage = () => {
                                         },
                                     },
                                 }}
-                                className='absolute -z-20 w-[650px] min-w-[650px] h-[740px] min-h-[740px] overflow-hidden select-none'>
-                                <Image src='/assets/images/parchment.png' layout='fill' objectFit='contain' />
+                                className='absolute -z-20 w-[420px] min-w-[420px] h-[600px] min-h-[600px] overflow-hidden select-none'>
+                                <Image src='/assets/images/parchment.png' layout='fill' objectFit='fill' />
                             </motion.div>
                             <motion.div
                                 key={'minting-container'}
@@ -214,14 +214,13 @@ const Home: NextPage = () => {
                                         },
                                     },
                                 }}
-                                className='w-[420px] relative min-w-[420px]  text-gray-900 rounded-xl pb-4 md:mt-0'>
+                                className='w-[320px] relative min-w-[320px]  text-gray-900 rounded-xl pb-4 md:mt-0'>
                                 <div className='flex flex-col'>
                                     <h2 className='text-center text-2xl font-bold title-font rounded-t-xl mb-1'>
                                         <span>Mint Miners</span>
                                     </h2>
-                                    <div className='relative text-md flex space-y-2 flex-col items-center'>
-                                        <h5>Welcome to MinerVerse, gameplay starts at ___</h5>
-                                        <div className='w-2/5 h-28 relative'>
+                                    <div className='relative text-md flex items-center justify-center'>
+                                        <div className='w-3/5 h-24 relative'>
                                             <Image src='/assets/images/MinerTrio.png' objectFit='contain' layout='fill' />
                                         </div>
                                     </div>
@@ -270,11 +269,11 @@ const Home: NextPage = () => {
                                         <h5>NFT Tax</h5>
                                         <h5>{totalPrice === 0 ? '--' : Web3.utils.fromWei(contractData.nftTax) + ' AVAX'}</h5>
                                     </div>
-                                    <div className='relative tracking-widest mb-2 flex justify-between text-md font-bold'>
+                                    <div className='relative tracking-widest mb-6 flex justify-between text-md font-bold'>
                                         <h5>Total</h5>
                                         <h5>{totalPrice === 0 ? '--' : Web3.utils.fromWei(totalPrice.toString()) + ' AVAX'} </h5>
                                     </div>
-                                    <div className='relative mb-4 flex justify-between'>
+                                    {/* <div className='relative mb-4 flex justify-between'>
                                         <h5 className='text-xs text-gray-800'>
                                             Miners are utility NFTs solely intended for playing MinerVerse that carry no expectation of profit and have no
                                             guaranteed resale value. By buying you agree to the{' '}
@@ -283,9 +282,9 @@ const Home: NextPage = () => {
                                             </Link>
                                             .
                                         </h5>
-                                    </div>
+                                    </div> */}
 
-                                    <div className='relative mb-4'>
+                                    <div className='relative mb-5'>
                                         {blockchain.hasMetaMask ? (
                                             blockchain.account ? (
                                                 <>
@@ -312,7 +311,7 @@ const Home: NextPage = () => {
                                                         className={
                                                             'w-full text-white text-shadow-white font-bold border-0 py-2 px-8 disabled:cursor-not-allowed focus:outline-none rounded text-lg shadow-center-lg ' +
                                                             (blockchain.isRightNetwork
-                                                                ? 'bg-cyan-400  hover:bg-cyan-500 shadow-cyan-500'
+                                                                ? 'bg-cyan-400  hover:bg-cyan-500 shadow-cyan-400'
                                                                 : ' bg-red-600 cursor-pointer shadow-red-700')
                                                         }>
                                                         {blockchain.isRightNetwork ? `Mint` : 'Switch Network 🔺'}

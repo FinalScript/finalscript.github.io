@@ -3,10 +3,17 @@ import { GeneralData } from '../../types';
 const initialState = {
     isLoading: true,
     alerts: [],
+    passwordProtected: true,
+    enteredPassword: '',
 };
 
 const generalReducer = (state: GeneralData = initialState, action: any) => {
     switch (action.type) {
+        case 'SET_ENTERED_PASSWORD':
+            return {
+                ...state,
+                enteredPassword: action.payload.enteredPassword,
+            };
         case 'SET_LOADING':
             return {
                 ...state,

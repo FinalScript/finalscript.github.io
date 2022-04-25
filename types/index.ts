@@ -54,6 +54,8 @@ export interface CustomAlert {
 export interface GeneralData {
     isLoading: boolean;
     alerts: CustomAlert[];
+    passwordProtected: boolean;
+    enteredPassword: string;
 }
 
 export interface GeneralState {

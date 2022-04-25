@@ -1,12 +1,33 @@
 import { useState } from 'react';
-import Cookies from 'universal-cookie';
-import consts from '../constants';
+import { useDispatch } from 'react-redux';
+import { motion } from 'framer-motion';
 
 const Login = ({ redirectPath }: any) => {
     const [password, setPassword] = useState('');
+    const dispatch = useDispatch();
 
     return (
-        <div className='h-screen bg-zinc-900 text-white flex items-center justify-center'>
+        <motion.div
+            key={'diamondLoading'}
+            exit={{
+                opacity: 0,
+            }}
+            initial={{
+                opacity: 0,
+            }}
+            animate='visible'
+            variants={{
+                hidden: {
+                    opacity: 0,
+                },
+                visible: {
+                    opacity: 1,
+                    transition: {
+                        delay: 0.3,
+                    },
+                },
+            }}
+            className='h-screen bg-zinc-900 text-white flex items-center justify-center'>
             <div className='bg-zinc-800 rounded-xl p-10'>
                 <h1 className='text-center mb-5'>
                     <span className='text-2xl text-gray-200'>Welcome to</span>
@@ -29,17 +50,14 @@ const Login = ({ redirectPath }: any) => {
                         className='mt-3 w-full bg-cyan-400 text-white p-2 font-bold rounded hover:bg-cyan-500'
                         onClick={(e) => {
                             e.preventDefault();
-                            const cookies = new Cookies();
-                            cookies.set(consts.SiteReadCookie, password, {
-                                path: '/',
-                            });
+                            dispatch({ type: 'SET_ENTERED_PASSWORD', payload: { enteredPassword: password } });
                             window.location.href = redirectPath ?? '/';
                         }}>
                         Login
                     </button>
                 </form>
             </div>
-        </div>
+        </motion.div>
     );
 };
 

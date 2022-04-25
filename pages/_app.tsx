@@ -1,5 +1,5 @@
 import '../styles/styles.css';
-import type { AppContext, AppProps } from 'next/app';
+import type { AppProps } from 'next/app';
 import { Nav } from '../components/Nav';
 import { Provider, useDispatch, useSelector } from 'react-redux';
 import { wrapper, store } from '../redux/store';
@@ -7,21 +7,15 @@ import { useEffect, useState } from 'react';
 import { checkConnection, connect } from '../redux/blockchain/blockchainActions';
 import Head from 'next/head';
 import { ErrorAlert } from '../components/ErrorAlert';
-import { BlockchainState, CustomAlert, GeneralState } from '../types';
+import { CustomAlert, GeneralState } from '../types';
 import { useRouter } from 'next/router';
 import Image from 'next/image';
 import { AnimatePresence, motion } from 'framer-motion';
-import { removeAlert } from '../redux/general/generalActions';
 import { TransactionAlert } from '../components/TransactionAlert';
-
 import Login from '../components/Login';
-import Cookies from 'universal-cookie';
-import consts from '../constants';
-import App from 'next/app';
 
 function MyApp({ Component, pageProps }: AppProps) {
     const dispatch = useDispatch<any>();
-    const blockchain = useSelector((state: BlockchainState) => state.blockchain);
     const generalReducer = useSelector((state: GeneralState) => state.general);
     const router = useRouter();
     const [pageLoading, setPageLoading] = useState<boolean>(true);
@@ -29,6 +23,10 @@ function MyApp({ Component, pageProps }: AppProps) {
     useEffect(() => {
         dispatch(connect());
         dispatch(checkConnection());
+
+        const savedPassword = sessionStorage.getItem('password');
+
+        dispatch({ type: 'SET_ENTERED_PASSWORD', payload: { enteredPassword: savedPassword } });
 
         setTimeout(() => {
             dispatch({
@@ -61,7 +59,13 @@ function MyApp({ Component, pageProps }: AppProps) {
         router.events.on('routeChangeError', handleComplete);
     }, [router]);
 
-    if (!pageProps.hasReadPermission) {
+    useEffect(() => {
+        if (generalReducer.enteredPassword === process.env.SITE_PASSWORD) {
+            sessionStorage.setItem('password', generalReducer.enteredPassword);
+        }
+    }, [generalReducer.enteredPassword]);
+
+    if (generalReducer.passwordProtected && generalReducer.enteredPassword !== process.env.SITE_PASSWORD) {
         return <Login redirectPath={router.asPath} />;
     }
 
@@ -156,18 +160,5 @@ function MyApp({ Component, pageProps }: AppProps) {
         </Provider>
     );
 }
-
-MyApp.getInitialProps = async (appContext: AppContext) => {
-    const appProps = await App.getInitialProps(appContext);
-
-    const cookies = new Cookies(appContext?.ctx?.req?.headers.cookie);
-    const password = cookies.get(consts.SiteReadCookie) ?? '';
-
-    if (password == 'unFinalScript123') {
-        appProps.pageProps.hasReadPermission = true;
-    }
-
-    return { ...appProps };
-};
 
 export default wrapper.withRedux(MyApp);
