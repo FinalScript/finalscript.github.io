@@ -60,12 +60,12 @@ function MyApp({ Component, pageProps }: AppProps) {
     }, [router]);
 
     useEffect(() => {
-        if (generalReducer.enteredPassword === process.env.SITE_PASSWORD) {
+        if (generalReducer.enteredPassword === 'unFinalScript123') {
             sessionStorage.setItem('password', generalReducer.enteredPassword);
         }
     }, [generalReducer.enteredPassword]);
 
-    if (generalReducer.passwordProtected && generalReducer.enteredPassword !== process.env.SITE_PASSWORD) {
+    if (generalReducer.passwordProtected && generalReducer.enteredPassword !== 'unFinalScript123') {
         return <Login redirectPath={router.asPath} />;
     }
 
