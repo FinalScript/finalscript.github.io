@@ -2,6 +2,8 @@
 @tailwind components;
 @tailwind utilities;
 
+@import url(//db.onlinewebfonts.com/c/98e6dd769068c2091e7413443f0b0c5e?family=VPPixel-Simplified);
+
 html,
 body {
     padding: 0;
@@ -14,7 +16,7 @@ a {
 }
 
 * {
-    font-family: 'VP Pixel Simplified';
+    font-family: 'VPPixel-Simplified';
     letter-spacing: 0.1em;
 }
 

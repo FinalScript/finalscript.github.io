@@ -18,6 +18,7 @@ const Document = () => {
                 <link rel='preconnect' href='https://fonts.googleapis.com' />
                 <link rel='preconnect' href='https://fonts.gstatic.com' crossOrigin={'true'} />
                 <link href='/assets/fonts/VPPixel-Simplified.otf' rel='stylesheet' />
+                <link href='//db.onlinewebfonts.com/c/98e6dd769068c2091e7413443f0b0c5e?family=VPPixel-Simplified' rel='stylesheet' type='text/css' />
             </Head>
             <body>
                 <Main />
