@@ -2,7 +2,10 @@
 @tailwind components;
 @tailwind utilities;
 
-@import url(//db.onlinewebfonts.com/c/98e6dd769068c2091e7413443f0b0c5e?family=VPPixel-Simplified);
+@font-face {
+    font-family: 'VPPixel-Simplified';
+    src: url('/fonts/VPPixel-Simplified.otf');
+}
 
 html,
 body {
