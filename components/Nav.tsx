@@ -19,7 +19,7 @@ export const Nav = () => {
                         <Link href={'/'}>
                             <div className='flex cursor-pointer title-font font-medium items-center text-white p-2 mb-4 md:mb-0'>
                                 <div className='w-16 h-16 mb-4 relative'>
-                                    <Image src='/assets/images/diamond.png' layout='fill' alt='nav-logo' />
+                                    <Image src='/images/diamond.png' layout='fill' alt='nav-logo' />
                                 </div>
                                 <h2 className='ml-3 text-4xl font-bold text-shadow-white'>MinerVerse</h2>
                             </div>

@@ -6,7 +6,6 @@ import { minerConfig } from '../config';
 import { checkBalance, connect, switchNetwork } from '../redux/blockchain/blockchainActions';
 import { BlockchainState, ContractDataState, GeneralState } from '../types';
 import Image from 'next/image';
-import Link from 'next/link';
 import { checkIsWhiteListed, fetchData } from '../redux/data/dataActions';
 import { motion } from 'framer-motion';
 import { addAlert } from '../redux/general/generalActions';
@@ -158,7 +157,7 @@ const Home: NextPage = () => {
     return (
         <div className='relative overflow-auto'>
             <div className='fixed -z-30 w-screen h-screen overflow-hidden select-none'>
-                <Image src='/assets/images/mine-entrance.png' layout='fill' objectFit='cover' objectPosition={'70%'} />
+                <Image src='/images/mine-entrance.png' layout='fill' objectFit='cover' objectPosition={'70%'} />
             </div>
 
             <div className='fixed -z-20 w-full h-full bg-gray-800 opacity-30'></div>
@@ -190,7 +189,7 @@ const Home: NextPage = () => {
                                     },
                                 }}
                                 className='absolute -z-20 w-[420px] min-w-[420px] h-[600px] min-h-[600px] overflow-hidden select-none'>
-                                <Image src='/assets/images/parchment.png' layout='fill' objectFit='fill' />
+                                <Image src='/images/parchment.png' layout='fill' objectFit='fill' />
                             </motion.div>
                             <motion.div
                                 key={'minting-container'}
@@ -221,7 +220,7 @@ const Home: NextPage = () => {
                                     </h2>
                                     <div className='relative text-md flex items-center justify-center'>
                                         <div className='w-3/5 h-24 relative'>
-                                            <Image src='/assets/images/MinerTrio.png' objectFit='contain' layout='fill' />
+                                            <Image src='/images/MinerTrio.png' objectFit='contain' layout='fill' />
                                         </div>
                                     </div>
                                     <div className='relative mb-3'>

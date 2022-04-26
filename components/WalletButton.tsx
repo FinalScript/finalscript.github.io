@@ -5,7 +5,6 @@ import { shortenAddress } from '../utils/shortenAddress';
 import { connect, switchNetwork } from '../redux/blockchain/blockchainActions';
 import { motion } from 'framer-motion';
 import { BlockchainState } from '../types';
-import Image from 'next/image';
 import { InstallMetaMask } from './InstallMetaMask';
 
 export const WalletButton = () => {

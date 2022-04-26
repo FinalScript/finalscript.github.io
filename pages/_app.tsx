@@ -147,7 +147,7 @@ function MyApp({ Component, pageProps }: AppProps) {
                                                 },
                                             }}
                                             className='relative h-72 w-72 mx-auto'>
-                                            <Image src='/assets/images/spinning-diamond.gif' objectFit='contain' layout='fill' />
+                                            <Image src='/images/spinning-diamond.gif' objectFit='contain' layout='fill' />
                                         </motion.div>
                                     </div>
                                 </motion.div>
