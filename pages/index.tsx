@@ -253,13 +253,13 @@ const Home: NextPage = () => {
                         initial={{ translateX: -700 }}
                         animate={{ translateX: 0, transition: { duration: 0.5 } }}
                         className='text-gray-400 body-font h-screen w-screen flex items-center fixed'>
-                        <div className='fixed flex items-end h-full min-h-full bottom-0 -z-20 left-28'>
+                        <div className='fixed flex items-end h-full min-h-full bottom-0 -z-20 left-16'>
                             <div className='relative w-[650px] min-w-[650px] h-[820px] min-h-[820px] overflow-hidden select-none drop-shadow-dark-brown'>
                                 <Image src='/images/parchment-frame.png' layout='fill' objectFit='fill' />
                             </div>
                         </div>
 
-                        <div className='left-[280px] pb-[80px] relative flex h-full min-h-full px-5 md:flex-row justify-center items-end'>
+                        <div className='left-[240px] pb-[80px] relative flex h-full min-h-full px-5 md:flex-row justify-center items-end'>
                             {!generalReducer.isLoading && (
                                 <>
                                     <div className='p-10 w-[400px] relative min-w-[400px] h-[620px] min-h-[620px] text-gray-900 rounded-xl md:mt-0'>
