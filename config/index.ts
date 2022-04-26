@@ -1,7 +1,7 @@
 import Web3 from 'web3';
 
 export const networkConfig = {
-    chainName: 'Avalanche Testnet',
+    chainName: 'Avalanche Fuji Testnet',
     chainId: Web3.utils.toHex(43113),
     nativeCurrency: { name: 'AVAX', decimals: 18, symbol: 'AVAX' },
     rpcUrls: ['https://api.avax-test.network/ext/bc/C/rpc'],

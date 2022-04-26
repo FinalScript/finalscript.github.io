@@ -5,7 +5,7 @@ import Web3 from 'web3';
 import minerAbi from '../../config/miner-abi.json';
 import { networkConfig, minerConfig } from '../../config/index';
 import { Dispatch } from 'redux';
-import { addAlert } from '../general/generalActions';
+import { addAlert, setBotError, setBotSpeech } from '../general/generalActions';
 
 const updateAccount = (account: string | null) => {
     return {
@@ -84,7 +84,7 @@ export const checkBalance = (address: string) => {
 };
 
 export const checkConnection = () => {
-    return async (dispatch: Dispatch) => {
+    return async (dispatch: any) => {
         const { ethereum } = window;
         const metamaskIsInstalled = ethereum && ethereum.isMetaMask;
         if (metamaskIsInstalled) {
@@ -101,6 +101,7 @@ export const checkConnection = () => {
                     dispatch(updateSmartContract(SmartContractObj));
                     dispatch(updateRightNetwork(true));
                 } else {
+                    dispatch(setBotError(`You're not on the right network, friend. Please switch to ${networkConfig.chainName}`));
                     dispatch(updateSmartContract(null));
                 }
             });
@@ -140,9 +141,11 @@ export const checkConnection = () => {
                     if (code === networkConfig.chainId) {
                         const SmartContractObj = new web3.eth.Contract(minerAbi as AbiItem[], minerConfig.contractAddress);
 
+                        dispatch(setBotSpeech(`Welcome back to the ${networkConfig.chainName}!`));
                         dispatch(updateSmartContract(SmartContractObj));
                         dispatch(updateRightNetwork(true));
                     } else {
+                        dispatch(setBotError(`You're not on the right network, friend. Please switch to the ${networkConfig.chainName}`));
                         dispatch(updateSmartContract(null));
                         dispatch(updateRightNetwork(false));
                     }

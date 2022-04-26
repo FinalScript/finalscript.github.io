@@ -51,11 +51,17 @@ export interface CustomAlert {
     errorMsg?: string;
 }
 
+export interface Speech {
+    message: string;
+    isError?: boolean | true;
+}
+
 export interface GeneralData {
     isLoading: boolean;
     alerts: CustomAlert[];
     passwordProtected: boolean;
     enteredPassword: string;
+    botCurrentSpeech?: Speech;
 }
 
 export interface GeneralState {

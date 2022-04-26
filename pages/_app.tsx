@@ -7,15 +7,27 @@ import { useEffect, useState } from 'react';
 import { checkConnection, connect } from '../redux/blockchain/blockchainActions';
 import Head from 'next/head';
 import { ErrorAlert } from '../components/ErrorAlert';
-import { CustomAlert, GeneralState } from '../types';
+import { BlockchainState, CustomAlert, GeneralState } from '../types';
 import { useRouter } from 'next/router';
 import Image from 'next/image';
 import { AnimatePresence, motion } from 'framer-motion';
 import { TransactionAlert } from '../components/TransactionAlert';
 import Login from '../components/Login';
+import { setBotError, setBotSpeech } from '../redux/general/generalActions';
+import { networkConfig } from '../config';
+
+const welcomeSpeeches = [
+    { message: 'Welcome to MinerVerse!' },
+    { message: 'Hello, my name is Mark. Welcome to the mine!' },
+    { message: 'Greetings!' },
+    { message: 'Top of the morning, friends!' },
+];
+
+const randomSpeech = welcomeSpeeches[Math.floor(Math.random() * welcomeSpeeches.length)];
 
 function MyApp({ Component, pageProps }: AppProps) {
     const dispatch = useDispatch<any>();
+    const blockchain = useSelector((state: BlockchainState) => state.blockchain);
     const generalReducer = useSelector((state: GeneralState) => state.general);
     const router = useRouter();
     const [pageLoading, setPageLoading] = useState<boolean>(true);
@@ -23,6 +35,7 @@ function MyApp({ Component, pageProps }: AppProps) {
     useEffect(() => {
         dispatch(connect());
         dispatch(checkConnection());
+        dispatch(setBotSpeech(randomSpeech.message));
 
         const savedPassword = sessionStorage.getItem('password');
 
@@ -39,6 +52,13 @@ function MyApp({ Component, pageProps }: AppProps) {
             setPageLoading(false);
         }, 1500);
     }, []);
+
+    useEffect(() => {
+        if (!blockchain.hasMetaMask) {
+            dispatch(setBotError('Hello friend, please install MetaMask to play MinerVerse!'));
+        }
+
+    }, [blockchain.hasMetaMask, blockchain.isRightNetwork]);
 
     useEffect(() => {
         console.log(generalReducer.alerts);

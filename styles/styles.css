@@ -26,3 +26,15 @@ a {
 .text-shadow-white {
     text-shadow: rgb(255, 255, 255) 0px 0px 12px;
 }
+
+.drop-shadow-dark-brown {
+    filter: drop-shadow(0px 0px 10px #63503A);
+}
+
+.drop-shadow-brown {
+    filter: drop-shadow(0px 0px 15px #E8D191);
+}
+
+.drop-shadow-red {
+    filter: drop-shadow(0px 0px 10px #4d0000);
+}

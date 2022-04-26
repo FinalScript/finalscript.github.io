@@ -5,10 +5,16 @@ const initialState = {
     alerts: [],
     passwordProtected: true,
     enteredPassword: '',
+    botCurrentSpeech: undefined,
 };
 
 const generalReducer = (state: GeneralData = initialState, action: any) => {
     switch (action.type) {
+        case 'SET_BOT_SPEECH':
+            return {
+                ...state,
+                botCurrentSpeech: action.payload.speech,
+            };
         case 'SET_ENTERED_PASSWORD':
             return {
                 ...state,

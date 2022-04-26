@@ -38,7 +38,7 @@ export const WalletButton = () => {
                                 </p>
                             </div>
                         )}
-                        <div className='bg-cyan-400 text-white shadow-center-lg shadow-cyan-500 px-3 py-2 rounded-lg'>{shortenAddress(blockchain.account)}</div>
+                        <div className='bg-cyan-400 text-white shadow-center-lg font-semibold shadow-cyan-500 px-3 py-2 rounded-lg whitespace-nowrap'>{shortenAddress(blockchain.account)}</div>
                     </>
                 ) : (
                     <button
