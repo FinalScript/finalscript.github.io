@@ -229,14 +229,14 @@ const Home: NextPage = () => {
                                     'flex justify-center items-center relative overflow-hidden select-none transition-all hover:scale-105 h-[16vh] w-[45vh] self-center ml-24 mt-10 z-50 drop-shadow-arrow cursor-pointer  '
                                 }>
                                 <Image src='/images/arrow-sign.png' layout='fill' objectFit='contain' />
-                                <h2 className='z-50 text-[9.5vh] mr-6 mb-3 text-white font-bold  play-button'>PLAY</h2>
+                                <h2 className='z-20 text-[9.5vh] mr-6 mb-3 text-white font-bold  play-button'>PLAY</h2>
                             </div>
                         </div>
 
                         <div className='relative flex justify-start sm:justify-center lg:justify-start h-full min-h-full w-screen min-w-screen items-end px-[1vw]'>
                             {!generalReducer.isLoading && (
                                 <>
-                                    <div className={'relative text-gray-900 rounded-xl flex justify-center z-50 ' + dimensionsCss.mintingContainer}>
+                                    <div className={'relative text-gray-900 rounded-xl flex justify-center z-10 ' + dimensionsCss.mintingContainer}>
                                         <div
                                             className={
                                                 'absolute -z-10 w-full h-full overflow-hidden select-none drop-shadow-brown  ' + dimensionsCss.mintingBackground
@@ -293,13 +293,15 @@ const Home: NextPage = () => {
                                                     className='w-full text-center disabled:cursor-not-allowed placeholder:text-gray-700 bg-zinc-400 bg-opacity-20 focus:bg-transparent focus:ring-2 rounded border-gray-600 outline-none transition-colors duration-200 ease-in-out'
                                                 />
                                             </div>
-                                            <div className='relative tracking-widest flex justify-between font-bold section'>
-                                                <h5>NFT Tax</h5>
-                                                <h5>{totalPrice === 0 ? '--' : Web3.utils.fromWei(contractData.nftTax) + ' AVAX'}</h5>
-                                            </div>
-                                            <div className='relative tracking-widest flex justify-between font-bold section'>
-                                                <h4>Total</h4>
-                                                <h4>{totalPrice === 0 ? '--' : Web3.utils.fromWei(totalPrice.toString()) + ' AVAX'} </h4>
+                                            <div className='section font-bold'>
+                                                <div className='relative tracking-widest flex justify-between'>
+                                                    <h5>NFT Tax</h5>
+                                                    <h5>{totalPrice === 0 ? '--' : Web3.utils.fromWei(contractData.nftTax) + ' AVAX'}</h5>
+                                                </div>
+                                                <div className='relative tracking-widest flex justify-between'>
+                                                    <h4>Total</h4>
+                                                    <h4>{totalPrice === 0 ? '--' : Web3.utils.fromWei(totalPrice.toString()) + ' AVAX'} </h4>
+                                                </div>
                                             </div>
                                             {/* <div className='relative mb-4 flex justify-between'>
                                         <h5 className='text-xs text-gray-800'>

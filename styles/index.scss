@@ -12,14 +12,23 @@
         font-size: 1.8vh;
     }
 
-    h5,
-    p {
+    h5 {
         font-size: 1.5vh;
+        margin-bottom: 1vh;
+    }
+
+    p {
+        font-size: 1.4vh;
+
+        span:nth-child(2) {
+            padding-left: 1vh;
+            padding-right: 1vh;
+        }
     }
 
     label {
         font-size: 1.5vh;
-        margin-bottom: 0.6vh;
+        margin-bottom: 0.65vh;
     }
 
     .image {
@@ -36,9 +45,9 @@
     }
 
     input {
-        font-size: 1.8vh;
-        padding-top: 0.5vh;
-        padding-bottom: 0.5vh;
+        font-size: 1.7vh;
+        padding-top: 0.6vh;
+        padding-bottom: 0.6vh;
     }
 
     button {

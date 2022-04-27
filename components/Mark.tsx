@@ -15,7 +15,7 @@ export const Mark = () => {
         <div className='relative'>
             <div
                 className={
-                    'fixed flex justify-center right-[18%] z-50 transition-all duration-300 select-none ' +
+                    'fixed flex justify-center right-[18%] z-30 transition-all duration-300 select-none ' +
                     (generalReducer.botCurrentSpeech || generalReducer.botToggled ? '-bottom-24' : '-bottom-32')
                 }>
                 <AnimatePresence>
@@ -62,7 +62,7 @@ export const Mark = () => {
                         />
                     </motion.div>
 
-                    <motion.div className='z-50 p-5 flex items-center justify-center space-x-5 absolute bottom-[31vh] text-gray-900 rounded-xl md:mt-0'>
+                    <motion.div className='z-20 p-5 flex items-center justify-center space-x-5 absolute bottom-[31vh] text-gray-900 rounded-xl md:mt-0'>
                         <AnimatePresence>
                             {generalReducer.botToggled && (
                                 <>
@@ -72,8 +72,8 @@ export const Mark = () => {
                                         rel='noopener noreferrer'
                                         key={'discord-button'}
                                         variants={{
-                                            hidden: { opacity: 0, translateX: -100, zIndex: 1, transition: { delay: 0.3, duration: 0.1 } },
-                                            show: { opacity: 1, translateX: 0, transition: { delay: 0.2, duration: 0.4 } },
+                                            hidden: { opacity: 0, translateX: -100, zIndex: -5, transition: { delay: 0.3, duration: 0.1 } },
+                                            show: { opacity: 1, translateX: 0, zIndex: -4, transition: { delay: 0.2, duration: 0.4 } },
                                         }}
                                         exit='hidden'
                                         initial='hidden'
@@ -85,8 +85,11 @@ export const Mark = () => {
                                     <motion.div
                                         key={'whitepaper-button'}
                                         variants={{
-                                            hidden: { opacity: 0, translateX: -100, transition: { delay: 0.2, duration: 0.1 } },
-                                            show: { opacity: 1, translateX: 0, transition: { delay: 0.4, duration: 0.4 } },
+                                            hidden: { opacity: 0, translateX: -100, zIndex: -7, transition: { delay: 0.2, duration: 0.1 } },
+                                            show: { opacity: 1, translateX: 0, zIndex: -6, transition: { delay: 0.4, duration: 0.4 } },
+                                        }}
+                                        onClick={() => {
+                                            dispatch(toggleBot());
                                         }}
                                         exit='hidden'
                                         initial='hidden'
@@ -101,8 +104,8 @@ export const Mark = () => {
                                         rel='noopener noreferrer'
                                         key={'twitter-button'}
                                         variants={{
-                                            hidden: { opacity: 0, translateX: -100, zIndex: -5, transition: { delay: 0.1, duration: 0.1 } },
-                                            show: { opacity: 1, translateX: 0, zIndex: -1, transition: { delay: 0.6, duration: 0.4 } },
+                                            hidden: { opacity: 0, translateX: -100, zIndex: -8, transition: { delay: 0.1, duration: 0.1 } },
+                                            show: { opacity: 1, translateX: 0, zIndex: -7, transition: { delay: 0.6, duration: 0.4 } },
                                         }}
                                         exit='hidden'
                                         initial='hidden'
