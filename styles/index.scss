@@ -1,0 +1,49 @@
+.mint-container {
+    h2 {
+        font-size: 3vh;
+    }
+
+    h3 {
+        font-size: 1.8vh;
+        margin-bottom: 0.6vh;
+    }
+
+    h4 {
+        font-size: 1.8vh;
+    }
+
+    h5,
+    p {
+        font-size: 1.5vh;
+    }
+
+    label {
+        font-size: 1.5vh;
+        margin-bottom: 0.6vh;
+    }
+
+    .image {
+        height: 10vh;
+        width: 16vh;
+    }
+
+    .progress {
+        height: 0.7vh;
+    }
+
+    .section {
+        margin-bottom: 2vh;
+    }
+
+    input {
+        font-size: 1.8vh;
+        padding-top: 0.5vh;
+        padding-bottom: 0.5vh;
+    }
+
+    button {
+        font-size: 1.9vh;
+        padding-top: 0.4vh;
+        padding-bottom: 0.4vh;
+    }
+}

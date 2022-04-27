@@ -10,9 +10,28 @@ import { checkIsWhiteListed, fetchData } from '../redux/data/dataActions';
 import { AnimatePresence, motion } from 'framer-motion';
 import { addAlert, clearBotSpeech, setBotError, setBotSpeech } from '../redux/general/generalActions';
 import { InstallMetaMask } from '../components/InstallMetaMask';
-import Particles from 'react-tsparticles';
-// @ts-ignore
-import { loadFull } from 'tsparticles';
+import Head from 'next/head';
+
+const dimensionsCss = {
+    mintingStand:
+        'w-[650px] min-w-[650px] max-w-[650px] ' +
+        '2xl:w-[35vw] 2xl:min-w-[35vw] 2xl:max-w-[35vw] ' +
+        'xl:w-[40vw] xl:min-w-[40vw] xl:max-w-[40vw] ' +
+        'lg:w-[50vw] lg:min-w-[50vw] lg:max-w-[50vw] ' +
+        'sm:w-[720px] sm:min-w-[720px] sm:max-w-[720px] ' +
+        'left-[-80px] sm:left-[-20px] md:left-[3vw] ' +
+        'h-[85vh] min-h-[85vh] max-h-[85vh]',
+    mintingContainer:
+        'w-[380] min-w-[380px] max-w-[380px] ' +
+        '2xl:w-[21vw] 2xl:min-w-[21vw] 2xl:max-w-[21vw] ' +
+        'xl:w-[25vw] xl:min-w-[25vw] xl:max-w-[25vw] ' +
+        'lg:w-[33vw] lg:min-w-[33vw] lg:max-w-[33vw] ' +
+        'sm:w-[420px] sm:min-w-[420px] sm:max-w-[420px] ' +
+        'left-[110px] sm:left-[-20px] 2xl:left-[12.5vw] xl:left-[13.5vw] lg:left-[15.5vw] md:left-[3vw] ' +
+        'mb-[8vh] px-[vw] 2xl:px-[2.5vw] xl:px-[2vw] lg:px-[1.5vw] py-[3vh] ' +
+        'h-[65vh] min-h-[65vh] max-h-[65vh]',
+    mintingBackground: '-mx-[2vw] 2xl:-mx-[3vw] xl:-mx-[3.5vw] lg:-mx-[4vw] -my-[3.5vh]',
+};
 
 const Home: NextPage = () => {
     const dispatch = useDispatch<any>();
@@ -29,15 +48,6 @@ const Home: NextPage = () => {
         // `${blockchain.hasMetaMask ? 100 - contractData.superPercentage : 0}% chance to mint a Regular Miner`,
         `${contractData.superPercentage}% chance to mint a Super Miner`,
     ];
-
-    const particlesInit = async (main: any) => {
-        // you can initialize the tsParticles instance (main) here, adding custom shapes or presets
-        // this loads the tsparticles package bundle, it's the easiest method for getting everything ready
-        // starting from v2 you can add only the features you need reducing the bundle size
-        await loadFull(main);
-    };
-
-    const memoizedParticlesInit = useCallback(particlesInit, []);
 
     const mint = () => {
         setTimeout(() => {
@@ -167,7 +177,7 @@ const Home: NextPage = () => {
             if (contractData.baseSalesOpen || (contractData.gameStarted && !contractData.presaleOpen)) {
                 fraction = contractData.totalSupply + ' / ' + contractData.maxTotalSupply;
 
-                if (contractData.totalSupply === contractData.maxTotalSupply) {
+                if (contractData.totalSupply >= contractData.maxTotalSupply) {
                     fraction = 'Sold Out';
                 }
             } else {
@@ -178,72 +188,86 @@ const Home: NextPage = () => {
         return fraction;
     };
 
+    const getAbleToMint = () => {
+        if (contractData.gameStarted) {
+            return false;
+        } else if (contractData.baseSalesOpen) {
+            return true;
+        } else if (contractData.presaleOpen && contractData.isWhiteListed) {
+            return true;
+        } else {
+            return false;
+        }
+    };
+
+    const renderBot = () => {
+        return (
+            <AnimatePresence>
+                {generalReducer.botCurrentSpeech && (
+                    <div className='relative'>
+                        <div className='fixed flex justify-center items-center bottom-[70px] right-[245px] px-10 py-5 text-gray-900 rounded-xl md:mt-0'>
+                            <motion.div
+                                key={'text-bubble'}
+                                exit={{
+                                    opacity: 0,
+                                }}
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1, transition: { duration: 0.6, delay: 0.5 } }}
+                                className='absolute z-20 w-full h-full overflow-hidden select-none'>
+                                <Image src='/images/text-bubble.png' layout='fill' objectFit='fill' />
+                            </motion.div>
+                            <motion.p
+                                key={'text-bubble-content'}
+                                exit={{
+                                    opacity: 0,
+                                }}
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1, transition: { duration: 0.6, delay: 0.5 } }}
+                                className={
+                                    'z-30 w-full h-full max-w-sm mb-10 text-center' +
+                                    (generalReducer.botCurrentSpeech.isError ? ' text-red-500' : ' text-black')
+                                }>
+                                {generalReducer.botCurrentSpeech.message}
+                            </motion.p>
+                        </div>
+                    </div>
+                )}
+                <motion.div
+                    key={'text-bot-mark'}
+                    exit={{
+                        opacity: 0,
+                        translateY: 400,
+                    }}
+                    initial={{ opacity: 0, translateY: 400 }}
+                    animate={{ opacity: 1, translateY: 0, transition: { duration: 0.4 } }}
+                    className={
+                        'fixed drop-shadow-red right-0 z-20 w-[350px] min-w-[350px] h-[300px] min-h-[300px] overflow-hidden transition-all duration-500 select-none ' +
+                        (generalReducer.botCurrentSpeech ? '-bottom-16' : '-bottom-24')
+                    }>
+                    <Image
+                        src='/images/mark.png'
+                        layout='fill'
+                        objectFit='cover'
+                        objectPosition={'top'}
+                        className='cursor-pointer'
+                        onClick={() => {
+                            dispatch(clearBotSpeech());
+                        }}
+                    />
+                </motion.div>
+            </AnimatePresence>
+        );
+    };
+
     return (
-        <div className='relative overflow-auto'>
-            <div className='fixed -z-30 w-screen h-screen overflow-hidden select-none'>
-                <Image src='/images/mine-entrance.png' layout='fill' objectFit='cover' objectPosition={'70%'} />
-            </div>
+        <div className='relative overflow-auto h-screen w-screen'>
+            <Head>
+                <title>Home | MinerVerse</title>
+            </Head>
 
             {!generalReducer.isLoading && (
                 <>
-                    <AnimatePresence>
-                        {generalReducer.botCurrentSpeech && (
-                            <div className='relative'>
-                                <div className='fixed flex justify-center items-center bottom-[70px] right-[245px] px-10 py-5 text-gray-900 rounded-xl md:mt-0'>
-                                    <motion.div
-                                        key={'text-bubble'}
-                                        exit={{
-                                            opacity: 0,
-                                        }}
-                                        initial={{ opacity: 0 }}
-                                        animate={{ opacity: 1, transition: { duration: 0.6 } }}
-                                        className='absolute z-20 w-full h-full overflow-hidden select-none'>
-                                        <Image src='/images/text-bubble.png' layout='fill' objectFit='fill' />
-                                    </motion.div>
-                                    <p
-                                        className={
-                                            'z-30 w-full h-full max-w-sm mb-10 text-center' + (generalReducer.botCurrentSpeech.isError ? ' text-red-500' : ' text-black')
-                                        }>
-                                        {generalReducer.botCurrentSpeech.message}
-                                    </p>
-                                </div>
-                            </div>
-                        )}
-                        <motion.div
-                            key={'text-bot-mark'}
-                            exit={{
-                                opacity: 0,
-                                translateY: 400,
-                            }}
-                            initial={{ opacity: 0, translateY: 400 }}
-                            animate={{ opacity: 1, translateY: 0, transition: { duration: 0.4 } }}
-                            className={
-                                'fixed drop-shadow-red right-0 z-20 w-[350px] min-w-[350px] h-[300px] min-h-[300px] overflow-hidden transition-all duration-500 select-none ' +
-                                (generalReducer.botCurrentSpeech ? '-bottom-16' : '-bottom-24')
-                            }>
-                            <Image
-                                src='/images/mark.png'
-                                layout='fill'
-                                objectFit='cover'
-                                objectPosition={'top'}
-                                className='cursor-pointer'
-                                onClick={() => {
-                                    dispatch(clearBotSpeech());
-                                }}
-                            />
-                        </motion.div>
-                    </AnimatePresence>
-
-                    <motion.div
-                        key={'snow-background'}
-                        exit={{
-                            opacity: 0,
-                        }}
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1, transition: { duration: 0.5 } }}
-                        className='fixed'>
-                        <Particles id='tsparticles' url='particle-config.json' init={memoizedParticlesInit} />
-                    </motion.div>
+                    {renderBot()}
 
                     <motion.section
                         key={'minting-container'}
@@ -252,44 +276,47 @@ const Home: NextPage = () => {
                         }}
                         initial={{ translateX: -700 }}
                         animate={{ translateX: 0, transition: { duration: 0.5 } }}
-                        className='text-gray-400 body-font h-screen w-screen flex items-center fixed'>
-                        <div className='fixed flex items-end h-full min-h-full bottom-0 -z-20 left-16'>
-                            <div className='relative w-[650px] min-w-[650px] h-[820px] min-h-[820px] overflow-hidden select-none drop-shadow-dark-brown'>
+                        className='text-gray-400 body-font h-full min-w-screen flex items-center fixed'>
+                        <div className='fixed flex items-end justify-start sm:justify-center lg:justify-start sm:pr-36 lg:pr-0 h-full min-h-full w-screen min-w-screen bottom-0 -z-20'>
+                            <div className={'relative overflow-hidden select-none drop-shadow-dark-brown ' + dimensionsCss.mintingStand}>
                                 <Image src='/images/parchment-frame.png' layout='fill' objectFit='fill' />
                             </div>
                         </div>
 
-                        <div className='left-[240px] pb-[80px] relative flex h-full min-h-full px-5 md:flex-row justify-center items-end'>
+                        <div className='relative flex justify-start sm:justify-center lg:justify-start h-full min-h-full w-screen min-w-screen items-end px-[1vw]'>
                             {!generalReducer.isLoading && (
                                 <>
-                                    <div className='p-10 w-[400px] relative min-w-[400px] h-[620px] min-h-[620px] text-gray-900 rounded-xl md:mt-0'>
-                                        <div className='absolute -m-10 -z-10 w-full h-full overflow-hidden select-none drop-shadow-brown'>
+                                    <div className={'relative text-gray-900 rounded-xl flex justify-center ' + dimensionsCss.mintingContainer}>
+                                        <div
+                                            className={
+                                                'absolute -z-10 w-full h-full overflow-hidden select-none drop-shadow-brown  ' + dimensionsCss.mintingBackground
+                                            }>
                                             <Image src='/images/parchment.png' layout='fill' objectFit='fill' />
                                         </div>
-                                        <div className='flex flex-col justify-center pl-2 pb-2'>
-                                            <h2 className='text-center text-2xl font-bold title-font rounded-t-xl mb-1'>
+                                        <div className='flex flex-col h-full mint-container'>
+                                            <h2 className='text-center font-bold rounded-t-xl'>
                                                 <span>Mint Miners</span>
                                             </h2>
-                                            <div className='relative text-md flex items-center justify-center'>
-                                                <div className='w-3/5 h-24 relative'>
+                                            <div className='relative text-md flex items-center justify-center section'>
+                                                <div className='relative image'>
                                                     <Image src='/images/MinerTrio.png' objectFit='contain' layout='fill' />
                                                 </div>
                                             </div>
-                                            <div className='relative mb-3'>
-                                                <div className='flex justify-end mb-1'>
-                                                    <span className='text-sm font-medium text-gray-900'>{getSupplyFraction()}</span>
+                                            <div className='relative section'>
+                                                <div className='flex justify-end'>
+                                                    <p className='font-medium text-gray-900'>{getSupplyFraction()}</p>
                                                 </div>
-                                                <div className='w-full bg-yellow-900 rounded-full h-1.5'>
-                                                    <div className='bg-green-500 h-1.5 rounded-full' style={{ width: getSupplyPercentage() }}></div>
+                                                <div className='w-full bg-yellow-900 rounded-full progress'>
+                                                    <div className='bg-green-500 h-full rounded-full' style={{ width: getSupplyPercentage() }}></div>
                                                 </div>
                                             </div>
-                                            <div className='relative mb-3'>
-                                                <label htmlFor='quantity' className='leading-7 mb-1 text-sm text-gray-900 flex justify-between'>
+                                            <div className='relative flex flex-col section'>
+                                                <label htmlFor='quantity' className='text-gray-900 flex justify-between'>
                                                     <span className='font-bold'>Quantity</span>
-                                                    <span className='tracking-widest'>MAX ({contractData.maxPerMint})</span>
+                                                    <span className='tracking-widest'>MAX ( {contractData.maxPerMint} )</span>
                                                 </label>
                                                 <input
-                                                    disabled={!((contractData.presaleOpen && contractData.isWhiteListed) || contractData.baseSalesOpen)}
+                                                    disabled={!getAbleToMint()}
                                                     title={contractData.isWhiteListed || !contractData.baseSalesOpen ? '' : "You're not whitelisted"}
                                                     type='text'
                                                     id='quantity'
@@ -313,16 +340,16 @@ const Home: NextPage = () => {
                                                         }
                                                     }}
                                                     placeholder={`Max ${contractData.maxPerMint} at a time`}
-                                                    className='w-full text-center disabled:cursor-not-allowed placeholder:text-gray-700 bg-zinc-400 bg-opacity-20 focus:bg-transparent focus:ring-2 rounded border border-gray-600  text-base outline-none py-1 px-3 leading-8 transition-colors duration-200 ease-in-out'
+                                                    className='w-full text-center disabled:cursor-not-allowed placeholder:text-gray-700 bg-zinc-400 bg-opacity-20 focus:bg-transparent focus:ring-2 rounded border-gray-600 outline-none transition-colors duration-200 ease-in-out'
                                                 />
                                             </div>
-                                            <div className='relative tracking-widest mb-2 flex justify-between text-sm font-bold'>
+                                            <div className='relative tracking-widest flex justify-between font-bold section'>
                                                 <h5>NFT Tax</h5>
                                                 <h5>{totalPrice === 0 ? '--' : Web3.utils.fromWei(contractData.nftTax) + ' AVAX'}</h5>
                                             </div>
-                                            <div className='relative tracking-widest mb-6 flex justify-between text-md font-bold'>
-                                                <h5>Total</h5>
-                                                <h5>{totalPrice === 0 ? '--' : Web3.utils.fromWei(totalPrice.toString()) + ' AVAX'} </h5>
+                                            <div className='relative tracking-widest flex justify-between font-bold section'>
+                                                <h4>Total</h4>
+                                                <h4>{totalPrice === 0 ? '--' : Web3.utils.fromWei(totalPrice.toString()) + ' AVAX'} </h4>
                                             </div>
                                             {/* <div className='relative mb-4 flex justify-between'>
                                         <h5 className='text-xs text-gray-800'>
@@ -335,18 +362,12 @@ const Home: NextPage = () => {
                                         </h5>
                                     </div> */}
 
-                                            <div className='relative mb-5'>
+                                            <div className='relative flex flex-col section'>
                                                 {blockchain.hasMetaMask ? (
                                                     blockchain.account ? (
                                                         <>
                                                             <button
-                                                                disabled={
-                                                                    !(
-                                                                        (contractData.presaleOpen && contractData.isWhiteListed) ||
-                                                                        contractData.baseSalesOpen ||
-                                                                        !blockchain.isRightNetwork
-                                                                    )
-                                                                }
+                                                                disabled={!getAbleToMint()}
                                                                 onClick={() => {
                                                                     if (!blockchain.isRightNetwork) {
                                                                         switchNetwork();
@@ -360,7 +381,7 @@ const Home: NextPage = () => {
                                                                         : "You're not whitelisted"
                                                                 }
                                                                 className={
-                                                                    'w-full text-white text-shadow-white font-bold border-0 py-2 px-8 disabled:cursor-not-allowed focus:outline-none rounded text-lg shadow-center-lg ' +
+                                                                    'w-full text-white text-shadow-white font-bold border-0 disabled:cursor-not-allowed focus:outline-none rounded shadow-center-lg ' +
                                                                     (blockchain.isRightNetwork
                                                                         ? 'bg-cyan-400  hover:bg-cyan-500 shadow-cyan-400'
                                                                         : ' bg-red-600 cursor-pointer shadow-red-700')
@@ -373,7 +394,7 @@ const Home: NextPage = () => {
                                                             onClick={() => {
                                                                 dispatch(connect());
                                                             }}
-                                                            className='w-full bg-cyan-400 hover:bg-cyan-500 shadow-center-lg shadow-cyan-500 font-semibold text-gray-900 rounded-lg px-3 py-2 '>
+                                                            className='w-full bg-cyan-400 hover:bg-cyan-500 shadow-center-lg shadow-cyan-500 font-semibold text-gray-900 rounded-lg'>
                                                             Connect Wallet
                                                         </button>
                                                     )
@@ -381,13 +402,13 @@ const Home: NextPage = () => {
                                                     <InstallMetaMask />
                                                 )}
                                             </div>
-                                            <div className='relative flex flex-col text-sm '>
-                                                <h5 className='font-bold text-lg text-center mb-2'>Sale Details</h5>
+                                            <div className='relative flex flex-col section'>
+                                                <h3 className='font-bold text-center'>Sale Details</h3>
                                                 {saleDetails.map((detail, index) => {
                                                     return (
-                                                        <h5 key={index} className='flex justify-between'>
-                                                            <span>💎</span> <span>{detail}</span> <span>💎</span>
-                                                        </h5>
+                                                        <p key={index} className='flex justify-between text-center'>
+                                                            <span>💎</span><span>{detail}</span><span>💎</span>
+                                                        </p>
                                                     );
                                                 })}
                                             </div>

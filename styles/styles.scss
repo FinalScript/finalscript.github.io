@@ -1,3 +1,6 @@
+@forward 'whitepaper.scss';
+@forward 'index.scss';
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -24,17 +27,17 @@ a {
 }
 
 .text-shadow-white {
-    text-shadow: rgb(255, 255, 255) 0px 0px 12px;
+    text-shadow: rgb(255, 255, 255) 0px 0px 0.6vw;
 }
 
 .drop-shadow-dark-brown {
-    filter: drop-shadow(0px 0px 10px #63503A);
+    filter: drop-shadow(0px 0px 0.4vw #63503a);
 }
 
 .drop-shadow-brown {
-    filter: drop-shadow(0px 0px 15px #E8D191);
+    filter: drop-shadow(0px 0px 0.7vw #e8d191);
 }
 
 .drop-shadow-red {
-    filter: drop-shadow(0px 0px 10px #4d0000);
+    filter: drop-shadow(0px 0px 0.4vw #4d0000);
 }

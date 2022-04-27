@@ -23,6 +23,7 @@
         "redux": "^4.2.0",
         "redux-devtools-extension": "^2.13.9",
         "redux-thunk": "^2.4.1",
+        "sass": "^1.51.0",
         "tsparticles": "^2.0.6",
         "universal-cookie": "^4.0.4",
         "web3": "^1.7.3"

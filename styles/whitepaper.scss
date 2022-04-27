@@ -1,0 +1,38 @@
+.paper-container {
+    max-width: 1200px;
+    min-width: 300px;
+    margin: 50px auto;
+}
+
+.paper {
+    padding-top: 10px;
+    padding-bottom: 10px;
+    background-image: url('/images/paper-scroll-top.png'), url('/images/paper-scroll-bottom.png'), url('/images/paper-scroll-middle.png');
+    background-position: center top, center bottom, 50% 50%;
+    background-repeat: no-repeat, no-repeat, repeat-y;
+    background-size: contain, contain, 100%;
+    background-clip: border-box, border-box, content-box;
+}
+
+.whitepaper {
+    display: flex;
+    -moz-box-pack: center;
+    justify-content: center;
+    flex-direction: column;
+    margin: 5rem 9%;
+    gap: 3rem;
+    padding-top: 0px;
+    padding-bottom: 10px;
+
+    .emoji-list {
+        p {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        span {
+            display: block;
+        }
+    }
+}

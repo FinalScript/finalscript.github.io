@@ -12,7 +12,10 @@ module.exports = {
             minWidth: {
                 '400px': '400px',
             },
-        
+            screens: {
+                '2xl': '1560px',
+                xs: '475px',
+            },
         },
     },
     plugins: [],

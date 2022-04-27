@@ -1,9 +1,9 @@
-import '../styles/styles.css';
+import '../styles/styles.scss';
 import type { AppProps } from 'next/app';
 import { Nav } from '../components/Nav';
 import { Provider, useDispatch, useSelector } from 'react-redux';
 import { wrapper, store } from '../redux/store';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { checkConnection, connect } from '../redux/blockchain/blockchainActions';
 import Head from 'next/head';
 import { ErrorAlert } from '../components/ErrorAlert';
@@ -14,7 +14,8 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { TransactionAlert } from '../components/TransactionAlert';
 import Login from '../components/Login';
 import { setBotError, setBotSpeech } from '../redux/general/generalActions';
-import { networkConfig } from '../config';
+import Particles from 'react-tsparticles';
+import { loadFull } from 'tsparticles';
 
 const welcomeSpeeches = [
     { message: 'Welcome to MinerVerse!' },
@@ -31,6 +32,14 @@ function MyApp({ Component, pageProps }: AppProps) {
     const generalReducer = useSelector((state: GeneralState) => state.general);
     const router = useRouter();
     const [pageLoading, setPageLoading] = useState<boolean>(true);
+    const particlesInit = async (main: any) => {
+        // you can initialize the tsParticles instance (main) here, adding custom shapes or presets
+        // this loads the tsparticles package bundle, it's the easiest method for getting everything ready
+        // starting from v2 you can add only the features you need reducing the bundle size
+        await loadFull(main);
+    };
+
+    const memoizedParticlesInit = useCallback(particlesInit, []);
 
     useEffect(() => {
         dispatch(connect());
@@ -57,7 +66,6 @@ function MyApp({ Component, pageProps }: AppProps) {
         if (!blockchain.hasMetaMask) {
             dispatch(setBotError('Hello friend, please install MetaMask to play MinerVerse!'));
         }
-
     }, [blockchain.hasMetaMask, blockchain.isRightNetwork]);
 
     useEffect(() => {
@@ -92,9 +100,8 @@ function MyApp({ Component, pageProps }: AppProps) {
     return (
         <Provider store={store}>
             <Head>
-                <title>Home | MinerVerse</title>
+                <meta name='viewport' content='initial-scale=1.0, width=device-width' />
             </Head>
-
             <>
                 <Nav />
                 <div className='absolute z-40 bottom-5 left-5'>
@@ -116,7 +123,12 @@ function MyApp({ Component, pageProps }: AppProps) {
                         })}
                     </AnimatePresence>
                 </div>
-
+                <div className='fixed -z-30 w-screen h-screen overflow-hidden select-none'>
+                    <Image src='/images/mine-entrance.png' layout='fill' objectFit='cover' objectPosition={'70%'} />
+                </div>
+                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1, transition: { duration: 0.5 } }} className='fixed -z-20'>
+                    <Particles id='tsparticles' url='particle-config.json' init={memoizedParticlesInit} />
+                </motion.div>
                 <div className='relative select-none'>
                     <AnimatePresence exitBeforeEnter>
                         {pageLoading && (
