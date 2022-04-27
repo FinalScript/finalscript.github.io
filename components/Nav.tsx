@@ -19,10 +19,10 @@ export const Nav = () => {
                     <div className='container tracking-widest mx-auto flex flex-wrap lg:justify-between flex-col md:flex-row items-center justify-center'>
                         <Link href={'/'}>
                             <div className='flex cursor-pointer title-font font-medium items-center text-white p-2'>
-                                <div className='w-16 h-16 mb-4 relative'>
+                                <div className='w-16 h-16 mb-4 relative drop-shadow-blue'>
                                     <Image src='/images/diamond.png' layout='fill' alt='nav-logo' />
                                 </div>
-                                <h2 className='ml-3 text-4xl font-bold text-shadow-white'>MinerVerse</h2>
+                                <h2 className='ml-3 text-4xl font-bold text-shadow-title'>MinerVerse</h2>
                             </div>
                         </Link>
 

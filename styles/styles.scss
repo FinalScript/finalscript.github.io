@@ -30,8 +30,34 @@ a {
     text-shadow: rgb(255, 255, 255) 0px 0px 0.6vw;
 }
 
+.text-shadow-title {
+    text-shadow: rgb(255, 255, 255) 0px 0px 0.6vw;
+    filter: drop-shadow(0px 0px 0.6vw #00d6dd);
+}
+
+.play-button {
+    text-shadow: rgb(255, 255, 255) 0px 0px 0.8vw;
+}
+
+.whitelist-button {
+    text-shadow: rgb(49, 49, 49) 0px 0px 0.2vw;
+    filter: drop-shadow(0px 0px 0.6vw #ffe600);
+}
+
+.discord-button {
+    filter: drop-shadow(0px 0px 0.5vw #0014c5);
+}
+
+.twitter-button {
+    filter: drop-shadow(0px 0px 0.5vw #00f3e7);
+}
+
 .drop-shadow-dark-brown {
     filter: drop-shadow(0px 0px 0.4vw #63503a);
+}
+
+.drop-shadow-arrow {
+    filter: drop-shadow(0px 0px 0.6vw rgb(90, 48, 0));
 }
 
 .drop-shadow-brown {
@@ -39,5 +65,35 @@ a {
 }
 
 .drop-shadow-red {
-    filter: drop-shadow(0px 0px 0.4vw #4d0000);
+    filter: drop-shadow(0px 0px 0.5vw #660000);
+}
+
+.drop-shadow-blue {
+    filter: drop-shadow(0px 0px 0.6vw #00d6dd);
+}
+
+@keyframes bounce {
+    0%,
+    50% {
+        transform: none;
+    }
+    89% {
+        transform: translateY(0.001%);
+    }
+    91% {
+        transform: translateY(-6%);
+    }
+    94% {
+        transform: none;
+    }
+    97% {
+        transform: translateY(-6%);
+    }
+    100% {
+        transform: none;
+    }
+}
+.animate-bounce {
+    animation: bounce 8s infinite;
+    animation-timing-function: linear;
 }

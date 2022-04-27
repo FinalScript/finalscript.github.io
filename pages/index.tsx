@@ -11,6 +11,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { addAlert, clearBotSpeech, setBotError, setBotSpeech } from '../redux/general/generalActions';
 import { InstallMetaMask } from '../components/InstallMetaMask';
 import Head from 'next/head';
+import { Mark } from '../components/Mark';
 
 const dimensionsCss = {
     mintingStand:
@@ -200,65 +201,6 @@ const Home: NextPage = () => {
         }
     };
 
-    const renderBot = () => {
-        return (
-            <AnimatePresence>
-                {generalReducer.botCurrentSpeech && (
-                    <div className='relative'>
-                        <div className='fixed flex justify-center items-center bottom-[70px] right-[245px] px-10 py-5 text-gray-900 rounded-xl md:mt-0'>
-                            <motion.div
-                                key={'text-bubble'}
-                                exit={{
-                                    opacity: 0,
-                                }}
-                                initial={{ opacity: 0 }}
-                                animate={{ opacity: 1, transition: { duration: 0.6, delay: 0.5 } }}
-                                className='absolute z-20 w-full h-full overflow-hidden select-none'>
-                                <Image src='/images/text-bubble.png' layout='fill' objectFit='fill' />
-                            </motion.div>
-                            <motion.p
-                                key={'text-bubble-content'}
-                                exit={{
-                                    opacity: 0,
-                                }}
-                                initial={{ opacity: 0 }}
-                                animate={{ opacity: 1, transition: { duration: 0.6, delay: 0.5 } }}
-                                className={
-                                    'z-30 w-full h-full max-w-sm mb-10 text-center' +
-                                    (generalReducer.botCurrentSpeech.isError ? ' text-red-500' : ' text-black')
-                                }>
-                                {generalReducer.botCurrentSpeech.message}
-                            </motion.p>
-                        </div>
-                    </div>
-                )}
-                <motion.div
-                    key={'text-bot-mark'}
-                    exit={{
-                        opacity: 0,
-                        translateY: 400,
-                    }}
-                    initial={{ opacity: 0, translateY: 400 }}
-                    animate={{ opacity: 1, translateY: 0, transition: { duration: 0.4 } }}
-                    className={
-                        'fixed drop-shadow-red right-0 z-20 w-[350px] min-w-[350px] h-[300px] min-h-[300px] overflow-hidden transition-all duration-500 select-none ' +
-                        (generalReducer.botCurrentSpeech ? '-bottom-16' : '-bottom-24')
-                    }>
-                    <Image
-                        src='/images/mark.png'
-                        layout='fill'
-                        objectFit='cover'
-                        objectPosition={'top'}
-                        className='cursor-pointer'
-                        onClick={() => {
-                            dispatch(clearBotSpeech());
-                        }}
-                    />
-                </motion.div>
-            </AnimatePresence>
-        );
-    };
-
     return (
         <div className='relative overflow-auto h-screen w-screen'>
             <Head>
@@ -267,7 +209,7 @@ const Home: NextPage = () => {
 
             {!generalReducer.isLoading && (
                 <>
-                    {renderBot()}
+                    <Mark />
 
                     <motion.section
                         key={'minting-container'}
@@ -276,17 +218,25 @@ const Home: NextPage = () => {
                         }}
                         initial={{ translateX: -700 }}
                         animate={{ translateX: 0, transition: { duration: 0.5 } }}
-                        className='text-gray-400 body-font h-full min-w-screen flex items-center fixed'>
-                        <div className='fixed flex items-end justify-start sm:justify-center lg:justify-start sm:pr-36 lg:pr-0 h-full min-h-full w-screen min-w-screen bottom-0 -z-20'>
+                        className='text-gray-400 body-font h-full flex items-center relative'>
+                        <div className='fixed flex items-end justify-start sm:justify-center lg:justify-start sm:pr-36 lg:pr-0 h-full min-h-full bottom-0 z-10'>
                             <div className={'relative overflow-hidden select-none drop-shadow-dark-brown ' + dimensionsCss.mintingStand}>
                                 <Image src='/images/parchment-frame.png' layout='fill' objectFit='fill' />
+                            </div>
+
+                            <div
+                                className={
+                                    'flex justify-center items-center relative overflow-hidden select-none transition-all hover:scale-105 h-[16vh] w-[45vh] self-center ml-24 mt-10 z-50 drop-shadow-arrow cursor-pointer  '
+                                }>
+                                <Image src='/images/arrow-sign.png' layout='fill' objectFit='contain' />
+                                <h2 className='z-50 text-[9.5vh] mr-6 mb-3 text-white font-bold  play-button'>PLAY</h2>
                             </div>
                         </div>
 
                         <div className='relative flex justify-start sm:justify-center lg:justify-start h-full min-h-full w-screen min-w-screen items-end px-[1vw]'>
                             {!generalReducer.isLoading && (
                                 <>
-                                    <div className={'relative text-gray-900 rounded-xl flex justify-center ' + dimensionsCss.mintingContainer}>
+                                    <div className={'relative text-gray-900 rounded-xl flex justify-center z-50 ' + dimensionsCss.mintingContainer}>
                                         <div
                                             className={
                                                 'absolute -z-10 w-full h-full overflow-hidden select-none drop-shadow-brown  ' + dimensionsCss.mintingBackground
@@ -367,7 +317,7 @@ const Home: NextPage = () => {
                                                     blockchain.account ? (
                                                         <>
                                                             <button
-                                                                disabled={!getAbleToMint()}
+                                                                disabled={blockchain.isRightNetwork ? !getAbleToMint() : false}
                                                                 onClick={() => {
                                                                     if (!blockchain.isRightNetwork) {
                                                                         switchNetwork();
@@ -383,7 +333,7 @@ const Home: NextPage = () => {
                                                                 className={
                                                                     'w-full text-white text-shadow-white font-bold border-0 disabled:cursor-not-allowed focus:outline-none rounded shadow-center-lg ' +
                                                                     (blockchain.isRightNetwork
-                                                                        ? 'bg-cyan-400  hover:bg-cyan-500 shadow-cyan-400'
+                                                                        ? 'bg-cyan-400  hover:bg-cyan-500 disabled:hover:bg-cyan-400 shadow-cyan-400'
                                                                         : ' bg-red-600 cursor-pointer shadow-red-700')
                                                                 }>
                                                                 {blockchain.isRightNetwork ? `Mint` : 'Switch Network 🔺'}
@@ -407,7 +357,9 @@ const Home: NextPage = () => {
                                                 {saleDetails.map((detail, index) => {
                                                     return (
                                                         <p key={index} className='flex justify-between text-center'>
-                                                            <span>💎</span><span>{detail}</span><span>💎</span>
+                                                            <span>💎</span>
+                                                            <span>{detail}</span>
+                                                            <span>💎</span>
                                                         </p>
                                                     );
                                                 })}

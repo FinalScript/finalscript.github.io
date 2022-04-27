@@ -55,3 +55,9 @@ export const clearBotSpeech = () => {
         dispatch({ type: 'SET_BOT_SPEECH', payload: { speech: undefined } });
     };
 };
+
+export const toggleBot = () => {
+    return async (dispatch: Dispatch) => {
+        dispatch({ type: 'TOGGLE_BOT' });
+    };
+};

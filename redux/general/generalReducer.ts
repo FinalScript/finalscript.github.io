@@ -6,10 +6,16 @@ const initialState = {
     passwordProtected: true,
     enteredPassword: '',
     botCurrentSpeech: undefined,
+    botToggled: false,
 };
 
 const generalReducer = (state: GeneralData = initialState, action: any) => {
     switch (action.type) {
+        case 'TOGGLE_BOT':
+            return {
+                ...state,
+                botToggled: !state.botToggled,
+            };
         case 'SET_BOT_SPEECH':
             return {
                 ...state,

@@ -62,6 +62,7 @@ export interface GeneralData {
     passwordProtected: boolean;
     enteredPassword: string;
     botCurrentSpeech?: Speech;
+    botToggled: boolean;
 }
 
 export interface GeneralState {

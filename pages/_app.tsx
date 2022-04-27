@@ -18,7 +18,7 @@ import Particles from 'react-tsparticles';
 import { loadFull } from 'tsparticles';
 
 const welcomeSpeeches = [
-    { message: 'Welcome to MinerVerse!' },
+    { message: 'Welcome to MinerVerse! My name is Mark.' },
     { message: 'Hello, my name is Mark. Welcome to the mine!' },
     { message: 'Greetings!' },
     { message: 'Top of the morning, friends!' },
