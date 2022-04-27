@@ -95,8 +95,12 @@ export const Mark = () => {
                                         initial='hidden'
                                         animate='show'
                                         whileHover={{ scale: 1.1 }}
-                                        className='bg-amber-300 text-2xl text-white font-bold px-7 rounded-xl h-[50px] flex items-center whitelist-button'>
-                                        <Link href={'/whitepaper'}>Whitepaper</Link>
+                                        className='h-[50px] flex items-center whitelist-button cursor-pointer'>
+                                        <Link href={'/whitepaper'}>
+                                            <div className='h-[50px] w-[120px] flex items-center whitelist-button cursor-pointer'>
+                                                <Image src='/images/whitepaper-button.png' layout='fill' objectFit='contain' />
+                                            </div>
+                                        </Link>
                                     </motion.div>
                                     <motion.a
                                         href='https://twitter.com/MinerVerseNFT'
