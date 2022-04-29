@@ -48,7 +48,7 @@ export const Mark = () => {
                         animate={{ opacity: 1, translateY: 0, transition: { duration: 0.3 } }}
                         className={
                             'drop-shadow-red h-[30vh] w-[13.5vh] transition-all duration-500 select-none ' +
-                            (generalReducer.botCurrentSpeech || generalReducer.botToggled ? '' : 'animate-bounce')
+                            (generalReducer.botCurrentSpeech || generalReducer.botToggled ? '' : 'animate-bounce hover:animate-none')
                         }>
                         <Image
                             src='/images/mark.png'
@@ -97,8 +97,8 @@ export const Mark = () => {
                                         whileHover={{ scale: 1.1 }}
                                         className='h-[50px] flex items-center whitelist-button cursor-pointer'>
                                         <Link href={'/whitepaper'}>
-                                            <div className='h-[50px] w-[120px] flex items-center whitelist-button cursor-pointer'>
-                                                <Image src='/images/whitepaper-button.png' layout='fill' objectFit='contain' />
+                                            <div className='h-[50px] w-[140px] flex items-center whitelist-button cursor-pointer'>
+                                                <Image src='/images/whitepaper-button.png' layout='fill' objectFit='fill' />
                                             </div>
                                         </Link>
                                     </motion.div>
