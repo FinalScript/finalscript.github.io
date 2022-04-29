@@ -24,13 +24,17 @@ const whitepaper: NextPage = () => {
                         animate={{ opacity: 1, translateY: 0, transition: { duration: 0.4, delay: generalReducer.isLoading ? 1.6 : 0 } }}
                         className={'paper h-min mt-36  '}>
                         <div className='whitepaper'>
-                            <header className='flex justify-center items-center space-x-2 my-16'>
+                            <header className='flex flex-col justify-center items-center space-y-10 mb-12'>
+                                <div className='w-[40vh] h-[20vh] relative drop-shadow-blue'>
+                                    <Image src='/images/minerverse-logo.png' layout='fill' objectFit='contain' alt='nav-logo' />
+                                </div>
                                 <h1 className='lg:text-8xl md:text-7xl sm:text-6xl text-4xl font-bold'>WHITEPAPER</h1>
                             </header>
-                            <div className='relative'>
-                                <p className='text-3xl font-bold text-center'>
+                            <div className='relative pb-10'>
+                                <p className='text-2xl font-bold text-center'>
                                     The mud on your boots, the dirt on your face, the diamonds in your eyes, and the smell of freedom…or maybe that’s just
                                     Larry… <br />
+                                    <br />
                                     <br />
                                     Welcome to MinerVerse!
                                 </p>
