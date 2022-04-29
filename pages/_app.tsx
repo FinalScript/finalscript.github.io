@@ -93,9 +93,9 @@ function MyApp({ Component, pageProps }: AppProps) {
         }
     }, [generalReducer.enteredPassword]);
 
-    if (generalReducer.passwordProtected && generalReducer.enteredPassword !== 'unFinalScript123') {
-        return <Login redirectPath={router.asPath} />;
-    }
+    // if (generalReducer.passwordProtected && generalReducer.enteredPassword !== 'unFinalScript123') {
+    //     return <Login redirectPath={router.asPath} />;
+    // }
 
     return (
         <Provider store={store}>

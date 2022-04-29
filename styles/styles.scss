@@ -77,16 +77,16 @@ a {
     50% {
         transform: none;
     }
-    89% {
-        transform: translateY(0.001%);
-    }
-    91% {
-        transform: translateY(-6%);
-    }
-    94% {
+    80% {
         transform: none;
     }
-    97% {
+    85% {
+        transform: translateY(-6%);
+    }
+    90% {
+        transform: none;
+    }
+    95% {
         transform: translateY(-6%);
     }
     100% {
@@ -94,6 +94,6 @@ a {
     }
 }
 .animate-bounce {
-    animation: bounce 8s infinite;
+    animation: bounce 4s infinite;
     animation-timing-function: linear;
 }

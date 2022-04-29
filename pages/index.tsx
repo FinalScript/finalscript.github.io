@@ -224,13 +224,15 @@ const Home: NextPage = () => {
                                 <Image src='/images/parchment-frame.png' layout='fill' objectFit='fill' />
                             </div>
 
-                            <div
+                            <motion.div
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1, transition: { delay: 0.6 } }}
                                 className={
-                                    'flex justify-center items-center relative overflow-hidden select-none transition-all hover:scale-105 h-[16vh] w-[45vh] self-center ml-24 mt-10 z-50 drop-shadow-arrow cursor-pointer  '
+                                    'flex justify-center items-center relative overflow-hidden select-none transition-all hover:scale-105 h-[16vh] w-[40vh] self-center ml-24 mt-10 z-50 drop-shadow-arrow cursor-pointer  '
                                 }>
                                 <Image src='/images/arrow-sign.png' layout='fill' objectFit='contain' />
-                                <h2 className='z-20 text-[9.5vh] mr-6 mb-3 text-white font-bold  play-button'>PLAY</h2>
-                            </div>
+                                <h2 className='z-20 text-[8vh] mr-6 mb-3 text-white font-bold  play-button'>PLAY</h2>
+                            </motion.div>
                         </div>
 
                         <div className='relative flex justify-start sm:justify-center lg:justify-start h-full min-h-full w-screen min-w-screen items-end px-[1vw]'>
