@@ -23,10 +23,13 @@ const whitepaper: NextPage = () => {
                         initial={{ opacity: 0, translateY: 500 }}
                         animate={{ opacity: 1, translateY: 0, transition: { duration: 0.4, delay: generalReducer.isLoading ? 1.6 : 0 } }}
                         className={'paper h-min mt-36  '}>
-                        <div className='whitepaper'>
+                        <div className='w-[300px] h-[150px] absolute z-30 ml-10 mt-8'>
+                            <Image src='/images/confidental.png' layout='fill' objectFit='contain' />
+                        </div>
+                        <div className='whitepaper relative'>
                             <header className='flex flex-col justify-center items-center space-y-10 mb-12'>
                                 <div className='w-[40vh] h-[20vh] relative drop-shadow-blue'>
-                                    <Image src='/images/minerverse-logo.png' layout='fill' objectFit='contain' alt='nav-logo' />
+                                    <Image src='/images/minerverse-logo.png' layout='fill' objectFit='contain' />
                                 </div>
                                 <h1 className='lg:text-8xl md:text-7xl sm:text-6xl text-4xl font-bold'>WHITEPAPER</h1>
                             </header>
@@ -111,13 +114,22 @@ const whitepaper: NextPage = () => {
                             </div>
                             <div className='relative'>
                                 <h2 className='text-3xl font-bold mb-8'>Miners</h2>
-                                <div className='text-xl flex flex-col justify-center normal-list'>
+                                <div className='text-xl flex normal-list'>
                                     <p>
                                         Miners are ERC721 NFTS that can be minted to start your journey into the MinerVerse. When minting, there is a 95% chance
                                         of minting a Miner, and a 5% chance of minting a Super MinerMiners mine 1 $DIAMOND per minute. Super Miners mine 5
                                         $DIAMOND per minute. You'll have to spend $DIAMOND to get craftables and improve your mine. Miners can be traded on
                                         popular sites such as NFTrade and TofuNFT.
                                     </p>
+
+                                 
+                                        <div className='w-[900px] h-[250px] relative'>
+                                            <Image src='/images/miner_1.png' layout='fill' objectFit='contain' />
+                                        </div>
+                                        <div className='w-[900px] h-[250px] relative'>
+                                            <Image src='/images/miner_2.png' layout='fill' objectFit='contain' />
+                                        </div>
+                                
                                 </div>
                                 <p className='text-center text-xl my-10'>The minting revenue will be split the following way:</p>
                                 <div className='text-xl flex flex-col justify-center space-y-4 px-5 emoji-list'>
@@ -213,10 +225,10 @@ const whitepaper: NextPage = () => {
                                     <br />
                                     <p>A quick glance at some of the Craftables and how they would work,</p>
                                 </div>
-                                <div className='relative overflow-x-auto rounded-lg'>
+                                <div className='relative overflow-x-auto'>
                                     <table className='w-full text-md text-left'>
                                         <thead className='text-md uppercase bg-transparent'>
-                                            <tr>
+                                            <tr className='border-4 border-amber-900'>
                                                 <th scope='col' className='px-4 py-3'>
                                                     Craftable
                                                 </th>
@@ -238,7 +250,7 @@ const whitepaper: NextPage = () => {
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            <tr className='bg-transparent border-b-2 border-amber-900'>
+                                            <tr className='bg-transparent border-4 border-amber-900'>
                                                 <td className='px-4 py-4 text-right'>
                                                     <Image src='/images/stone-pickaxe.png' objectFit='contain' height={300} width={300} />
                                                 </td>
@@ -252,7 +264,7 @@ const whitepaper: NextPage = () => {
                                                 <td className='px-4 py-4'>2,000</td>
                                                 <td className='px-4 py-4'>5</td>
                                             </tr>
-                                            <tr className='bg-transparent'>
+                                            <tr className='bg-transparent border-4 border-amber-900'>
                                                 <td className='px-4 py-4 text-right'>
                                                     <Image src='/images/magic-drill.png' objectFit='contain' height={300} width={300} />
                                                 </td>

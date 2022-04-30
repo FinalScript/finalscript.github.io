@@ -246,11 +246,11 @@ const Home: NextPage = () => {
 
                             <button
                                 className={
-                                    'flex justify-center items-center relative overflow-hidden select-none transition-all hover:scale-105 h-[16vh] w-[40vh] self-center ml-24 mt-10 z-50 drop-shadow-arrow cursor-pointer  '
+                                    'flex justify-center items-center relative overflow-hidden select-none transition-all hover:scale-105 h-[13vh] w-[34vh] self-center ml-24 mt-10 z-50 drop-shadow-arrow cursor-pointer  '
                                 }
                                 onClick={handlePlay}>
-                                <Image src='/images/arrow-sign.png' layout='fill' objectFit='contain' />
-                                <h2 className='z-20 text-[8vh] mr-10 mb-3 text-white font-bold play-button'>PLAY</h2>
+                                <Image src='/images/arrow-sign.png' layout='fill' objectFit='fill' />
+                                <h2 className='z-20 text-[8vh] mr-6 mb-3 text-white font-bold play-button'>PLAY</h2>
                             </button>
                         </div>
 
