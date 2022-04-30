@@ -75,10 +75,18 @@ function MyApp({ Component, pageProps }: AppProps) {
     useEffect(() => {
         const handleStart = () => {
             setPageLoading(true);
+            dispatch({
+                type: 'SET_LOADING',
+                payload: { isLoading: true },
+            });
         };
         const handleComplete = () => {
             setTimeout(() => {
                 setPageLoading(false);
+                dispatch({
+                    type: 'SET_LOADING',
+                    payload: { isLoading: false },
+                });
             }, 1000);
         };
 

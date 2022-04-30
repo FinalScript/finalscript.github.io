@@ -1,6 +1,5 @@
 import Image from 'next/image';
 import Link from 'next/link';
-import { WalletButton } from './WalletButton';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useDispatch, useSelector } from 'react-redux';
 import { GeneralState } from '../types';
@@ -10,13 +9,32 @@ import { clearBotSpeech, toggleBot } from '../redux/general/generalActions';
 export const Mark = () => {
     const dispatch = useDispatch<any>();
     const generalReducer = useSelector((state: GeneralState) => state.general);
+    const [markAlreadyClicked, setMarkAlreadyClicked] = useState(false);
+
+    useEffect(() => {
+        const markAlreadyClicked = sessionStorage.getItem('markAlreadyClicked') === 'true';
+
+        setMarkAlreadyClicked(markAlreadyClicked);
+    }, []);
+
+    const toggleMark = () => {
+        if (generalReducer.botCurrentSpeech) {
+            dispatch(clearBotSpeech());
+        } else {
+            if (!markAlreadyClicked) {
+                setMarkAlreadyClicked(true);
+                sessionStorage.setItem('markAlreadyClicked', 'true');
+            }
+            dispatch(toggleBot());
+        }
+    };
 
     return (
         <div className='relative'>
             <div
                 className={
                     'fixed flex justify-center right-[18%] z-30 transition-all duration-300 select-none ' +
-                    (generalReducer.botCurrentSpeech || generalReducer.botToggled ? '-bottom-24' : '-bottom-32')
+                    (generalReducer.botCurrentSpeech || generalReducer.botToggled ? '-bottom-24' : '-bottom-32 animate-bounce hover:animate-none')
                 }>
                 <AnimatePresence>
                     {generalReducer.botCurrentSpeech && !generalReducer.botToggled && (
@@ -26,9 +44,9 @@ export const Mark = () => {
                                 scale: 0,
                             }}
                             initial={{ scale: 0 }}
-                            animate={{ scale: 1, transformOrigin: 'bottom right', transition: { duration: 0.6, delay: 0.5, ease: 'easeInOut' } }}
+                            animate={{ scale: 1, transformOrigin: 'bottom right', transition: { duration: 0.2, delay: 0.4, ease: 'easeInOut' } }}
                             className='absolute flex justify-center items-center bottom-[200px] right-[150px] px-10 py-3 text-gray-900 rounded-xl md:mt-0'>
-                            <div className='absolute w-full h-full overflow-hidden select-none'>
+                            <div className='absolute w-full h-full overflow-hidden select-none text-bubble'>
                                 <Image src='/images/text-bubble.png' layout='fill' objectFit='fill' />
                             </div>
                             <div className='z-50 mb-10 w-max max-w-[20rem]'>
@@ -46,21 +64,24 @@ export const Mark = () => {
                         }}
                         initial={{ opacity: 0, translateY: 400 }}
                         animate={{ opacity: 1, translateY: 0, transition: { duration: 0.3 } }}
-                        className={
-                            'drop-shadow-red h-[30vh] w-[13.5vh] transition-all duration-500 select-none ' +
-                            (generalReducer.botCurrentSpeech || generalReducer.botToggled ? '' : 'animate-bounce hover:animate-none')
-                        }>
-                        <Image
-                            src='/images/mark.png'
-                            layout='fill'
-                            objectFit='contain'
-                            className='cursor-pointer'
-                            onClick={() => {
-                                dispatch(clearBotSpeech());
-                                dispatch(toggleBot());
-                            }}
-                        />
+                        className={'drop-shadow-red h-[30vh] w-[13.5vh] transition-all duration-500 select-none '}>
+                        <Image title='Mark Bot' src='/images/mark.png' layout='fill' objectFit='contain' className='cursor-pointer' onClick={toggleMark} />
                     </motion.div>
+
+                    {!markAlreadyClicked && !generalReducer.botCurrentSpeech && (
+                        <motion.div
+                            key={'exclamation-mark'}
+                            exit={{
+                                opacity: 0,
+                            }}
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1, scale: [0, 2, 1], transition: { duration: 0.5 } }}
+                            className='z-20 flex items-center justify-center text-center absolute bottom-[33vh] rounded-xl md:mt-0'>
+                            <div className='h-[80px] w-[70px] flex items-center exclamation-mark cursor-pointer'>
+                                <Image src='/images/exclamation-mark.png' layout='fill' objectFit='contain' />
+                            </div>
+                        </motion.div>
+                    )}
 
                     <motion.div className='z-20 p-5 flex items-center justify-center space-x-5 absolute bottom-[31vh] text-gray-900 rounded-xl md:mt-0'>
                         <AnimatePresence>
@@ -97,8 +118,8 @@ export const Mark = () => {
                                         whileHover={{ scale: 1.1 }}
                                         className='h-[50px] flex items-center whitelist-button cursor-pointer'>
                                         <Link href={'/whitepaper'}>
-                                            <div className='h-[50px] w-[140px] flex items-center whitelist-button cursor-pointer'>
-                                                <Image src='/images/whitepaper-button.png' layout='fill' objectFit='fill' />
+                                            <div className='h-[50px] w-[200px] flex items-center whitelist-button cursor-pointer'>
+                                                <Image src='/images/whitepaper-button.png' layout='fill' objectFit='contain' />
                                             </div>
                                         </Link>
                                     </motion.div>

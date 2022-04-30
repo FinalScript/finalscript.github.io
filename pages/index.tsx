@@ -2,7 +2,7 @@ import type { NextPage } from 'next';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import Web3 from 'web3';
-import { minerConfig, networkConfig } from '../config';
+import { minerConfig, networkConfig, siteProtection } from '../config';
 import { checkBalance, connect, switchNetwork } from '../redux/blockchain/blockchainActions';
 import { BlockchainState, ContractDataState, GeneralState } from '../types';
 import Image from 'next/image';
@@ -12,6 +12,7 @@ import { addAlert, clearBotSpeech, setBotError, setBotSpeech } from '../redux/ge
 import { InstallMetaMask } from '../components/InstallMetaMask';
 import Head from 'next/head';
 import { Mark } from '../components/Mark';
+import { useRouter } from 'next/router';
 
 const dimensionsCss = {
     mintingStand:
@@ -36,6 +37,7 @@ const dimensionsCss = {
 
 const Home: NextPage = () => {
     const dispatch = useDispatch<any>();
+    const router = useRouter();
     const blockchain = useSelector((state: BlockchainState) => state.blockchain);
     const contractData = useSelector((state: ContractDataState) => state.contractData);
     const generalReducer = useSelector((state: GeneralState) => state.general);
@@ -50,84 +52,102 @@ const Home: NextPage = () => {
         `${contractData.superPercentage}% chance to mint a Super Miner`,
     ];
 
+    const handlePlay = () => {
+        if (
+            siteProtection.whitelistOnly &&
+            !siteProtection.whitelistedWallets.find((address) => address.toLowerCase() === blockchain.account?.toLowerCase() || '')
+        ) {
+            dispatch(setBotError(`Woah there, game is still in development, you're not allowed to enter yet!`));
+        } else {
+            router.push('/game');
+        }
+    };
+
     const mint = () => {
         setTimeout(() => {
-            if (quantity === '') {
-                dispatch(setBotError(`Please enter a quantity (0-${contractData.maxPerMint})`));
-            }
+            if (
+                siteProtection.whitelistOnly &&
+                !siteProtection.whitelistedWallets.find((address) => address.toLowerCase() === blockchain.account?.toLowerCase() || '')
+            ) {
+                dispatch(setBotError(`Woah there, game is still in development, you're not allowed to enter yet!`));
+            } else {
+                if (quantity === '') {
+                    dispatch(setBotError(`Please enter a quantity (0-${contractData.maxPerMint})`));
+                }
 
-            if (blockchain.smartContract && blockchain.account && quantity !== '') {
-                if (contractData.baseSalesOpen) {
-                    blockchain.smartContract?.methods
-                        .mintBase(parseInt(quantity))
-                        .send({
-                            gasLimit: String(855000),
-                            to: minerConfig.contractAddress,
-                            from: blockchain.account,
-                            value: totalPrice,
-                        })
-                        .once('sending', function (payload: any) {
-                            console.log(payload);
-                        })
-                        .once('sent', function (payload: any) {
-                            console.log(payload);
-                        })
-                        .once('transactionHash', function (hash: any) {
-                            dispatch(setBotSpeech(`Requesting ${quantity} ${quantity === '1' ? 'miner' : 'miners'}... Please wait`));
-                            console.log(hash);
-                        })
-                        .once('receipt', function (hash: any) {
-                            dispatch(setBotSpeech(`Your ${quantity === '1' ? 'miner has' : 'miners have'} arrived!`));
-                            console.log(hash);
-                        })
-                        .on('error', function (error: any) {
-                            dispatch(setBotError(`Oh no! Your ${quantity === '1' ? 'miner' : 'miners'} couldn't make it!`));
-                            console.log(error);
-                        })
-                        .then((res: any) => {
-                            if (blockchain.account) {
-                                dispatch(checkBalance(blockchain.account));
-                            }
-                            dispatch(
-                                addAlert({
-                                    isError: false,
-                                    key: 'Transaction-' + res.transactionHash,
-                                    hash: res.transactionHash,
-                                    link: `https://testnet.snowtrace.io/tx/${res.transactionHash}`,
-                                })
-                            );
-                            console.log(res);
-                        });
-                } else if (contractData.presaleOpen && contractData.isWhiteListed) {
-                    blockchain.smartContract?.methods
-                        .presaleMintBase(parseInt(quantity))
-                        .send({
-                            gasLimit: String(855000),
-                            to: minerConfig.contractAddress,
-                            from: blockchain.account,
-                            value: totalPrice,
-                        })
-                        .once('error', (err: any) => {
-                            console.log(err);
-                        })
-                        .then((res: any) => {
-                            if (blockchain.account) {
-                                dispatch(checkBalance(blockchain.account));
-                            }
+                if (blockchain.smartContract && blockchain.account && quantity !== '') {
+                    if (contractData.baseSalesOpen) {
+                        blockchain.smartContract?.methods
+                            .mintBase(parseInt(quantity))
+                            .send({
+                                gasLimit: String(855000),
+                                to: minerConfig.contractAddress,
+                                from: blockchain.account,
+                                value: totalPrice,
+                            })
+                            .once('sending', function (payload: any) {
+                                console.log(payload);
+                            })
+                            .once('sent', function (payload: any) {
+                                console.log(payload);
+                            })
+                            .once('transactionHash', function (hash: any) {
+                                dispatch(setBotSpeech(`Requesting ${quantity} ${quantity === '1' ? 'miner' : 'miners'}... Please wait`));
+                                console.log(hash);
+                            })
+                            .once('receipt', function (hash: any) {
+                                dispatch(setBotSpeech(`Your ${quantity === '1' ? 'miner has' : 'miners have'} arrived!`));
+                                console.log(hash);
+                            })
+                            .on('error', function (error: any) {
+                                dispatch(setBotError(`Oh no! Your ${quantity === '1' ? 'miner' : 'miners'} couldn't make it!`));
+                                console.log(error);
+                            })
+                            .then((res: any) => {
+                                if (blockchain.account) {
+                                    dispatch(checkBalance(blockchain.account));
+                                }
+                                dispatch(
+                                    addAlert({
+                                        isError: false,
+                                        key: 'Transaction-' + res.transactionHash,
+                                        hash: res.transactionHash,
+                                        link: `https://testnet.snowtrace.io/tx/${res.transactionHash}`,
+                                    })
+                                );
+                                console.log(res);
+                            });
+                    } else if (contractData.presaleOpen && contractData.isWhiteListed) {
+                        blockchain.smartContract?.methods
+                            .presaleMintBase(parseInt(quantity))
+                            .send({
+                                gasLimit: String(855000),
+                                to: minerConfig.contractAddress,
+                                from: blockchain.account,
+                                value: totalPrice,
+                            })
+                            .once('error', (err: any) => {
+                                console.log(err);
+                            })
+                            .then((res: any) => {
+                                if (blockchain.account) {
+                                    dispatch(checkBalance(blockchain.account));
+                                }
 
-                            dispatch(
-                                addAlert({
-                                    isError: false,
-                                    key: 'Transaction-' + res.transactionHash,
-                                    hash: res.transactionHash,
-                                    link: `https://testnet.snowtrace.io/tx/${res.transactionHash}`,
-                                })
-                            );
-                            console.log(res.transactionHash);
-                        })
-                        .catch((err: any) => {
-                            console.log(err);
-                        });
+                                dispatch(
+                                    addAlert({
+                                        isError: false,
+                                        key: 'Transaction-' + res.transactionHash,
+                                        hash: res.transactionHash,
+                                        link: `https://testnet.snowtrace.io/tx/${res.transactionHash}`,
+                                    })
+                                );
+                                console.log(res.transactionHash);
+                            })
+                            .catch((err: any) => {
+                                console.log(err);
+                            });
+                    }
                 }
             }
         }, 100);
@@ -224,13 +244,14 @@ const Home: NextPage = () => {
                                 <Image src='/images/parchment-frame.png' layout='fill' objectFit='fill' />
                             </div>
 
-                            <div
+                            <button
                                 className={
                                     'flex justify-center items-center relative overflow-hidden select-none transition-all hover:scale-105 h-[16vh] w-[40vh] self-center ml-24 mt-10 z-50 drop-shadow-arrow cursor-pointer  '
-                                }>
+                                }
+                                onClick={handlePlay}>
                                 <Image src='/images/arrow-sign.png' layout='fill' objectFit='contain' />
-                                <h2 className='z-20 text-[8vh] mr-6 mb-3 text-white font-bold  play-button'>PLAY</h2>
-                            </div>
+                                <h2 className='z-20 text-[8vh] mr-10 mb-3 text-white font-bold play-button'>PLAY</h2>
+                            </button>
                         </div>
 
                         <div className='relative flex justify-start sm:justify-center lg:justify-start h-full min-h-full w-screen min-w-screen items-end px-[1vw]'>

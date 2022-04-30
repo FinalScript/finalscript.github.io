@@ -101,7 +101,7 @@ export const checkConnection = () => {
                     dispatch(updateSmartContract(SmartContractObj));
                     dispatch(updateRightNetwork(true));
                 } else {
-                    dispatch(setBotError(`You're not on the right network, friend. Please switch to ${networkConfig.chainName}`));
+                    // dispatch(setBotError(`You're not on the right network, friend. Please switch to ${networkConfig.chainName}`));
                     dispatch(updateSmartContract(null));
                 }
             });

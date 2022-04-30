@@ -26,19 +26,21 @@ export const WalletButton = () => {
                                 }
                             }}
                             className={
-                                ' rounded-lg px-3 py-2 shadow-center-lg shadow-red-700 whitespace-nowrap ' +
+                                'rounded-lg px-3 py-2 shadow-center-lg shadow-red-700 whitespace-nowrap ' +
                                 (blockchain.isRightNetwork ? 'bg-gray-50 text-gray-900' : 'bg-red-600 text-white cursor-pointer text-shadow-white')
                             }>
                             {blockchain.isRightNetwork ? `🔺 ${networkConfig.chainName}` : '⚠️ Wrong Network'}
                         </div>
                         {blockchain.isRightNetwork && (
-                            <div className='rounded-lg flex text-white text-shadow-white font-semibold bg-rose-600 shadow-center-lg shadow-rose-600  whitespace-nowrap'>
-                                <p className='bg-rose-600 px-4 py-2 rounded-lg'>
+                            <div className='rounded-lg flex text-white text-shadow-white font-semibold shadow-center-lg shadow-fuchsia-700  whitespace-nowrap'>
+                                <p className='bg-fuchsia-600 px-4 py-2 rounded-lg'>
                                     {parseFloat(blockchain.balance || '0').toFixed(3)} {networkConfig.nativeCurrency.symbol}
                                 </p>
                             </div>
                         )}
-                        <div className='bg-cyan-400 text-white shadow-center-lg font-semibold shadow-cyan-500 px-3 py-2 rounded-lg whitespace-nowrap'>{shortenAddress(blockchain.account)}</div>
+                        <div className='bg-cyan-400 text-white text-shadow-white shadow-center-lg font-semibold shadow-cyan-500 px-3 py-2 rounded-lg whitespace-nowrap'>
+                            {shortenAddress(blockchain.account)}
+                        </div>
                     </>
                 ) : (
                     <button

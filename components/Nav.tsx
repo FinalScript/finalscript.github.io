@@ -19,7 +19,7 @@ export const Nav = () => {
                     <div className='container tracking-widest mx-auto flex flex-wrap lg:justify-between flex-col md:flex-row items-center justify-center'>
                         <Link href={'/'}>
                             <div className='flex cursor-pointer title-font font-medium items-center text-white p-2'>
-                                <div className='w-64 h-20 relative drop-shadow-blue'>
+                                <div className='w-72 h-24 relative drop-shadow-blue'>
                                     <Image src='/images/minerverse-logo.png' layout='fill' objectFit='contain' alt='nav-logo' />
                                 </div>
                             </div>
