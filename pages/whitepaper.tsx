@@ -193,7 +193,7 @@ const whitepaper: NextPage = () => {
                                     </p>
                                     <p>
                                         <span>💎 </span>
-                                        <span>Slow unstake: 20% of your $DIAMOND will be lost but will take 2 days to received</span>
+                                        <span>Slow unstake: 20% of your $DIAMOND will be lost but will take 2 days to be received</span>
                                     </p>
                                 </div>
                             </div>
@@ -297,8 +297,8 @@ const whitepaper: NextPage = () => {
                                         As you can see, the MinerVerse has been designed around three main principles: fun, longevity, and strategy. With
                                         gameplay expected to last a while - just like your favorite childhood games, MinerVerse is sure to keep you entertained.
                                         The mechanics of The Vault guarantee that your balance of $DIAMOND can only go up if you deposit $DIAMOND and withdraw
-                                        using the 2 day cooldown period. But keep in mind that keeping your $DIAMOND in the pantry prevents you from spending it
-                                        on upgrades that will mine you more $DIAMOND. We won’t tell you how to invest your $DIAMOND, but be smart about it!
+                                        using the 2 day cooldown period. But keep in mind that keeping your $DIAMOND in the vault prevents you from spending it
+                                        on craftables that will mine you more $DIAMOND. We won’t tell you how to invest your $DIAMOND, but be smart about it!
                                     </p>
                                 </div>
                             </div>
