@@ -64,7 +64,7 @@ export const Mark = () => {
                         }}
                         initial={{ opacity: 0, translateY: 400 }}
                         animate={{ opacity: 1, translateY: 0, transition: { duration: 0.3 } }}
-                        className={'drop-shadow-red h-[30vh] w-[13.5vh] transition-all duration-500 select-none '}>
+                        className={'drop-shadow-mark h-[30vh] w-[13.5vh] transition-all duration-500 select-none '}>
                         <Image title='Mark Bot' src='/images/mark.png' layout='fill' objectFit='contain' className='cursor-pointer' onClick={toggleMark} />
                     </motion.div>
 

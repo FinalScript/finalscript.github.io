@@ -28,7 +28,7 @@ const whitepaper: NextPage = () => {
                         </div>
                         <div className='whitepaper relative'>
                             <header className='flex flex-col justify-center items-center space-y-10 mb-12'>
-                                <div className='w-[40vh] h-[20vh] relative drop-shadow-blue'>
+                                <div className='w-[40vh] h-[20vh] relative'>
                                     <Image src='/images/minerverse-logo.png' layout='fill' objectFit='contain' />
                                 </div>
                                 <h1 className='lg:text-8xl md:text-7xl sm:text-6xl text-4xl font-bold'>WHITEPAPER</h1>
@@ -122,14 +122,12 @@ const whitepaper: NextPage = () => {
                                         popular sites such as NFTrade and TofuNFT.
                                     </p>
 
-                                 
-                                        <div className='w-[900px] h-[250px] relative'>
-                                            <Image src='/images/miner_1.png' layout='fill' objectFit='contain' />
-                                        </div>
-                                        <div className='w-[900px] h-[250px] relative'>
-                                            <Image src='/images/miner_2.png' layout='fill' objectFit='contain' />
-                                        </div>
-                                
+                                    <div className='w-[900px] h-[250px] relative'>
+                                        <Image src='/images/miner_1.png' layout='fill' objectFit='contain' />
+                                    </div>
+                                    <div className='w-[900px] h-[250px] relative'>
+                                        <Image src='/images/miner_2.png' layout='fill' objectFit='contain' />
+                                    </div>
                                 </div>
                                 <p className='text-center text-xl my-10'>The minting revenue will be split the following way:</p>
                                 <div className='text-xl flex flex-col justify-center space-y-4 px-5 emoji-list'>
@@ -159,27 +157,33 @@ const whitepaper: NextPage = () => {
                             <div className='relative'>
                                 <h2 className='text-3xl font-bold mb-8'>Mine</h2>
 
-                                <div className='text-xl flex flex-col justify-center space-y-4 px-5 emoji-list'>
-                                    <p>
-                                        <span>💎 </span>
-                                        <span>Work your miners here</span>
-                                    </p>
-                                    <p>
-                                        <span>💎 </span>
-                                        <span>This is where your Miners will mine.</span>
-                                    </p>
-                                    <p>
-                                        <span>💎 </span>
-                                        <span>A regular Miner will mine 1 Diamond Per Minute(DPM), while the Super Miner mines at 5 DPM.</span>
-                                    </p>
-                                    <p>
-                                        <span>💎 </span>
-                                        <span>When you claim the mined $DIAMOND, 20% goes into the Vault.</span>
-                                    </p>
-                                    <p>
-                                        <span>💎 </span>
-                                        <span>Miners can be kept in the mines at all times.</span>
-                                    </p>
+                                <div className='flex'>
+                                    <div className='text-xl flex flex-col justify-center space-y-4 px-5 emoji-list'>
+                                        <p>
+                                            <span>💎 </span>
+                                            <span>Work your miners here</span>
+                                        </p>
+                                        <p>
+                                            <span>💎 </span>
+                                            <span>This is where your Miners will mine.</span>
+                                        </p>
+                                        <p>
+                                            <span>💎 </span>
+                                            <span>A regular Miner will mine 1 Diamond Per Minute(DPM), while the Super Miner mines at 5 DPM.</span>
+                                        </p>
+                                        <p>
+                                            <span>💎 </span>
+                                            <span>When you claim the mined $DIAMOND, 20% goes into the Vault.</span>
+                                        </p>
+                                        <p>
+                                            <span>💎 </span>
+                                            <span>Miners can be kept in the mines at all times.</span>
+                                        </p>
+                                    </div>
+
+                                    <div className='w-[800px] h-[300px] relative'>
+                                        <Image src='/images/mine-entrance-front.png' layout='fill' objectFit='contain' />
+                                    </div>
                                 </div>
                             </div>
                             <div className='relative'>
@@ -286,32 +290,52 @@ const whitepaper: NextPage = () => {
                             <div className='relative'>
                                 <h2 className='text-3xl font-bold mb-8'>Vault</h2>
 
-                                <div className='text-xl flex flex-col justify-center space-y-4 px-5 emoji-list'>
-                                    <p>
-                                        <span>💎 </span>
-                                        <span>Stake in a vault and retrieve interest on your diamonds over time.</span>
-                                    </p>
-                                    <p>
-                                        <span>💎 </span>
-                                        <span>Unstake instantly but you lose 50% of your diamonds.</span>
-                                    </p>
-                                    <p>
-                                        <span>💎 </span>
-                                        <span>Unstake slowly and wait 2 days but lose only 20% of your diamonds.</span>
-                                    </p>
+                                <div className='flex items-start'>
+                                    <div className='text-xl flex flex-col justify-center space-y-4 px-5 emoji-list'>
+                                        <p>
+                                            <span>💎 </span>
+                                            <span>Stake in a vault and retrieve interest on your diamonds over time.</span>
+                                        </p>
+                                        <p>
+                                            <span>💎 </span>
+                                            <span>Unstake instantly but you lose 50% of your diamonds.</span>
+                                        </p>
+                                        <p>
+                                            <span>💎 </span>
+                                            <span>Unstake slowly and wait 2 days but lose only 20% of your diamonds.</span>
+                                        </p>
+                                    </div>
+                                    <div className='w-[800px] h-[300px] relative'>
+                                        <Image src='/images/vault.png' layout='fill' objectFit='contain' />
+                                    </div>
                                 </div>
                             </div>
                             <div className='relative'>
                                 <h2 className='text-3xl font-bold mb-8'>Strategy</h2>
 
                                 <div className='text-xl'>
+                                    <div className='flex items-start'>
+                                        <p className='w-[70%]'>
+                                            As you can see, the MinerVerse has been designed around three main principles: fun, longevity, and strategy. With
+                                            gameplay expected to last a while - just like your favorite childhood games, MinerVerse is sure to keep you
+                                            entertained. The mechanics of The Vault guarantee that your balance of $DIAMOND can only go up if you deposit
+                                            $DIAMOND and withdraw using the 2 day cooldown period.
+                                        </p>
+
+                                        <div className='w-[30%] h-[150px] relative'>
+                                            <Image src='/images/diamond-trophy.png' layout='fill' objectFit='contain' />
+                                        </div>
+                                    </div>
+                                    <br />
                                     <p>
-                                        As you can see, the MinerVerse has been designed around three main principles: fun, longevity, and strategy. With
-                                        gameplay expected to last a while - just like your favorite childhood games, MinerVerse is sure to keep you entertained.
-                                        The mechanics of The Vault guarantee that your balance of $DIAMOND can only go up if you deposit $DIAMOND and withdraw
-                                        using the 2 day cooldown period. But keep in mind that keeping your $DIAMOND in the vault prevents you from spending it
-                                        on craftables that will mine you more $DIAMOND. We won’t tell you how to invest your $DIAMOND, but be smart about it!
+                                        But keep in mind that keeping your $DIAMOND in the vault prevents you from spending it on craftables that will mine you
+                                        more $DIAMOND. We won’t tell you how to invest your $DIAMOND, but be smart about it!
                                     </p>
+                                </div>
+                            </div>
+                            <div className='-mb-8 pt-8'>
+                                <div className='w-[200px] h-[100px] relative'>
+                                    <Image src='/images/sign-here.png' layout='fill' objectFit='contain' />
                                 </div>
                             </div>
                         </div>
