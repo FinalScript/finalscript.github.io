@@ -12,9 +12,12 @@ import { useRouter } from 'next/router';
 import Image from 'next/image';
 import { AnimatePresence, motion } from 'framer-motion';
 import { TransactionAlert } from '../components/TransactionAlert';
-import { setBotError } from '../redux/general/generalActions';
+import { setBotError, setBotSpeech } from '../redux/general/generalActions';
 import Particles from 'react-tsparticles';
 import { loadFull } from 'tsparticles';
+import { markConfig } from '../config';
+
+const randomSpeech = markConfig.welcomeSpeeches[Math.floor(Math.random() * markConfig.welcomeSpeeches.length)];
 
 function MyApp({ Component, pageProps }: AppProps) {
     const dispatch = useDispatch<any>();
@@ -49,6 +52,14 @@ function MyApp({ Component, pageProps }: AppProps) {
         setTimeout(() => {
             setPageLoading(false);
         }, 1500);
+
+        const markAlreadyClicked = sessionStorage.getItem('markAlreadyClicked') === 'true';
+
+        if (!markAlreadyClicked) {
+            dispatch(setBotSpeech('Welcome! My name is Mark. You can click on me at any point for additional options!', 10000));
+        } else {
+            dispatch(setBotSpeech(randomSpeech.message));
+        }
     }, []);
 
     useEffect(() => {

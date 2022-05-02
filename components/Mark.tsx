@@ -4,10 +4,8 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { useDispatch, useSelector } from 'react-redux';
 import { GeneralState } from '../types';
 import { useEffect, useState } from 'react';
-import { clearBotSpeech, setBotSpeech, toggleBot } from '../redux/general/generalActions';
+import { clearBotSpeech, toggleBot } from '../redux/general/generalActions';
 import { markConfig } from '../config';
-
-const randomSpeech = markConfig.welcomeSpeeches[Math.floor(Math.random() * markConfig.welcomeSpeeches.length)];
 
 export const Mark = () => {
     const dispatch = useDispatch<any>();
@@ -18,11 +16,6 @@ export const Mark = () => {
         const markAlreadyClicked = sessionStorage.getItem('markAlreadyClicked') === 'true';
 
         setMarkAlreadyClicked(markAlreadyClicked);
-        if (!markAlreadyClicked) {
-            dispatch(setBotSpeech('Welcome! My name is Mark. You can click on me at any point for additional options!', 10000));
-        } else {
-            dispatch(setBotSpeech(randomSpeech.message));
-        }
     }, []);
 
     const toggleMark = () => {
