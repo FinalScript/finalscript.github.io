@@ -77,8 +77,8 @@ export const Mark = () => {
                         }}
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1, scale: [0, 2, 1], transition: { duration: 0.5 } }}
-                        className='z-10 p-[2vh] w-auto flex items-center justify-center text-center absolute bottom-[32vh]'>
-                        <div className='h-[5vh] w-[2vh] lg:h-[10vh] lg:w-[6vh]  flex items-center exclamation-mark cursor-pointer'>
+                        className='z-10 p-[2vh] flex items-center justify-center text-center absolute bottom-[32vh]'>
+                        <div className='h-[5vh] w-[1vh] lg:h-[10vh] lg:w-[6vh]  flex items-center exclamation-mark cursor-pointer'>
                             <Image src='/images/exclamation-mark.png' layout='fill' objectFit='contain' />
                         </div>
                     </motion.div>
