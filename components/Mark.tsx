@@ -40,7 +40,7 @@ export const Mark = () => {
     return (
         <div
             className={
-                'absolute flex md:justify-center z-20 transition-all duration-300 select-none p-inherit ' +
+                'absolute flex justify-center z-20 transition-all duration-300 select-none p-inherit ' +
                 (generalReducer.botCurrentSpeech || generalReducer.botToggled ? '-bottom-[14vh]' : '-bottom-[18vh] animate-bounce')
             }>
             <AnimatePresence>
@@ -83,7 +83,7 @@ export const Mark = () => {
                         </div>
                     </motion.div>
                 )}
-                <motion.div className='z-20 p-5 w-auto flex flex-col space-y-[2vh] justify-center absolute bottom-[31vh] text-gray-900'>
+                <motion.div className='z-20 p-5 left-0 md:left-auto w-auto flex flex-col space-y-[2vh] justify-center absolute bottom-[31vh] text-gray-900'>
                     <AnimatePresence>
                         {generalReducer.botToggled && (
                             <>
