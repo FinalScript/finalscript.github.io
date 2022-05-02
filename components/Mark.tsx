@@ -57,12 +57,12 @@ export const Mark = () => {
                         initial={{ scale: 0 }}
                         animate={{ scale: 1, transformOrigin: 'bottom left', transition: { duration: 0.3, delay: 0.5, ease: 'easeInOut' } }}
                         className='left-5 md:left-10 z-10 w-max max-w-[16rem] md:max-w-[20rem] lg:max-w-[24rem] flex flex-col justify-center items-center absolute bottom-[33vh] text-gray-900'>
-                        <div className='mt-10 -z-10 absolute w-full h-full overflow-hidden select-none text-bubble'>
+                        <div className='mt-[3vh] md:mt-[5vh] -z-10 absolute w-full h-full overflow-hidden select-none text-bubble'>
                             <Image src='/images/text-bubble.png' layout='fill' objectFit='fill' />
                         </div>
                         <p
                             className={
-                                'z-10 p-10 text-center w-full text-xs md:text-sm ' + (generalReducer.botCurrentSpeech.isError ? ' text-red-500' : ' text-black')
+                                'z-10 p-[5vh] md:p-[5vh] text-center w-full text-xs md:text-sm ' + (generalReducer.botCurrentSpeech.isError ? ' text-red-500' : ' text-black')
                             }>
                             {generalReducer.botCurrentSpeech.message}
                         </p>
@@ -77,8 +77,8 @@ export const Mark = () => {
                         }}
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1, scale: [0, 2, 1], transition: { duration: 0.5 } }}
-                        className='z-10 p-5 w-auto flex items-center justify-center text-center absolute bottom-[31vh]'>
-                        <div className='h-[80px] w-[70px] flex items-center exclamation-mark cursor-pointer'>
+                        className='z-10 p-[2vh] w-auto flex items-center justify-center text-center absolute bottom-[32vh]'>
+                        <div className='h-[5vh] w-[2vh] lg:h-[10vh] lg:w-[6vh]  flex items-center exclamation-mark cursor-pointer'>
                             <Image src='/images/exclamation-mark.png' layout='fill' objectFit='contain' />
                         </div>
                     </motion.div>

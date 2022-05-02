@@ -217,11 +217,11 @@ const Home: NextPage = () => {
                         className='mint-section text-gray-400 body-font relative bottom-0'>
                         {!generalReducer.isLoading && (
                             <>
-                                <div className={'parchment-frame absolute z-10 overflow-hidden select-none drop-shadow-dark-brown'}>
+                                <div className={'parchment-frame absolute z-10 overflow-hidden select-none drop-shadow-parchment-stand'}>
                                     <Image src='/images/parchment-frame.png' layout='fill' objectFit='fill' />
                                 </div>
                                 <div className={'parchment-content relative text-gray-900 rounded-xl flex justify-center z-10'}>
-                                    <div className={'parchment-image-container absolute -z-10 w-full h-full overflow-hidden select-none drop-shadow-brown'}>
+                                    <div className={'parchment-image-container absolute -z-10 w-full h-full overflow-hidden select-none drop-shadow-parchment'}>
                                         <Image src='/images/parchment.png' layout='fill' objectFit='fill' />
                                     </div>
                                     <div className='flex flex-col h-full mint-container'>

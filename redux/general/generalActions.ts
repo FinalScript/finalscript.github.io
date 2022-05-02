@@ -29,11 +29,7 @@ export const setBotSpeech = (speech: string, timeout?: number) => {
     return async (dispatch: Dispatch) => {
         dispatch({ type: 'SET_BOT_SPEECH', payload: { speech: { message: speech } } });
 
-        clearTimeout(timer);
-
-        timer = setTimeout(() => {
-            dispatch({ type: 'SET_BOT_SPEECH', payload: { speech: undefined } });
-        }, timeout || 5000);
+        
     };
 };
 
@@ -41,11 +37,7 @@ export const setBotError = (error: string) => {
     return async (dispatch: Dispatch) => {
         dispatch({ type: 'SET_BOT_SPEECH', payload: { speech: { message: error, isError: true } } });
 
-        clearTimeout(timer);
-
-        timer = setTimeout(() => {
-            dispatch({ type: 'SET_BOT_SPEECH', payload: { speech: undefined } });
-        }, 8000);
+        
     };
 };
 

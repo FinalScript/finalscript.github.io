@@ -36,7 +36,7 @@ export const Nav = () => {
                         <button
                             data-collapse-toggle='mobile-menu'
                             type='button'
-                            className='inline-flex items-center p-2 ml-3 text-sm text-cyan-300 rounded-lg md:hidden active:bg-transparent focus:outline-none focus:ring-2 focus:ring-cyan-300 text-shadow-title'
+                            className='inline-flex items-center p-2 ml-3 text-sm text-black bg-cyan-300 rounded-lg md:hidden active:bg-cyan-400 focus:outline-none focus:ring-2 focus:ring-cyan-400 text-shadow-title'
                             aria-controls='mobile-menu'
                             aria-expanded='false'
                             onClick={() => {
