@@ -1,5 +1,5 @@
 import type { NextPage } from 'next';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import Web3 from 'web3';
 import { minerConfig, networkConfig, siteProtection } from '../config';
@@ -7,33 +7,12 @@ import { checkBalance, connect, switchNetwork } from '../redux/blockchain/blockc
 import { BlockchainState, ContractDataState, GeneralState } from '../types';
 import Image from 'next/image';
 import { checkIsWhiteListed, fetchData } from '../redux/data/dataActions';
-import { AnimatePresence, motion } from 'framer-motion';
-import { addAlert, clearBotSpeech, setBotError, setBotSpeech } from '../redux/general/generalActions';
+import { motion } from 'framer-motion';
+import { addAlert, setBotError, setBotSpeech } from '../redux/general/generalActions';
 import { InstallMetaMask } from '../components/InstallMetaMask';
 import Head from 'next/head';
 import { Mark } from '../components/Mark';
 import { useRouter } from 'next/router';
-
-const dimensionsCss = {
-    mintingStand:
-        'w-[650px] min-w-[650px] max-w-[650px] ' +
-        '2xl:w-[35vw] 2xl:min-w-[35vw] 2xl:max-w-[35vw] ' +
-        'xl:w-[40vw] xl:min-w-[40vw] xl:max-w-[40vw] ' +
-        'lg:w-[50vw] lg:min-w-[50vw] lg:max-w-[50vw] ' +
-        'sm:w-[720px] sm:min-w-[720px] sm:max-w-[720px] ' +
-        'left-[-80px] sm:left-[-20px] md:left-[3vw] ' +
-        'h-[85vh] min-h-[85vh] max-h-[85vh]',
-    mintingContainer:
-        'w-[380] min-w-[380px] max-w-[380px] ' +
-        '2xl:w-[21vw] 2xl:min-w-[21vw] 2xl:max-w-[21vw] ' +
-        'xl:w-[25vw] xl:min-w-[25vw] xl:max-w-[25vw] ' +
-        'lg:w-[33vw] lg:min-w-[33vw] lg:max-w-[33vw] ' +
-        'sm:w-[420px] sm:min-w-[420px] sm:max-w-[420px] ' +
-        'left-[110px] sm:left-[-20px] 2xl:left-[12.5vw] xl:left-[13.5vw] lg:left-[15.5vw] md:left-[3vw] ' +
-        'mb-[8vh] px-[vw] 2xl:px-[2.5vw] xl:px-[2vw] lg:px-[1.5vw] py-[3vh] ' +
-        'h-[65vh] min-h-[65vh] max-h-[65vh]',
-    mintingBackground: '-mx-[2vw] 2xl:-mx-[3vw] xl:-mx-[3.5vw] lg:-mx-[4vw] -my-[3.5vh]',
-};
 
 const Home: NextPage = () => {
     const dispatch = useDispatch<any>();
@@ -51,7 +30,6 @@ const Home: NextPage = () => {
         // `${blockchain.hasMetaMask ? 100 - contractData.superPercentage : 0}% chance to mint a Regular Miner`,
         `${contractData.superPercentage}% chance to mint a Super Miner`,
     ];
-
     const handlePlay = () => {
         if (
             siteProtection.whitelistOnly &&
@@ -222,15 +200,13 @@ const Home: NextPage = () => {
     };
 
     return (
-        <div className='relative overflow-auto h-screen w-screen'>
+        <div className='relative overflow-hidden h-screen w-screen max-w-[100vw] px-0 md:px-10 lg:px-16 xl:px-24'>
             <Head>
                 <title>Home | MinerVerse</title>
             </Head>
 
             {!generalReducer.isLoading && (
                 <>
-                    <Mark />
-
                     <motion.section
                         key={'minting-container'}
                         exit={{
@@ -238,160 +214,151 @@ const Home: NextPage = () => {
                         }}
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1, transition: { duration: 0.6, delay: 0.1 } }}
-                        className='text-gray-400 body-font h-full flex items-center relative'>
-                        <div className='fixed flex items-end justify-start sm:justify-center lg:justify-start sm:pr-36 lg:pr-0 h-full min-h-full bottom-0 z-10'>
-                            <div className={'relative overflow-hidden select-none drop-shadow-dark-brown ' + dimensionsCss.mintingStand}>
-                                <Image src='/images/parchment-frame.png' layout='fill' objectFit='fill' />
-                            </div>
-
-                            <button
-                                className={
-                                    'flex justify-center items-center relative overflow-hidden select-none transition-all hover:scale-105 h-[13vh] w-[34vh] self-center ml-24 mt-10 z-50 drop-shadow-arrow cursor-pointer  '
-                                }
-                                onClick={handlePlay}>
-                                <Image src='/images/arrow-sign.png' layout='fill' objectFit='fill' />
-                                <h2 className='z-20 text-[8vh] mr-6 mb-3 text-white font-bold play-button'>PLAY</h2>
-                            </button>
-                        </div>
-
-                        <div className='relative flex justify-start sm:justify-center lg:justify-start h-full min-h-full w-screen min-w-screen items-end px-[1vw]'>
-                            {!generalReducer.isLoading && (
-                                <>
-                                    <div className={'relative text-gray-900 rounded-xl flex justify-center z-10 ' + dimensionsCss.mintingContainer}>
-                                        <div
-                                            className={
-                                                'absolute -z-10 w-full h-full overflow-hidden select-none drop-shadow-brown  ' + dimensionsCss.mintingBackground
-                                            }>
-                                            <Image src='/images/parchment.png' layout='fill' objectFit='fill' />
+                        className='mint-section text-gray-400 body-font relative bottom-0'>
+                        {!generalReducer.isLoading && (
+                            <>
+                                <div className={'parchment-frame absolute z-10 overflow-hidden select-none drop-shadow-dark-brown'}>
+                                    <Image src='/images/parchment-frame.png' layout='fill' objectFit='fill' />
+                                </div>
+                                <div className={'parchment-content relative text-gray-900 rounded-xl flex justify-center z-10'}>
+                                    <div className={'parchment-image-container absolute -z-10 w-full h-full overflow-hidden select-none drop-shadow-brown'}>
+                                        <Image src='/images/parchment.png' layout='fill' objectFit='fill' />
+                                    </div>
+                                    <div className='flex flex-col h-full mint-container'>
+                                        <h2 className='text-center font-bold rounded-t-xl'>
+                                            <span>Mint Miners</span>
+                                        </h2>
+                                        <div className='relative text-md flex items-center justify-center section'>
+                                            <div className='relative image'>
+                                                <Image src='/images/MinerTrio.png' objectFit='contain' layout='fill' />
+                                            </div>
                                         </div>
-                                        <div className='flex flex-col h-full mint-container'>
-                                            <h2 className='text-center font-bold rounded-t-xl'>
-                                                <span>Mint Miners</span>
-                                            </h2>
-                                            <div className='relative text-md flex items-center justify-center section'>
-                                                <div className='relative image'>
-                                                    <Image src='/images/MinerTrio.png' objectFit='contain' layout='fill' />
-                                                </div>
+                                        <div className='relative section'>
+                                            <div className='flex justify-end'>
+                                                <p className='font-medium text-gray-900'>{getSupplyFraction()}</p>
                                             </div>
-                                            <div className='relative section'>
-                                                <div className='flex justify-end'>
-                                                    <p className='font-medium text-gray-900'>{getSupplyFraction()}</p>
-                                                </div>
-                                                <div className='w-full bg-yellow-900 rounded-full progress'>
-                                                    <div className='bg-green-500 h-full rounded-full' style={{ width: getSupplyPercentage() }}></div>
-                                                </div>
+                                            <div className='w-full bg-yellow-900 rounded-full progress'>
+                                                <div className='bg-green-500 h-full rounded-full' style={{ width: getSupplyPercentage() }}></div>
                                             </div>
-                                            <div className='relative flex flex-col section'>
-                                                <label htmlFor='quantity' className='text-gray-900 flex justify-between'>
-                                                    <span className='font-bold'>Quantity</span>
-                                                    <span className='tracking-widest'>MAX ( {contractData.maxPerMint} )</span>
-                                                </label>
-                                                <input
-                                                    disabled={!getAbleToMint()}
-                                                    title={contractData.isWhiteListed || !contractData.baseSalesOpen ? '' : "You're not whitelisted"}
-                                                    type='text'
-                                                    id='quantity'
-                                                    name='quantity'
-                                                    min={0}
-                                                    max={contractData.maxPerMint}
-                                                    onSelect={(e) => {
-                                                        if (quantity === '0') {
-                                                            setQuantity('');
-                                                        }
-                                                    }}
-                                                    value={quantity}
-                                                    onChange={(e) => {
-                                                        let { value, min, max }: any = e.target;
+                                        </div>
+                                        <div className='relative flex flex-col section'>
+                                            <label htmlFor='quantity' className='text-gray-900 flex justify-between'>
+                                                <span className='font-bold'>Quantity</span>
+                                                <span className='tracking-widest'>MAX ( {contractData.maxPerMint} )</span>
+                                            </label>
+                                            <input
+                                                disabled={!getAbleToMint()}
+                                                title={contractData.isWhiteListed || !contractData.baseSalesOpen ? '' : "You're not whitelisted"}
+                                                type='text'
+                                                id='quantity'
+                                                name='quantity'
+                                                min={0}
+                                                max={contractData.maxPerMint}
+                                                onSelect={(e) => {
+                                                    if (quantity === '0') {
+                                                        setQuantity('');
+                                                    }
+                                                }}
+                                                value={quantity}
+                                                onChange={(e) => {
+                                                    let { value, min, max }: any = e.target;
 
-                                                        if (!isNaN(value)) {
-                                                            value = Math.max(Number(min), Math.min(Number(max), Number(value))).toString();
-                                                            setQuantity(value === '0' ? '' : value);
-                                                        } else {
-                                                            setQuantity('');
-                                                        }
-                                                    }}
-                                                    placeholder={`Max ${contractData.maxPerMint} at a time`}
-                                                    className='w-full text-center disabled:cursor-not-allowed placeholder:text-gray-700 bg-zinc-400 bg-opacity-20 focus:bg-transparent focus:ring-2 rounded border-gray-600 outline-none transition-colors duration-200 ease-in-out'
-                                                />
+                                                    if (!isNaN(value)) {
+                                                        value = Math.max(Number(min), Math.min(Number(max), Number(value))).toString();
+                                                        setQuantity(value === '0' ? '' : value);
+                                                    } else {
+                                                        setQuantity('');
+                                                    }
+                                                }}
+                                                placeholder={`Max ${contractData.maxPerMint} at a time`}
+                                                className='w-full text-center disabled:cursor-not-allowed placeholder:text-gray-700 bg-zinc-400 bg-opacity-20 focus:bg-transparent focus:ring-2 rounded border-gray-600 outline-none transition-colors duration-200 ease-in-out'
+                                            />
+                                        </div>
+                                        <div className='section font-bold'>
+                                            <div className='relative tracking-widest flex justify-between'>
+                                                <h5>NFT Tax</h5>
+                                                <h5>{totalPrice === 0 ? '--' : Web3.utils.fromWei(contractData.nftTax) + ' AVAX'}</h5>
                                             </div>
-                                            <div className='section font-bold'>
-                                                <div className='relative tracking-widest flex justify-between'>
-                                                    <h5>NFT Tax</h5>
-                                                    <h5>{totalPrice === 0 ? '--' : Web3.utils.fromWei(contractData.nftTax) + ' AVAX'}</h5>
-                                                </div>
-                                                <div className='relative tracking-widest flex justify-between'>
-                                                    <h4>Total</h4>
-                                                    <h4>{totalPrice === 0 ? '--' : Web3.utils.fromWei(totalPrice.toString()) + ' AVAX'} </h4>
-                                                </div>
+                                            <div className='relative tracking-widest flex justify-between'>
+                                                <h4>Total</h4>
+                                                <h4>{totalPrice === 0 ? '--' : Web3.utils.fromWei(totalPrice.toString()) + ' AVAX'} </h4>
                                             </div>
-                                            {/* <div className='relative mb-4 flex justify-between'>
-                                        <h5 className='text-xs text-gray-800'>
-                                            Miners are utility NFTs solely intended for playing MinerVerse that carry no expectation of profit and have no
-                                            guaranteed resale value. By buying you agree to the{' '}
-                                            <Link href={'/tos'}>
-                                                <span className='font-bold text-blue-600 cursor-pointer'>Terms of Service</span>
-                                            </Link>
-                                            .
-                                        </h5>
-                                    </div> */}
+                                        </div>
 
-                                            <div className='relative flex flex-col section'>
-                                                {blockchain.hasMetaMask ? (
-                                                    blockchain.account ? (
-                                                        <>
-                                                            <button
-                                                                disabled={blockchain.isRightNetwork ? !getAbleToMint() : false}
-                                                                onClick={() => {
-                                                                    if (!blockchain.isRightNetwork) {
-                                                                        switchNetwork();
-                                                                    } else {
-                                                                        mint();
-                                                                    }
-                                                                }}
-                                                                title={
-                                                                    contractData.isWhiteListed || !contractData.baseSalesOpen || !blockchain.isRightNetwork
-                                                                        ? ''
-                                                                        : "You're not whitelisted"
-                                                                }
-                                                                className={
-                                                                    'w-full text-white text-shadow-white font-bold border-0 disabled:cursor-not-allowed focus:outline-none rounded shadow-center-lg ' +
-                                                                    (blockchain.isRightNetwork
-                                                                        ? 'bg-cyan-400  hover:bg-cyan-500 disabled:hover:bg-cyan-400 shadow-cyan-400'
-                                                                        : ' bg-red-600 cursor-pointer shadow-red-700')
-                                                                }>
-                                                                {blockchain.isRightNetwork ? `Mint` : 'Switch Network 🔺'}
-                                                            </button>
-                                                        </>
-                                                    ) : (
+                                        <div className='relative flex flex-col section'>
+                                            {blockchain.hasMetaMask ? (
+                                                blockchain.account ? (
+                                                    <>
                                                         <button
+                                                            disabled={blockchain.isRightNetwork ? !getAbleToMint() : false}
                                                             onClick={() => {
-                                                                dispatch(connect());
+                                                                if (!blockchain.isRightNetwork) {
+                                                                    switchNetwork();
+                                                                } else {
+                                                                    mint();
+                                                                }
                                                             }}
-                                                            className='w-full bg-cyan-400 hover:bg-cyan-500 shadow-center-lg shadow-cyan-500 font-semibold text-gray-900 rounded-lg'>
-                                                            Connect Wallet
+                                                            title={
+                                                                contractData.isWhiteListed || !contractData.baseSalesOpen || !blockchain.isRightNetwork
+                                                                    ? ''
+                                                                    : "You're not whitelisted"
+                                                            }
+                                                            className={
+                                                                'w-full text-white text-shadow-white font-bold border-0 disabled:cursor-not-allowed focus:outline-none rounded shadow-center-lg ' +
+                                                                (blockchain.isRightNetwork
+                                                                    ? 'bg-cyan-400  hover:bg-cyan-500 disabled:hover:bg-cyan-400 shadow-cyan-400'
+                                                                    : ' bg-red-600 cursor-pointer shadow-red-700')
+                                                            }>
+                                                            {blockchain.isRightNetwork ? `Mint` : 'Switch Network 🔺'}
                                                         </button>
-                                                    )
+                                                    </>
                                                 ) : (
-                                                    <InstallMetaMask />
-                                                )}
-                                            </div>
-                                            <div className='relative flex flex-col section'>
-                                                <h3 className='font-bold text-center'>Sale Details</h3>
-                                                {saleDetails.map((detail, index) => {
-                                                    return (
-                                                        <p key={index} className='flex justify-between text-center'>
-                                                            <span>💎</span>
-                                                            <span>{detail}</span>
-                                                            <span>💎</span>
-                                                        </p>
-                                                    );
-                                                })}
-                                            </div>
+                                                    <button
+                                                        onClick={() => {
+                                                            dispatch(connect());
+                                                        }}
+                                                        className='w-full bg-cyan-400 hover:bg-cyan-500 shadow-center-lg shadow-cyan-500 font-semibold text-gray-900 rounded-lg'>
+                                                        Connect Wallet
+                                                    </button>
+                                                )
+                                            ) : (
+                                                <InstallMetaMask />
+                                            )}
+                                        </div>
+                                        <div className='relative flex flex-col section'>
+                                            <h3 className='font-bold text-center'>Sale Details</h3>
+                                            {saleDetails.map((detail, index) => {
+                                                return (
+                                                    <p key={index} className='flex justify-between text-center'>
+                                                        <span>💎</span>
+                                                        <span>{detail}</span>
+                                                        <span>💎</span>
+                                                    </p>
+                                                );
+                                            })}
                                         </div>
                                     </div>
-                                </>
-                            )}
-                        </div>
+                                </div>
+                            </>
+                        )}
+                        <motion.div
+                            initial={{ opacity: 0, translateY: 400 }}
+                            animate={{ opacity: 1, translateY: 0, transition: { duration: 0.5, delay: 0.5 } }}
+                            className='flex justify-between w-full absolute bottom-10 z-20'>
+                            <div className='relative'>
+                                <Mark />
+                            </div>
+
+                            <motion.button
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                                whileHover={{ scale: 1.1 }}
+                                className={'play-button z-30 transition-all drop-shadow-arrow'}
+                                onClick={handlePlay}>
+                                <Image src='/images/arrow-sign.png' layout='fill' objectFit='fill' />
+                                <h2 className='text-white font-bold play-button'>PLAY</h2>
+                            </motion.button>
+                        </motion.div>
                     </motion.section>
                 </>
             )}

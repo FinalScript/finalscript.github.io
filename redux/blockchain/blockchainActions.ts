@@ -171,7 +171,7 @@ export const checkConnection = () => {
 };
 
 export const connect = () => {
-    return async (dispatch: Dispatch) => {
+    return async (dispatch: any) => {
         const { ethereum } = window;
         const metamaskIsInstalled = ethereum && ethereum.isMetaMask;
         if (metamaskIsInstalled) {
@@ -184,7 +184,7 @@ export const connect = () => {
                 });
             } catch (err: any) {
                 if (err.code === 4001) {
-                    dispatch(addAlert({ key: err.message, isError: true, errorMsg: err.message }));
+                    dispatch(setBotError(err.message));
                 }
             }
         } else {

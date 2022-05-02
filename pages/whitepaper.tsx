@@ -23,28 +23,28 @@ const whitepaper: NextPage = () => {
                         initial={{ opacity: 0, translateY: 500 }}
                         animate={{ opacity: 1, translateY: 0, transition: { duration: 0.4, delay: generalReducer.isLoading ? 1.6 : 0 } }}
                         className={'paper h-min mt-36  '}>
-                        <div className='w-[300px] h-[150px] absolute z-30 ml-10 mt-8'>
+                        <div className='absolute z-10 w-[150px] h-[80px] sm:w-[200px] sm:h-[100px] lg:w-[300px] lg:h-[150px] ml-3 mt-3 sm:ml-8 sm:mt-6 lg:ml-10 lg:mt-8'>
                             <Image src='/images/confidental.png' layout='fill' objectFit='contain' />
                         </div>
                         <div className='whitepaper relative'>
-                            <header className='flex flex-col justify-center items-center space-y-10 mb-12'>
+                            <header className='flex flex-col justify-center items-center space-y-10 mb-8'>
                                 <div className='w-[40vh] h-[20vh] relative'>
                                     <Image src='/images/minerverse-logo.png' layout='fill' objectFit='contain' />
                                 </div>
-                                <h1 className='lg:text-8xl md:text-7xl sm:text-6xl text-4xl font-bold'>WHITEPAPER</h1>
+                                <h1 className='lg:text-8xl text-5xl sm:text-6xl md:text-7xl font-bold'>WHITEPAPER</h1>
                             </header>
                             <div className='relative pb-10'>
-                                <p className='text-2xl font-bold text-center'>
+                                <p className='text-xl lg:text-2xl font-bold text-center'>
                                     The mud on your boots, the dirt on your face, the diamonds in your eyes, and the smell of freedom…or maybe that’s just
                                     Larry… <br />
                                     <br />
                                     <br />
-                                    Welcome to MinerVerse!
+                                    <span className='whitespace-nowrap'>Welcome to MinerVerse!</span>
                                 </p>
                             </div>
                             <div className='relative'>
-                                <h2 className='text-3xl font-bold mb-8'>What is MinerVerse?</h2>
-                                <div className='text-xl'>
+                                <h2 className='text-2xl lg:text-3xl font-bold mb-8'>What is MinerVerse?</h2>
+                                <div className='text-base lg:text-xl'>
                                     <p>
                                         MinerVerse is an Avalanche on-chain game inspired by a mix of our favorite childhood games, Cookie Clicker and
                                         Minecraft. To play MinerVerse, you must purchase a Miner and stake them in the Mine. Miners are ERC721 NFTs that produce
@@ -62,15 +62,15 @@ const whitepaper: NextPage = () => {
                                         $DIAMOND as possible, collect more tools and miners, and dominate the MinerVerse
                                     </p>
                                     <br /> <br />
-                                    <p className='px-20 text-lg font-bold text-center text-red-600'>
+                                    <p className='lg:px-20 text-sm lg:text-lg font-bold text-center text-red-600'>
                                         Game is currently in development. All features mentioned are finalized and will not change, but additional features may
                                         be implemented in the future.
                                     </p>
                                 </div>
                             </div>
                             <div className='relative'>
-                                <h2 className='text-3xl font-bold mb-8'>Summary</h2>
-                                <div className='text-xl flex flex-col justify-center space-y-4 px-5 emoji-list'>
+                                <h2 className='text-2xl lg:text-3xl font-bold mb-8'>Summary</h2>
+                                <div className='text-sm lg:text-xl flex flex-col justify-center space-y-4 px-3 emoji-list'>
                                     <p>
                                         <span>💎 </span>
                                         <span>There are 10,000 Miners available to mint for 1.25 AVAX each.</span>
@@ -113,11 +113,11 @@ const whitepaper: NextPage = () => {
                                 </div>
                             </div>
                             <div className='relative'>
-                                <h2 className='text-3xl font-bold mb-8'>Miners</h2>
-                                <div className='text-xl flex normal-list'>
+                                <h2 className='text-2xl lg:text-3xl font-bold mb-8'>Miners</h2>
+                                <div className='text-sm lg:text-xl flex items-start normal-list'>
                                     <p>
                                         Miners are ERC721 NFTS that can be minted to start your journey into the MinerVerse. When minting, there is a 95% chance
-                                        of minting a Miner, and a 5% chance of minting a Super MinerMiners mine 1 $DIAMOND per minute. Super Miners mine 5
+                                        of minting a Miner, and a 5% chance of minting a Super Miner. Miners mine 1 $DIAMOND per minute. Super Miners mine 5
                                         $DIAMOND per minute. You'll have to spend $DIAMOND to get craftables and improve your mine. Miners can be traded on
                                         popular sites such as NFTrade and TofuNFT.
                                     </p>
@@ -130,7 +130,7 @@ const whitepaper: NextPage = () => {
                                     </div>
                                 </div>
                                 <p className='text-center text-xl my-10'>The minting revenue will be split the following way:</p>
-                                <div className='text-xl flex flex-col justify-center space-y-4 px-5 emoji-list'>
+                                <div className='text-sm lg:text-xl flex flex-col justify-center space-y-4 px-5 emoji-list'>
                                     <p>
                                         <span>💎 </span>
                                         <span>25% for operational costs and further developments</span>
@@ -155,10 +155,10 @@ const whitepaper: NextPage = () => {
                             </div>
 
                             <div className='relative'>
-                                <h2 className='text-3xl font-bold mb-8'>Mine</h2>
+                                <h2 className='text-2xl lg:text-3xl font-bold mb-8'>Mine</h2>
 
-                                <div className='flex'>
-                                    <div className='text-xl flex flex-col justify-center space-y-4 px-5 emoji-list'>
+                                <div className='flex flex-col space-y-8 lg:flex-row'>
+                                    <div className='text-sm lg:text-xl flex flex-col justify-center space-y-4 px-5 emoji-list'>
                                         <p>
                                             <span>💎 </span>
                                             <span>Work your miners here</span>
@@ -181,15 +181,15 @@ const whitepaper: NextPage = () => {
                                         </p>
                                     </div>
 
-                                    <div className='w-[800px] h-[300px] relative'>
+                                    <div className='w-full lg:w-[800px] h-[300px] relative'>
                                         <Image src='/images/mine-entrance-front.png' layout='fill' objectFit='contain' />
                                     </div>
                                 </div>
                             </div>
                             <div className='relative'>
-                                <h2 className='text-3xl font-bold mb-8'>$DIAMOND</h2>
+                                <h2 className='text-2xl lg:text-3xl font-bold mb-8'>$DIAMOND</h2>
 
-                                <div className='text-xl flex flex-col justify-center space-y-4 px-5 emoji-list'>
+                                <div className='text-sm lg:text-xl flex flex-col justify-center space-y-4 px-5 emoji-list'>
                                     <p>
                                         <span>💎 </span>
                                         <span>$DIAMOND is an ERC20 token that can be used in-game to buy Craftables.</span>
@@ -214,9 +214,9 @@ const whitepaper: NextPage = () => {
                                 </div>
                             </div>
                             <div className='relative overflow-hidden'>
-                                <h2 className='text-3xl font-bold mb-8'>Craftables</h2>
+                                <h2 className='text-2xl lg:text-3xl font-bold mb-8'>Craftables</h2>
 
-                                <div className='text-xl mb-5'>
+                                <div className='text-base lg:text-xl mb-5'>
                                     <p>
                                         If you want to generate more $DIAMOND, you have two options: get more Miners or mint Craftables. Craftables provide a
                                         massive boost in $DIAMOND mining when staked in the Mines.
@@ -288,10 +288,10 @@ const whitepaper: NextPage = () => {
                                 </div>
                             </div>
                             <div className='relative'>
-                                <h2 className='text-3xl font-bold mb-8'>Vault</h2>
+                                <h2 className='text-2xl lg:text-3xl font-bold mb-8'>Vault</h2>
 
-                                <div className='flex items-start'>
-                                    <div className='text-xl flex flex-col justify-center space-y-4 px-5 emoji-list'>
+                                <div className='flex flex-col lg:flex-row space-y-8'>
+                                    <div className='text-sm lg:text-xl flex flex-col justify-center space-y-4 px-5 emoji-list'>
                                         <p>
                                             <span>💎 </span>
                                             <span>Stake in a vault and retrieve interest on your diamonds over time.</span>
@@ -305,15 +305,15 @@ const whitepaper: NextPage = () => {
                                             <span>Unstake slowly and wait 2 days but lose only 20% of your diamonds.</span>
                                         </p>
                                     </div>
-                                    <div className='w-[800px] h-[300px] relative'>
+                                    <div className='w-full lg:w-[800px] h-[300px] relative'>
                                         <Image src='/images/vault.png' layout='fill' objectFit='contain' />
                                     </div>
                                 </div>
                             </div>
                             <div className='relative'>
-                                <h2 className='text-3xl font-bold mb-8'>Strategy</h2>
+                                <h2 className='text-2xl lg:text-3xl font-bold mb-8'>Strategy</h2>
 
-                                <div className='text-xl'>
+                                <div className='text-base lg:text-xl'>
                                     <div className='flex items-start'>
                                         <p className='w-[70%]'>
                                             As you can see, the MinerVerse has been designed around three main principles: fun, longevity, and strategy. With

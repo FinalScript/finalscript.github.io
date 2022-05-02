@@ -26,26 +26,30 @@ a {
     letter-spacing: 0.1em;
 }
 
+.p-inherit {
+    padding: inherit;
+}
+
 .text-shadow-white {
-    text-shadow: rgb(255, 255, 255) 0px 0px 0.6vw;
+    text-shadow: rgb(255, 255, 255) 0px 0px 1vh;
 }
 
 .text-shadow-title {
-    text-shadow: rgb(255, 255, 255) 0px 0px 0.6vw;
-    filter: drop-shadow(0px 0px 0.6vw #00d6dd);
+    text-shadow: rgb(255, 255, 255) 0px 0px 1vh;
+    filter: drop-shadow(0px 0px 1vh #00d6dd);
 }
 
 .play-button {
-    text-shadow: rgb(255, 255, 255) 0px 0px 0.8vw;
+    text-shadow: rgb(255, 255, 255) 0px 0px 1vh;
 }
 
 .whitelist-button {
     text-shadow: rgb(49, 49, 49) 0px 0px 0.2vw;
-    filter: drop-shadow(0px 0px 0.6vw #ffe600);
+    filter: drop-shadow(0px 0px 1vh #ffe600);
 }
 
 .discord-button {
-    filter: drop-shadow(0px 0px 0.5vw #0014c5);
+    filter: drop-shadow(0px 0px 1vh #0014c5);
 }
 
 .exclamation-mark {
@@ -53,35 +57,35 @@ a {
 }
 
 .twitter-button {
-    filter: drop-shadow(0px 0px 0.5vw #00f3e7);
+    filter: drop-shadow(0px 0px 1vh #00f3e7);
 }
 
 .drop-shadow-dark-brown {
-    filter: drop-shadow(0px 0px 0.4vw #63503a);
+    filter: drop-shadow(0px 0px 1vh #63503a);
 }
 
 .drop-shadow-arrow {
-    filter: drop-shadow(0px 0px 0.6vw rgb(90, 48, 0));
+    filter: drop-shadow(0px 0px 1vh rgb(90, 48, 0));
 }
 
 .drop-shadow-brown {
-    filter: drop-shadow(0px 0px 0.7vw #e8d191);
+    filter: drop-shadow(0px 0px 2vh #e8d191);
 }
 
 .drop-shadow-red {
-    filter: drop-shadow(0px 0px 0.5vw #660000);
+    filter: drop-shadow(0px 0px 1vh #660000);
 }
 
 .drop-shadow-blue {
-    filter: drop-shadow(0px 0px 0.6vw #00d6dd);
+    filter: drop-shadow(0px 0px 1vh #00d6dd);
 }
 
 .drop-shadow-mark {
-    filter: drop-shadow(0px 0px 0.6vw #e100ff);
+    filter: drop-shadow(0px 0px 1vh #ff00aa);
 }
 
 .text-bubble {
-    filter: drop-shadow(0px 0px 0.6vw #333333);
+    filter: drop-shadow(0px 0px 1vh #c6fdff);
 }
 
 @keyframes bounce {

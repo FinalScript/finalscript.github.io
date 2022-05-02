@@ -1,7 +1,6 @@
 // log
 import { Dispatch } from 'redux';
 import { CustomAlert, Speech } from '../../types';
-import { store } from '../store';
 
 export const setIsLoading = (isLoading: boolean) => {
     return {
@@ -26,7 +25,7 @@ export const removeAlert = (key: string) => {
 
 var timer: any;
 
-export const setBotSpeech = (speech: string) => {
+export const setBotSpeech = (speech: string, timeout?: number) => {
     return async (dispatch: Dispatch) => {
         dispatch({ type: 'SET_BOT_SPEECH', payload: { speech: { message: speech } } });
 
@@ -34,7 +33,7 @@ export const setBotSpeech = (speech: string) => {
 
         timer = setTimeout(() => {
             dispatch({ type: 'SET_BOT_SPEECH', payload: { speech: undefined } });
-        }, 10000);
+        }, timeout || 5000);
     };
 };
 
@@ -46,7 +45,7 @@ export const setBotError = (error: string) => {
 
         timer = setTimeout(() => {
             dispatch({ type: 'SET_BOT_SPEECH', payload: { speech: undefined } });
-        }, 10000);
+        }, 8000);
     };
 };
 

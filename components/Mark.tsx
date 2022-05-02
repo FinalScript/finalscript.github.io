@@ -4,7 +4,10 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { useDispatch, useSelector } from 'react-redux';
 import { GeneralState } from '../types';
 import { useEffect, useState } from 'react';
-import { clearBotSpeech, toggleBot } from '../redux/general/generalActions';
+import { clearBotSpeech, setBotSpeech, toggleBot } from '../redux/general/generalActions';
+import { markConfig } from '../config';
+
+const randomSpeech = markConfig.welcomeSpeeches[Math.floor(Math.random() * markConfig.welcomeSpeeches.length)];
 
 export const Mark = () => {
     const dispatch = useDispatch<any>();
@@ -15,6 +18,11 @@ export const Mark = () => {
         const markAlreadyClicked = sessionStorage.getItem('markAlreadyClicked') === 'true';
 
         setMarkAlreadyClicked(markAlreadyClicked);
+        if (!markAlreadyClicked) {
+            dispatch(setBotSpeech('Welcome! My name is Mark. You can click on me at any point for additional options!', 10000));
+        } else {
+            dispatch(setBotSpeech(randomSpeech.message));
+        }
     }, []);
 
     const toggleMark = () => {
@@ -30,107 +38,64 @@ export const Mark = () => {
     };
 
     return (
-        <div className='relative'>
-            <div
-                className={
-                    'fixed flex justify-center right-[18%] z-30 transition-all duration-300 select-none ' +
-                    (generalReducer.botCurrentSpeech || generalReducer.botToggled ? '-bottom-24' : '-bottom-32 animate-bounce hover:animate-none')
-                }>
-                <AnimatePresence>
-                    {generalReducer.botCurrentSpeech && !generalReducer.botToggled && (
-                        <motion.div
-                            key={'text-bubble'}
-                            exit={{
-                                scale: 0,
-                            }}
-                            initial={{ scale: 0 }}
-                            animate={{ scale: 1, transformOrigin: 'bottom right', transition: { duration: 0.2, delay: 0.4, ease: 'easeInOut' } }}
-                            className='absolute flex justify-center items-center bottom-[200px] right-[150px] px-10 py-3 text-gray-900 rounded-xl md:mt-0'>
-                            <div className='absolute w-full h-full overflow-hidden select-none text-bubble'>
-                                <Image src='/images/text-bubble.png' layout='fill' objectFit='fill' />
-                            </div>
-                            <div className='z-50 mb-10 w-max max-w-[20rem]'>
-                                <p className={'text-center w-full ' + (generalReducer.botCurrentSpeech.isError ? ' text-red-500' : ' text-black')}>
-                                    {generalReducer.botCurrentSpeech.message}
-                                </p>
-                            </div>
-                        </motion.div>
-                    )}
+        <div
+            className={
+                'absolute flex md:justify-center z-20 transition-all duration-300 select-none p-inherit ' +
+                (generalReducer.botCurrentSpeech || generalReducer.botToggled ? '-bottom-[14vh]' : '-bottom-[18vh] animate-bounce')
+            }>
+            <AnimatePresence>
+                <motion.div key={'mark-image'} className={'z-30 drop-shadow-mark h-[30vh] w-[13.5vh] transition-all duration-500 select-none p-inherit '}>
+                    <Image title='Mark Bot' src='/images/mark.png' layout='fill' objectFit='contain' className='cursor-pointer' onClick={toggleMark} />
+                </motion.div>
+
+                {generalReducer.botCurrentSpeech && !generalReducer.botToggled && (
                     <motion.div
-                        key={'text-bot-mark'}
+                        key={'text-bubble'}
+                        exit={{
+                            scale: 0,
+                        }}
+                        initial={{ scale: 0 }}
+                        animate={{ scale: 1, transformOrigin: 'bottom left', transition: { duration: 0.3, delay: 0.5, ease: 'easeInOut' } }}
+                        className='left-5 md:left-10 z-10 w-max max-w-[16rem] md:max-w-[20rem] lg:max-w-[24rem] flex flex-col justify-center items-center absolute bottom-[33vh] text-gray-900'>
+                        <div className='mt-10 -z-10 absolute w-full h-full overflow-hidden select-none text-bubble'>
+                            <Image src='/images/text-bubble.png' layout='fill' objectFit='fill' />
+                        </div>
+                        <p
+                            className={
+                                'z-10 p-10 text-center w-full text-xs md:text-sm ' + (generalReducer.botCurrentSpeech.isError ? ' text-red-500' : ' text-black')
+                            }>
+                            {generalReducer.botCurrentSpeech.message}
+                        </p>
+                    </motion.div>
+                )}
+
+                {!markAlreadyClicked && !generalReducer.botCurrentSpeech && (
+                    <motion.div
+                        key={'exclamation-mark'}
                         exit={{
                             opacity: 0,
-                            translateY: 400,
                         }}
-                        initial={{ opacity: 0, translateY: 400 }}
-                        animate={{ opacity: 1, translateY: 0, transition: { duration: 0.3 } }}
-                        className={'drop-shadow-mark h-[30vh] w-[13.5vh] transition-all duration-500 select-none '}>
-                        <Image title='Mark Bot' src='/images/mark.png' layout='fill' objectFit='contain' className='cursor-pointer' onClick={toggleMark} />
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1, scale: [0, 2, 1], transition: { duration: 0.5 } }}
+                        className='z-10 p-5 w-auto flex items-center justify-center text-center absolute bottom-[31vh]'>
+                        <div className='h-[80px] w-[70px] flex items-center exclamation-mark cursor-pointer'>
+                            <Image src='/images/exclamation-mark.png' layout='fill' objectFit='contain' />
+                        </div>
                     </motion.div>
-
-                    {!markAlreadyClicked && !generalReducer.botCurrentSpeech && (
-                        <motion.div
-                            key={'exclamation-mark'}
-                            exit={{
-                                opacity: 0,
-                            }}
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1, scale: [0, 2, 1], transition: { duration: 0.5 } }}
-                            className='z-20 flex items-center justify-center text-center absolute bottom-[33vh] rounded-xl md:mt-0'>
-                            <div className='h-[80px] w-[70px] flex items-center exclamation-mark cursor-pointer'>
-                                <Image src='/images/exclamation-mark.png' layout='fill' objectFit='contain' />
-                            </div>
-                        </motion.div>
-                    )}
-
-                    <motion.div className='z-20 p-5 flex items-center justify-center space-x-5 absolute bottom-[31vh] text-gray-900 rounded-xl md:mt-0'>
-                        <AnimatePresence>
-                            {generalReducer.botToggled && (
-                                <>
-                                    <motion.a
-                                        href='https://discord.gg/2hVNsWRaJV'
-                                        target='_blank'
-                                        rel='noopener noreferrer'
-                                        key={'discord-button'}
-                                        variants={{
-                                            hidden: { opacity: 0, translateX: -100, zIndex: -5, transition: { delay: 0.3, duration: 0.1 } },
-                                            show: { opacity: 1, translateX: 0, zIndex: -4, transition: { delay: 0.2, duration: 0.4 } },
-                                        }}
-                                        exit='hidden'
-                                        initial='hidden'
-                                        animate='show'
-                                        whileHover={{ scale: 1.1 }}
-                                        className='relative w-[50px] h-[50px] cursor-pointer discord-button'>
-                                        <Image src='/images/discord-icon.png' layout='fill' objectFit='contain' />
-                                    </motion.a>
-                                    <motion.div
-                                        key={'whitepaper-button'}
-                                        variants={{
-                                            hidden: { opacity: 0, translateX: -100, zIndex: -7, transition: { delay: 0.2, duration: 0.1 } },
-                                            show: { opacity: 1, translateX: 0, zIndex: -6, transition: { delay: 0.4, duration: 0.4 } },
-                                        }}
-                                        onClick={() => {
-                                            dispatch(toggleBot());
-                                        }}
-                                        exit='hidden'
-                                        initial='hidden'
-                                        animate='show'
-                                        whileHover={{ scale: 1.1 }}
-                                        className='h-[50px] flex items-center whitelist-button cursor-pointer'>
-                                        <Link href={'/whitepaper'}>
-                                            <div className='h-[50px] w-[200px] flex items-center whitelist-button cursor-pointer'>
-                                                <Image src='/images/whitepaper-button.png' layout='fill' objectFit='contain' />
-                                            </div>
-                                        </Link>
-                                    </motion.div>
+                )}
+                <motion.div className='z-20 p-5 w-auto flex flex-col space-y-[2vh] justify-center absolute bottom-[31vh] text-gray-900'>
+                    <AnimatePresence>
+                        {generalReducer.botToggled && (
+                            <>
+                                <motion.div className='flex md:justify-center space-x-[2vh] z-10'>
                                     <motion.a
                                         href='https://twitter.com/MinerVerseNFT'
                                         target='_blank'
                                         rel='noopener noreferrer'
                                         key={'twitter-button'}
                                         variants={{
-                                            hidden: { opacity: 0, translateX: -100, zIndex: -8, transition: { delay: 0.1, duration: 0.1 } },
-                                            show: { opacity: 1, translateX: 0, zIndex: -7, transition: { delay: 0.6, duration: 0.4 } },
+                                            hidden: { opacity: 0, translateY: 100, zIndex: -7, transition: { delay: 0.2, duration: 0.1 } },
+                                            show: { opacity: 1, translateY: 0, zIndex: -6, transition: { delay: 0.4, duration: 0.4 } },
                                         }}
                                         exit='hidden'
                                         initial='hidden'
@@ -139,12 +104,48 @@ export const Mark = () => {
                                         className='relative w-[50px] h-[50px] cursor-pointer twitter-button'>
                                         <Image src='/images/twitter-icon.png' layout='fill' objectFit='contain' />
                                     </motion.a>
-                                </>
-                            )}
-                        </AnimatePresence>
-                    </motion.div>
-                </AnimatePresence>
-            </div>
+                                    <motion.a
+                                        href='https://discord.gg/2hVNsWRaJV'
+                                        target='_blank'
+                                        rel='noopener noreferrer'
+                                        key={'discord-button'}
+                                        variants={{
+                                            hidden: { opacity: 0, translateY: 100, zIndex: -8, transition: { delay: 0.1, duration: 0.1 } },
+                                            show: { opacity: 1, translateY: 0, zIndex: -7, transition: { delay: 0.6, duration: 0.4 } },
+                                        }}
+                                        exit='hidden'
+                                        initial='hidden'
+                                        animate='show'
+                                        whileHover={{ scale: 1.1 }}
+                                        className='relative w-[50px] h-[50px] cursor-pointer discord-button'>
+                                        <Image src='/images/discord-icon.png' layout='fill' objectFit='contain' />
+                                    </motion.a>
+                                </motion.div>
+                                <motion.div
+                                    key={'whitepaper-button'}
+                                    variants={{
+                                        hidden: { opacity: 0, translateY: 100, zIndex: 10, transition: { delay: 0.3, duration: 0.1 } },
+                                        show: { opacity: 1, translateY: 0, zIndex: 11, transition: { delay: 0.2, duration: 0.4 } },
+                                    }}
+                                    onClick={() => {
+                                        dispatch(toggleBot());
+                                    }}
+                                    exit='hidden'
+                                    initial='hidden'
+                                    animate='show'
+                                    whileHover={{ scale: 1.1 }}
+                                    className='h-[50px] flex items-center whitelist-button cursor-pointer'>
+                                    <Link href={'/whitepaper'}>
+                                        <div className='h-[50px] w-[180px] flex items-center whitelist-button cursor-pointer'>
+                                            <Image src='/images/whitepaper-button.png' layout='fill' objectFit='contain' />
+                                        </div>
+                                    </Link>
+                                </motion.div>
+                            </>
+                        )}
+                    </AnimatePresence>
+                </motion.div>
+            </AnimatePresence>
         </div>
     );
 };

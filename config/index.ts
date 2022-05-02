@@ -19,3 +19,12 @@ export const siteProtection = {
     ],
     whitelistOnly: true,
 };
+
+export const markConfig = {
+    welcomeSpeeches: [
+        { message: 'Welcome back, friend!' },
+        { message: 'Hello there, my name is Mark. Welcome to the mine!' },
+        { message: 'Greetings traveller!' },
+        { message: 'Top of the morning, friend!' },
+    ],
+};

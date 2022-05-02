@@ -12,19 +12,9 @@ import { useRouter } from 'next/router';
 import Image from 'next/image';
 import { AnimatePresence, motion } from 'framer-motion';
 import { TransactionAlert } from '../components/TransactionAlert';
-import Login from '../components/Login';
-import { setBotError, setBotSpeech } from '../redux/general/generalActions';
+import { setBotError } from '../redux/general/generalActions';
 import Particles from 'react-tsparticles';
 import { loadFull } from 'tsparticles';
-
-const welcomeSpeeches = [
-    { message: 'Welcome to MinerVerse! My name is Mark.' },
-    { message: 'Hello, my name is Mark. Welcome to the mine!' },
-    { message: 'Greetings!' },
-    { message: 'Top of the morning, friends!' },
-];
-
-const randomSpeech = welcomeSpeeches[Math.floor(Math.random() * welcomeSpeeches.length)];
 
 function MyApp({ Component, pageProps }: AppProps) {
     const dispatch = useDispatch<any>();
@@ -44,11 +34,10 @@ function MyApp({ Component, pageProps }: AppProps) {
     useEffect(() => {
         dispatch(connect());
         dispatch(checkConnection());
-        dispatch(setBotSpeech(randomSpeech.message));
 
-        const savedPassword = sessionStorage.getItem('password');
+        // const savedPassword = sessionStorage.getItem('password');
 
-        dispatch({ type: 'SET_ENTERED_PASSWORD', payload: { enteredPassword: savedPassword } });
+        // dispatch({ type: 'SET_ENTERED_PASSWORD', payload: { enteredPassword: savedPassword } });
 
         setTimeout(() => {
             dispatch({
@@ -67,10 +56,6 @@ function MyApp({ Component, pageProps }: AppProps) {
             dispatch(setBotError('Hello friend, please install MetaMask to play MinerVerse!'));
         }
     }, [blockchain.hasMetaMask, blockchain.isRightNetwork]);
-
-    useEffect(() => {
-        console.log(generalReducer.alerts);
-    }, [generalReducer.alerts]);
 
     useEffect(() => {
         const handleStart = () => {
@@ -111,7 +96,6 @@ function MyApp({ Component, pageProps }: AppProps) {
                 <meta name='viewport' content='initial-scale=1.0, width=device-width' />
             </Head>
             <>
-                <Nav />
                 <div className='absolute z-40 bottom-5 left-5'>
                     <AnimatePresence>
                         {generalReducer.alerts.map((alert: CustomAlert) => {
@@ -186,7 +170,7 @@ function MyApp({ Component, pageProps }: AppProps) {
                                                     },
                                                 },
                                             }}
-                                            className='relative h-72 w-72 mx-auto'>
+                                            className='relative h-[20vh] w-[20vh] lg:h-[24vh] lg:w-[24vh] mx-auto'>
                                             <Image src='/images/spinning-diamond.gif' objectFit='contain' layout='fill' />
                                         </motion.div>
                                     </div>
@@ -194,7 +178,8 @@ function MyApp({ Component, pageProps }: AppProps) {
                             </>
                         )}
                     </AnimatePresence>
-                </div>
+                </div>{' '}
+                <Nav />
                 <Component {...pageProps} />
             </>
         </Provider>
