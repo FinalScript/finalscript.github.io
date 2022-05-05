@@ -423,8 +423,8 @@ const whitepaper: NextPage = () => {
                                 <br />
                                 <br />
                                 <div className='relative overflow-x-auto'>
-                                    <table className='w-full text-md text-center'>
-                                        <thead className='text-md uppercase bg-transparent'>
+                                    <table className='w-full text-xs lg:text-base text-center'>
+                                        <thead className='uppercase bg-transparent'>
                                             <tr className='border-4 border-amber-900'>
                                                 <th scope='col' className='px-4 py-3'>
                                                     Excited Gemologist
@@ -439,17 +439,17 @@ const whitepaper: NextPage = () => {
                                         </thead>
                                         <tbody>
                                             <tr className='bg-transparent border-4 border-amber-900'>
-                                                <td className='px-4 py-3'>
+                                                <td className='px-4 py-3 min-w-[200px]'>
                                                     The Gemologist is quite the character, willing to take a few or all of your $DIAMOND to find out its true
                                                     value! Just beware that this could come at a cost, if the Diamonds fail to be authenticated you will lose
                                                     half of the $DIAMOND you put in, but if they succeed your $DIAMOND value will double!
                                                 </td>
-                                                <td className='px-4 py-3'>
+                                                <td className='px-4 py-3 min-w-[200px]'>
                                                     A Dealer will let you enter a lottery among your miner friends. He will give you a chance to buy a single
                                                     entry ticket per miner NFT owned. At the end of his visit, the winner of the lottery will be rewarded with
                                                     80% of the $DIAMOND pool winnings, with him keeping the rest as...profit.
                                                 </td>
-                                                <td className='px-4 py-3'>
+                                                <td className='px-4 py-3 min-w-[200px]'>
                                                     This Locksmith came prepared offering a lock nft that could be used to protect your vault from potential
                                                     attacks. Beware, these locks come with a very expensive $DIAMOND price and are limited in quantity so miners
                                                     can only buy one per Miner NFT owned.
