@@ -18,13 +18,13 @@ export const Nav = () => {
     return (
         <>
             {!generalReducer.isLoading && (
-                <motion.header
+                <motion.nav
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1, transition: { duration: 1 } }}
                     className={
-                        'flex flex-col lg:px-10 xl:px-20 lg:flex-row items-center justify-center text-gray-400 pb-4 bg-opacity-90 bg-transparent body-font fixed z-30 w-screen max-w-[100vw]'
+                        'flex flex-col lg:px-10 xl:px-20 lg:flex-row items-center justify-center text-gray-400 pb-4 bg-opacity-90 bg-transparent body-font z-30 fixed w-full'
                     }>
-                    <div className='container tracking-widest flex lg:justify-between flex-row items-center justify-center relative'>
+                    <div className='container flex lg:justify-between flex-row items-center justify-center relative'>
                         <Link href={'/'}>
                             <div className='flex cursor-pointer title-font font-medium items-center text-white p-2'>
                                 <div className='w-60 h-20 xl:w-72 xl:h-24 relative drop-shadow-blue'>
@@ -92,7 +92,7 @@ export const Nav = () => {
                                         onClick={() => {
                                             dispatch(connect());
                                         }}
-                                        className='bg-cyan-400 hover:bg-cyan-500 shadow-center-lg shadow-cyan-500 font-semibold text-gray-900 rounded-lg px-3 py-2 '>
+                                        className='bg-cyan-400 hover:bg-cyan-500 shadow-center-lg shadow-cyan-500 font-semibold text-gray-900 rounded-lg px-3 py-2 whitespace-nowrap '>
                                         Connect Wallet
                                     </button>
                                 )
@@ -101,7 +101,7 @@ export const Nav = () => {
                             )}
                         </div>
                     </motion.div>
-                </motion.header>
+                </motion.nav>
             )}
         </>
     );

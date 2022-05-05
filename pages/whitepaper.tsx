@@ -21,14 +21,14 @@ const whitepaper: NextPage = () => {
                 <div className='paper-container'>
                     <motion.div
                         initial={{ opacity: 0, translateY: 500 }}
-                        animate={{ opacity: 1, translateY: 0, transition: { duration: 0.4, delay: generalReducer.isLoading ? 1.6 : 0 } }}
+                        animate={{ opacity: 1, translateY: 0, transition: { duration: 0.3, delay: generalReducer.isLoading ? 1 : 0 } }}
                         className={'paper h-min mt-36  '}>
                         <div className='absolute z-10 w-[150px] h-[80px] sm:w-[200px] sm:h-[100px] lg:w-[300px] lg:h-[150px] ml-3 mt-3 sm:ml-8 sm:mt-6 lg:ml-10 lg:mt-8'>
                             <Image src='/images/confidental.png' layout='fill' objectFit='contain' />
                         </div>
                         <div className='whitepaper relative'>
                             <header className='flex flex-col justify-center items-center space-y-10 mb-8'>
-                                <div className='w-[40vh] h-[20vh] relative'>
+                                <div className='w-[100%] h-[150px] relative'>
                                     <Image src='/images/minerverse-logo.png' layout='fill' objectFit='contain' />
                                 </div>
                                 <h1 className='lg:text-8xl text-5xl sm:text-6xl md:text-7xl font-bold'>WHITEPAPER</h1>
@@ -133,10 +133,6 @@ const whitepaper: NextPage = () => {
                                 <div className='text-sm lg:text-xl flex flex-col justify-center space-y-4 px-5 emoji-list'>
                                     <p>
                                         <span>💎 </span>
-                                        <span>25% for operational costs and further developments</span>
-                                    </p>
-                                    <p>
-                                        <span>💎 </span>
                                         <span>5% to charity</span>
                                     </p>
                                     <p>
@@ -149,8 +145,18 @@ const whitepaper: NextPage = () => {
                                     </p>
                                     <p>
                                         <span>💎 </span>
-                                        <span>30% for the devs</span>
+                                        <span>25% for the devs</span>
                                     </p>
+                                    <p>
+                                        <span>💎 </span>
+                                        <span>30% for operational costs and further developments</span>
+                                    </p>
+                                </div>
+                                <br />
+                                <div className='flex justify-center'>
+                                    <div className='w-full h-[250px] relative'>
+                                        <Image src='/images/revenue-split.png' layout='fill' objectFit='contain' />
+                                    </div>
                                 </div>
                             </div>
 
@@ -311,26 +317,179 @@ const whitepaper: NextPage = () => {
                                 </div>
                             </div>
                             <div className='relative'>
+                                <h2 className='text-2xl lg:text-3xl font-bold mb-8'>Events</h2>
+                                <div className='text-base lg:text-xl'>
+                                    <p>
+                                        During your mining adventures you may encounter special events that will occur throughout the game such as a Diamond
+                                        Apocalypse which will cut the diamond mining rate in half, or a Miners Miracle which will sky rocket the mining rate.
+                                        These events will occur at a random time and will last a full 24 hours!
+                                    </p>
+                                </div>
+                                <br />
+                                <ul className='list-decimal list-inside'>
+                                    <li className='relative'>
+                                        <h2 className='text-base lg:text-xl font-bold mb-5 inline-block'>Diamond Apocalypse</h2>
+                                        <ul className='text-sm lg:text-base list-none list-inside'>
+                                            <li>
+                                                When the Diamond Apocalypse strikes diamonds will be scarce and the $DIAMOND mining rate will be cut in half!
+                                            </li>
+                                            <br />
+                                            <li>
+                                                With the apocalypse underway any diamonds stored in the Vault may be stolen by other miners, the only way to
+                                                protect yourself is to purchase and use a Gold Lock. Only 2000 Gold Locks are purchasable with your $DIAMOND
+                                                throughout the entire game and can only be bought when the Bizarre Locksmith appears. Once a lock has been used
+                                                it will break and a new one will have to be purchased for future uses.
+                                            </li>
+                                            <br />
+                                            <li>
+                                                But if you happen to be the one scouring for diamonds during the apocalypse you can only do so once and the rate
+                                                stolen can vary between 5% and 25% of the attacked miners vaulted $DIAMOND.
+                                            </li>
+                                        </ul>
+                                    </li>
+                                    <br />
+                                    <li className='relative'>
+                                        <h2 className='text-base lg:text-xl font-bold mb-5 inline-block'>Miners Miracle</h2>
+                                        <ul className='text-sm lg:text-base list-none list-inside'>
+                                            <li>Lucky days are upon us when the Miners Miracle arrives, $DIAMOND begins to rain from the skies!</li>
+                                            <br />
+                                            <li>$DIAMOND mining rate will double, $DIAMOND put into the vault has a small chance to double.</li>
+                                            <br />
+                                            <li>
+                                                While the miners are dazed by the miracles, others can go on the attack once and steal from other miners'
+                                                vaults. The rate stolen can vary between 5% and 25% of the attacked miners vaulted $DIAMOND.
+                                            </li>
+                                            <br />
+                                            <li>
+                                                To protect yourself during these attacks a Golden Lock can be used to stop attackers from stealing from your
+                                                vault. Only 2000 Gold Locks are purchasable with your $DIAMOND throughout the entire game and can only be bought
+                                                when the Bizarre Locksmith appears. Once a lock has been used it will break and a new one will have to be
+                                                purchased for future uses.
+                                            </li>
+                                        </ul>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div className='relative'>
+                                <h2 className='text-2xl lg:text-3xl font-bold mb-8'>Gold Locks</h2>
+                                <div className='flex justify-start items-start flex-col lg:flex-row space-y-8 lg:space-y-0'>
+                                    <div className='text-sm lg:text-xl flex flex-col justify-center space-y-4 px-3 emoji-list'>
+                                        <p>
+                                            <span>💎 </span>
+                                            <span>Special ERC20 NFT that gives protection to the vault from other miners trying to steal diamonds</span>
+                                        </p>
+                                        <p>
+                                            <span>💎 </span>
+                                            <span>Miners can be staked in the Mine to mine $DIAMOND</span>
+                                        </p>
+                                        <p>
+                                            <span>💎 </span>
+                                            <span>Limited quantity of 2000 </span>
+                                        </p>
+                                        <p>
+                                            <span>💎 </span>
+                                            <span>Sold by the “Bizarre Locksmith” when he’s in the shop</span>
+                                        </p>
+                                        <p>
+                                            <span>💎 </span>
+                                            <span>Locksmith will only sell one lock per miner NFT</span>
+                                        </p>
+                                        <p>
+                                            <span>💎 </span>
+                                            <span>Once all locks are sold, they’ll be available to buy from other miners in a third party marketplace</span>
+                                        </p>
+                                    </div>
+                                    <div className='w-full lg:w-[250px] h-[220px] relative'>
+                                        <Image src='/images/golden-lock.png' layout='fill' objectFit='contain' />
+                                    </div>
+                                </div>
+                            </div>
+                            <div className='relative overflow-hidden'>
+                                <h2 className='text-2xl lg:text-3xl font-bold mb-8'>Shop</h2>
+                                <div className='text-base lg:text-xl mb-5'>
+                                    <p>The shop offers loads of deals to miners for sale!</p>
+                                    <br />
+                                    <p>
+                                        Different miners may appear at random each day at the shop and remain for 24 hours, just beware that all deals come at a
+                                        hefty cost of $DIAMOND so make sure to make the right decisions with your $DIAMOND when the time comes.
+                                    </p>
+                                </div>
+                                <br />
+                                <div className='flex justify-center'>
+                                    <div className='w-full h-[250px] relative'>
+                                        <Image src='/images/mystery-trio.png' layout='fill' objectFit='contain' />
+                                    </div>
+                                </div>
+                                <br />
+                                <br />
+                                <div className='relative overflow-x-auto'>
+                                    <table className='w-full text-md text-center'>
+                                        <thead className='text-md uppercase bg-transparent'>
+                                            <tr className='border-4 border-amber-900'>
+                                                <th scope='col' className='px-4 py-3'>
+                                                    Excited Gemologist
+                                                </th>
+                                                <th scope='col' className='px-4 py-3'>
+                                                    Sketchy Dealer
+                                                </th>
+                                                <th scope='col' className='px-4 py-3'>
+                                                    Bizarre Locksmith
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr className='bg-transparent border-4 border-amber-900'>
+                                                <td className='px-4 py-3'>
+                                                    The Gemologist is quite the character, willing to take a few or all of your $DIAMOND to find out its true
+                                                    value! Just beware that this could come at a cost, if the Diamonds fail to be authenticated you will lose
+                                                    half of the $DIAMOND you put in, but if they succeed your $DIAMOND value will double!
+                                                </td>
+                                                <td className='px-4 py-3'>
+                                                    A Dealer will let you enter a lottery among your miner friends. He will give you a chance to buy a single
+                                                    entry ticket per miner NFT owned. At the end of his visit, the winner of the lottery will be rewarded with
+                                                    80% of the $DIAMOND pool winnings, with him keeping the rest as...profit.
+                                                </td>
+                                                <td className='px-4 py-3'>
+                                                    This Locksmith came prepared offering a lock nft that could be used to protect your vault from potential
+                                                    attacks. Beware, these locks come with a very expensive $DIAMOND price and are limited in quantity so miners
+                                                    can only buy one per Miner NFT owned.
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <div className='relative'>
                                 <h2 className='text-2xl lg:text-3xl font-bold mb-8'>Strategy</h2>
 
                                 <div className='text-base lg:text-xl'>
                                     <div className='flex items-start'>
-                                        <p className='w-[70%]'>
-                                            As you can see, the MinerVerse has been designed around three main principles: fun, longevity, and strategy. With
-                                            gameplay expected to last a while - just like your favorite childhood games, MinerVerse is sure to keep you
-                                            entertained. The mechanics of The Vault guarantee that your balance of $DIAMOND can only go up if you deposit
-                                            $DIAMOND and withdraw using the 2 day cooldown period.
-                                        </p>
+                                        <div className='w-[70%]'>
+                                            <p>
+                                                As you can see, the MinerVerse has been designed around three main principles: fun, longevity, and strategy.
+                                                With gameplay expected to last a while - just like your favorite childhood games, MinerVerse is sure to keep you
+                                                entertained.
+                                            </p>
+                                            <br />
+                                            <p>
+                                                The mechanics of The Vault guarantee that your balance of $DIAMOND can only go up if you deposit $DIAMOND and
+                                                withdraw using the 2 day cooldown period. But keep in mind that keeping your $DIAMOND in the Vault prevents you
+                                                from spending it on upgrades that will mine you more $DIAMOND.
+                                            </p>
+                                            <br />
+                                        </div>
 
-                                        <div className='w-[30%] h-[150px] relative'>
+                                        <div className='w-[30%] h-[250px] relative'>
                                             <Image src='/images/diamond-trophy.png' layout='fill' objectFit='contain' />
                                         </div>
                                     </div>
                                     <br />
                                     <p>
-                                        But keep in mind that keeping your $DIAMOND in the vault prevents you from spending it on craftables that will mine you
-                                        more $DIAMOND. We won’t tell you how to invest your $DIAMOND, but be smart about it!
+                                        With the introduction of the shop and events, miners will have the opportunity to plan ahead and take risks with various
+                                        encounters.
                                     </p>
+                                    <br />
+                                    <p>We won’t tell you how to invest your $DIAMOND, but be smart about it!</p>
                                 </div>
                             </div>
                             <div className='-mb-8 pt-8'>

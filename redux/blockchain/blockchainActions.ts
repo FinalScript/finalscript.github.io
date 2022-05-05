@@ -6,6 +6,7 @@ import minerAbi from '../../config/miner-abi.json';
 import { networkConfig, minerConfig } from '../../config/index';
 import { Dispatch } from 'redux';
 import { addAlert, setBotError, setBotSpeech } from '../general/generalActions';
+import { shortenAddress } from '../../utils/shortenAddress';
 
 const updateAccount = (account: string | null) => {
     return {
@@ -126,6 +127,7 @@ export const checkConnection = () => {
                         dispatch(updateAccountBalance(Web3.utils.fromWei(res)));
                     });
 
+                    dispatch(setBotSpeech(`Welcome ${shortenAddress(accountSwitch)}!`));
                     dispatch(updateAccount(accountSwitch));
                 } else {
                     dispatch(updateAccount(null));

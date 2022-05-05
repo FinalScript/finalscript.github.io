@@ -30,6 +30,11 @@ const Home: NextPage = () => {
         // `${blockchain.hasMetaMask ? 100 - contractData.superPercentage : 0}% chance to mint a Regular Miner`,
         `${contractData.superPercentage}% chance to mint a Super Miner`,
     ];
+
+    useEffect(() => {
+        //dispatch(connect());
+    }, []);
+
     const handlePlay = () => {
         if (
             siteProtection.whitelistOnly &&

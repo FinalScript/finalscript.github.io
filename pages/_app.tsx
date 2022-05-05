@@ -35,7 +35,6 @@ function MyApp({ Component, pageProps }: AppProps) {
     const memoizedParticlesInit = useCallback(particlesInit, []);
 
     useEffect(() => {
-        dispatch(connect());
         dispatch(checkConnection());
 
         // const savedPassword = sessionStorage.getItem('password');
@@ -83,7 +82,7 @@ function MyApp({ Component, pageProps }: AppProps) {
                     type: 'SET_LOADING',
                     payload: { isLoading: false },
                 });
-            }, 1000);
+            }, 800);
         };
 
         router.events.on('routeChangeStart', handleStart);
@@ -189,7 +188,7 @@ function MyApp({ Component, pageProps }: AppProps) {
                             </>
                         )}
                     </AnimatePresence>
-                </div>{' '}
+                </div>
                 <Nav />
                 <Component {...pageProps} />
             </>
