@@ -68,26 +68,26 @@ function MyApp({ Component, pageProps }: AppProps) {
     }, [blockchain.hasMetaMask, blockchain.isRightNetwork]);
 
     useEffect(() => {
-        const handleStart = () => {
-            setPageLoading(true);
-            dispatch({
-                type: 'SET_LOADING',
-                payload: { isLoading: true },
-            });
-        };
-        const handleComplete = () => {
-            setTimeout(() => {
-                setPageLoading(false);
-                dispatch({
-                    type: 'SET_LOADING',
-                    payload: { isLoading: false },
-                });
-            }, 800);
-        };
+        // const handleStart = () => {
+        //     setPageLoading(true);
+        //     dispatch({
+        //         type: 'SET_LOADING',
+        //         payload: { isLoading: true },
+        //     });
+        // };
+        // const handleComplete = () => {
+        //     setTimeout(() => {
+        //         setPageLoading(false);
+        //         dispatch({
+        //             type: 'SET_LOADING',
+        //             payload: { isLoading: false },
+        //         });
+        //     }, 800);
+        // };
 
-        router.events.on('routeChangeStart', handleStart);
-        router.events.on('routeChangeComplete', handleComplete);
-        router.events.on('routeChangeError', handleComplete);
+        // router.events.on('routeChangeStart', handleStart);
+        // router.events.on('routeChangeComplete', handleComplete);
+        // router.events.on('routeChangeError', handleComplete);
     }, [router]);
 
     useEffect(() => {

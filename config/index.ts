@@ -9,8 +9,8 @@ export const networkConfig = {
 
 export const contractAddresses = {
     miner: '0x68071b628211eB53c494E640e3EC9425e10BF37f',
-    mine: '0xBA7e7689BeD8d31fc1BE1e4c12e6d0f9f9F2fcc7',
-    diamond: '0x462Da0D57E9F932321b3970E899ee0C4770f6839',
+    mine: '0x3DDa4835732C0748456C31EFEB129084828E91f2',
+    diamond: '0x160Bc480C57b63F479F31DE94c13C4a3C0AcCE49',
     vault: '0xC73A2906ca86eC802e57e119F8C2746890c6B887',
 };
 
