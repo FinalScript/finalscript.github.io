@@ -14,7 +14,9 @@ export interface BlockchainData {
     network?: string;
     isRightNetwork: boolean;
     hasMetaMask: boolean;
-    smartContract?: Contract;
+    minerContract?: Contract;
+    mineContract?: Contract;
+    diamondContract?: Contract;
     web3?: Web3;
 }
 

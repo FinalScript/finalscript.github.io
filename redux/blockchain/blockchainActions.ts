@@ -2,11 +2,14 @@
 import { Contract } from 'web3-eth-contract';
 import { AbiItem } from 'web3-utils';
 import Web3 from 'web3';
-import minerAbi from '../../config/miner-abi.json';
-import { networkConfig, minerConfig } from '../../config/index';
+import { networkConfig, contractAddresses } from '../../config/index';
 import { Dispatch } from 'redux';
 import { addAlert, setBotError, setBotSpeech } from '../general/generalActions';
 import { shortenAddress } from '../../utils/shortenAddress';
+
+import minerAbi from '../../config/miner-abi.json';
+import mineAbi from '../../config/mine-abi.json';
+import diamondAbi from '../../config/diamond-abi.json';
 
 const updateAccount = (account: string | null) => {
     return {
@@ -43,10 +46,24 @@ const updateWeb3 = (web3: Web3 | null) => {
     };
 };
 
-const updateSmartContract = (smartContract: Contract | null) => {
+const updateMinerContract = (minerContract: Contract | null) => {
     return {
-        type: 'UPDATE_SMARTCONTRACT',
-        payload: { smartContract },
+        type: 'UPDATE_MINERCONTRACT',
+        payload: { minerContract },
+    };
+};
+
+const updateMineContract = (mineContract: Contract | null) => {
+    return {
+        type: 'UPDATE_MINECONTRACT',
+        payload: { mineContract },
+    };
+};
+
+const updateDiamondContract = (diamondContract: Contract | null) => {
+    return {
+        type: 'UPDATE_DIAMONDCONTRACT',
+        payload: { diamondContract },
     };
 };
 
@@ -97,13 +114,17 @@ export const checkConnection = () => {
                 dispatch(updateNetwork(Web3.utils.toHex(res)));
 
                 if (Web3.utils.toHex(res) === networkConfig.chainId) {
-                    const SmartContractObj = new web3.eth.Contract(minerAbi as AbiItem[], minerConfig.contractAddress);
+                    const minerContractObj = new web3.eth.Contract(minerAbi as AbiItem[], contractAddresses.miner);
+                    const mineContractObj = new web3.eth.Contract(mineAbi as AbiItem[], contractAddresses.mine);
+                    const diamondContractObj = new web3.eth.Contract(diamondAbi as AbiItem[], contractAddresses.diamond);
 
-                    dispatch(updateSmartContract(SmartContractObj));
+                    dispatch(updateMinerContract(minerContractObj));
+                    dispatch(updateMineContract(mineContractObj));
+                    dispatch(updateDiamondContract(diamondContractObj));
                     dispatch(updateRightNetwork(true));
                 } else {
                     // dispatch(setBotError(`You're not on the right network, friend. Please switch to ${networkConfig.chainName}`));
-                    dispatch(updateSmartContract(null));
+                    dispatch(updateMinerContract(null));
                 }
             });
 
@@ -141,14 +162,19 @@ export const checkConnection = () => {
                     dispatch(updateNetwork(parseInt(code)));
 
                     if (code === networkConfig.chainId) {
-                        const SmartContractObj = new web3.eth.Contract(minerAbi as AbiItem[], minerConfig.contractAddress);
+                        const minerContractObj = new web3.eth.Contract(minerAbi as AbiItem[], contractAddresses.miner);
+                        const mineContractObj = new web3.eth.Contract(mineAbi as AbiItem[], contractAddresses.mine);
+                        const diamondContractObj = new web3.eth.Contract(diamondAbi as AbiItem[], contractAddresses.diamond);
+
+                        dispatch(updateMinerContract(minerContractObj));
+                        dispatch(updateMineContract(mineContractObj));
+                        dispatch(updateDiamondContract(diamondContractObj));
 
                         dispatch(setBotSpeech(`Welcome back to the ${networkConfig.chainName}!`));
-                        dispatch(updateSmartContract(SmartContractObj));
                         dispatch(updateRightNetwork(true));
                     } else {
                         dispatch(setBotError(`You're not on the right network, friend. Please switch to the ${networkConfig.chainName}`));
-                        dispatch(updateSmartContract(null));
+                        dispatch(updateMinerContract(null));
                         dispatch(updateRightNetwork(false));
                     }
 

@@ -26,10 +26,10 @@ const updateIsWhiteListed = (payload: any) => {
 export const checkIsWhiteListed = (address: string) => {
     return async (dispatch: Dispatch) => {
         try {
-            const smartContract = await store.getState().blockchain.smartContract;
+            const minerContract = await store.getState().blockchain.minerContract;
 
-            if (smartContract) {
-                const isWhiteListed = await smartContract?.methods.isWhiteListed(address).call();
+            if (minerContract) {
+                const isWhiteListed = await minerContract?.methods.isWhiteListed(address).call();
 
                 dispatch(updateIsWhiteListed({ isWhiteListed }));
             } else {
@@ -45,37 +45,37 @@ export const checkIsWhiteListed = (address: string) => {
 export const fetchData = () => {
     return async (dispatch: Dispatch) => {
         try {
-            const smartContract = await store.getState().blockchain.smartContract;
+            const minerContract = await store.getState().blockchain.minerContract;
 
-            if (smartContract) {
-                const superPercentage = await smartContract?.methods.BASE_SUPER_PERCENTAGE().call();
+            if (minerContract) {
+                const superPercentage = await minerContract?.methods.BASE_SUPER_PERCENTAGE().call();
 
-                const maxPerMint = await smartContract?.methods.MAX_PER_MINT().call();
+                const maxPerMint = await minerContract?.methods.MAX_PER_MINT().call();
 
-                const nftTax = await smartContract?.methods.NFT_TAX().call();
+                const nftTax = await minerContract?.methods.NFT_TAX().call();
 
-                const baseSupply = await smartContract?.methods.baseSupply().call();
+                const baseSupply = await minerContract?.methods.baseSupply().call();
 
-                const presaleSupply = await smartContract?.methods.presaleSupply().call();
+                const presaleSupply = await minerContract?.methods.presaleSupply().call();
 
-                const maxBaseSupply = await smartContract?.methods.MAX_BASE_SUPPLY().call();
+                const maxBaseSupply = await minerContract?.methods.MAX_BASE_SUPPLY().call();
 
-                const maxPresaleSupply = await smartContract?.methods.MAX_PRESALE_SUPPLY().call();
+                const maxPresaleSupply = await minerContract?.methods.MAX_PRESALE_SUPPLY().call();
 
-                const totalSupply = await smartContract?.methods.totalSupply().call();
+                const totalSupply = await minerContract?.methods.totalSupply().call();
 
-                const presaleOpen = await smartContract?.methods.presaleOpen().call();
+                const presaleOpen = await minerContract?.methods.presaleOpen().call();
 
-                const baseSalesOpen = await smartContract?.methods.baseSalesOpen().call();
+                const baseSalesOpen = await minerContract?.methods.baseSalesOpen().call();
 
-                const gameStarted = await smartContract?.methods.gameStarted().call();
+                const gameStarted = await minerContract?.methods.gameStarted().call();
 
                 let price = 0;
 
                 if (baseSalesOpen) {
-                    price = await smartContract?.methods.BASE_MINT_PRICE().call();
+                    price = await minerContract?.methods.BASE_MINT_PRICE().call();
                 } else {
-                    price = await smartContract?.methods.PRESALE_MINT_PRICE().call();
+                    price = await minerContract?.methods.PRESALE_MINT_PRICE().call();
                 }
 
                 dispatch(

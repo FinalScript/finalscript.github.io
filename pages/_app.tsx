@@ -24,7 +24,7 @@ function MyApp({ Component, pageProps }: AppProps) {
     const blockchain = useSelector((state: BlockchainState) => state.blockchain);
     const generalReducer = useSelector((state: GeneralState) => state.general);
     const router = useRouter();
-    const [pageLoading, setPageLoading] = useState<boolean>(true);
+    const [pageLoading, setPageLoading] = useState<boolean>(false);
     const particlesInit = async (main: any) => {
         // you can initialize the tsParticles instance (main) here, adding custom shapes or presets
         // this loads the tsparticles package bundle, it's the easiest method for getting everything ready

@@ -6,7 +6,9 @@ const initialState = {
     network: '',
     isRightNetwork: false,
     hasMetaMask: true,
-    smartContract: undefined,
+    minerContract: undefined,
+    mineContract: undefined,
+    diamondContract: undefined,
     web3: undefined,
 };
 
@@ -42,10 +44,20 @@ const blockchainReducer = (state: BlockchainData = initialState, action: any) =>
                 ...state,
                 web3: action.payload.web3,
             };
-        case 'UPDATE_SMARTCONTRACT':
+        case 'UPDATE_MINERCONTRACT':
             return {
                 ...state,
-                smartContract: action.payload.smartContract,
+                minerContract: action.payload.minerContract,
+            };
+        case 'UPDATE_MINECONTRACT':
+            return {
+                ...state,
+                mineContract: action.payload.mineContract,
+            };
+        case 'UPDATE_DIAMONDCONTRACT':
+            return {
+                ...state,
+                diamondContract: action.payload.diamondContract,
             };
         case 'UPDATE_HASMETAMASK':
             return {

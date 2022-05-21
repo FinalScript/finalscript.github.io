@@ -2,7 +2,7 @@ import type { NextPage } from 'next';
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import Web3 from 'web3';
-import { minerConfig, networkConfig, siteProtection } from '../config';
+import { contractAddresses, networkConfig, siteProtection } from '../config';
 import { checkBalance, connect, switchNetwork } from '../redux/blockchain/blockchainActions';
 import { BlockchainState, ContractDataState, GeneralState } from '../types';
 import Image from 'next/image';
@@ -58,13 +58,13 @@ const Home: NextPage = () => {
                     dispatch(setBotError(`Please enter a quantity (0-${contractData.maxPerMint})`));
                 }
 
-                if (blockchain.smartContract && blockchain.account && quantity !== '') {
+                if (blockchain.minerContract && blockchain.account && quantity !== '') {
                     if (contractData.baseSalesOpen) {
-                        blockchain.smartContract?.methods
+                        blockchain.minerContract?.methods
                             .mintBase(parseInt(quantity))
                             .send({
-                                gasLimit: String(855000),
-                                to: minerConfig.contractAddress,
+                                gasLimit: String(7000000),
+                                to: contractAddresses.miner,
                                 from: blockchain.account,
                                 value: totalPrice,
                             })
@@ -101,11 +101,11 @@ const Home: NextPage = () => {
                                 console.log(res);
                             });
                     } else if (contractData.presaleOpen && contractData.isWhiteListed) {
-                        blockchain.smartContract?.methods
+                        blockchain.minerContract?.methods
                             .presaleMintBase(parseInt(quantity))
                             .send({
-                                gasLimit: String(855000),
-                                to: minerConfig.contractAddress,
+                                gasLimit: String(7000000),
+                                to: contractAddresses.miner,
                                 from: blockchain.account,
                                 value: totalPrice,
                             })
@@ -138,7 +138,7 @@ const Home: NextPage = () => {
 
     useEffect(() => {
         dispatch(fetchData());
-    }, [blockchain.smartContract]);
+    }, [blockchain.minerContract]);
 
     useEffect(() => {
         setQuantity('');
