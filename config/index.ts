@@ -19,6 +19,7 @@ export const siteProtection = {
         '0x0BE2F9e6A907B73bA1BD85E98B72403627A33E88',
         '0x99E437ae983E40346F7EcEdAabd0b4c6adFC6BE8',
         '0xb9FC257A258C5Ef6C42a4af5a92353A5570c7d67',
+        '0x72E494939f08f1710d61e1D53CDc8b2f6Ee65b49',
     ],
     whitelistOnly: true,
 };
