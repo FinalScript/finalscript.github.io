@@ -9,6 +9,8 @@ import Web3 from 'web3';
 const game: NextPage = () => {
     const blockchain = useSelector((state: BlockchainState) => state.blockchain);
 
+    const [generalData, setGeneralData] = useState<any[]>([]);
+
     const [miners, setMiners] = useState<number[]>([]);
     const [selectedMiners, setSelectedMiners] = useState<number[]>([]);
 
@@ -73,6 +75,10 @@ const game: NextPage = () => {
                 if (miners) {
                     for (const miner of miners) {
                         minersState.push(parseInt(miner['tokenId']));
+
+                        setGeneralData((prevState: any) => {
+                            return { ...prevState, [miner.tokenId]: { ...prevState[miner.tokenId], level: parseInt(miner.level) } };
+                        });
                     }
 
                     minersState.sort((a, b) => a - b);
@@ -96,6 +102,10 @@ const game: NextPage = () => {
                 if (miners) {
                     for (const miner of miners) {
                         minersState.push(parseInt(miner['tokenId']));
+
+                        setGeneralData((prevState: any) => {
+                            return { ...prevState, [miner.tokenId]: { ...prevState[miner.tokenId], level: parseInt(miner.level) } };
+                        });
                     }
                     const yieldDps = await blockchain.mineContract?.methods.YIELD_CPS().call();
 
@@ -104,20 +114,23 @@ const game: NextPage = () => {
                             let totalAcccrued = parseFloat(Web3.utils.fromWei('0', 'ether'));
 
                             for (const miner of miners) {
-                                const accrued = parseFloat(
-                                    Web3.utils.fromWei(
-                                        Web3.utils.toBN(
-                                            parseInt(
-                                                ((Math.round(Date.now() - Math.round(miner.startTimestamp * 1000)) *
+                                const accrued =
+                                    parseFloat(
+                                        Web3.utils.fromWei(
+                                            Web3.utils.toBN(
+                                                (Math.round(Date.now() - Math.round(miner.startTimestamp * 1000)) *
                                                     (miner.level === '0' ? 1 : 5) *
                                                     parseFloat(yieldDps)) /
-                                                    1000).toString(),
-                                                10
-                                            ).toString()
-                                        ),
-                                        'ether'
-                                    )
-                                );
+                                                    1000 /
+                                                    10000
+                                            ),
+                                            'ether'
+                                        )
+                                    ) * 10000;
+
+                                if (miner.tokenId === '34') {
+                                    
+                                }
 
                                 setStakedData((prevState: any) => {
                                     return { ...prevState, [miner.tokenId]: { ...prevState[miner.tokenId], earned: accrued } };
@@ -154,6 +167,10 @@ const game: NextPage = () => {
                 if (cooldowns) {
                     for (const cooldown of cooldowns) {
                         cooldownsState.push(parseInt(cooldown['tokenId']));
+
+                        setGeneralData((prevState: any) => {
+                            return { ...prevState, [cooldown.tokenId]: { ...prevState[cooldown.tokenId], level: parseInt(cooldown.level) } };
+                        });
                     }
 
                     setCooldownRemainingInterval(
@@ -403,7 +420,8 @@ const game: NextPage = () => {
                                                     }
                                                 }}
                                                 className={
-                                                    'relative text-white shadow-lg p-4 mr-1 mb-1 w-[100px] cursor-pointer ' +
+                                                    'relative shadow-lg p-4 mr-1 mb-1 w-[100px] cursor-pointer ' +
+                                                    (generalData[miner]?.level === 1 ? ' text-red-500 ' : 'text-white ') +
                                                     (selectedStaked.indexOf(miner) !== -1 ? ' bg-gray-500' : 'bg-gray-700')
                                                 }>
                                                 <div className='flex flex-col items-center'>
@@ -461,7 +479,8 @@ const game: NextPage = () => {
                                                     }
                                                 }}
                                                 className={
-                                                    'relative text-white shadow-lg p-4 mr-1 mb-1 w-[100px] cursor-pointer ' +
+                                                    'relative shadow-lg p-4 mr-1 mb-1 w-[100px] cursor-pointer ' +
+                                                    (generalData[miner]?.level === 1 ? ' text-red-500 ' : 'text-white ') +
                                                     (selectedMiners.indexOf(miner) !== -1 ? ' bg-gray-500' : 'bg-gray-700')
                                                 }>
                                                 <p className=''>{miner}</p>
@@ -516,7 +535,8 @@ const game: NextPage = () => {
                                                     }
                                                 }}
                                                 className={
-                                                    'relative text-white shadow-lg p-4 mr-1 mb-1 w-[120px] cursor-pointer ' +
+                                                    'relative shadow-lg p-4 mr-1 mb-1 w-[120px] cursor-pointer ' +
+                                                    (generalData[cooldown]?.level === 1 ? ' text-red-500 ' : 'text-white ') +
                                                     (selectedCooldowns.indexOf(cooldown) !== -1 ? ' bg-gray-500' : 'bg-gray-700')
                                                 }>
                                                 <p className='text-lg'>{cooldown}</p>
