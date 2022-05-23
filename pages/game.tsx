@@ -107,10 +107,13 @@ const game: NextPage = () => {
                                 const accrued = parseFloat(
                                     Web3.utils.fromWei(
                                         Web3.utils.toBN(
-                                            (Math.round(Date.now() - Math.round(miner.startTimestamp * 1000)) *
-                                                (miner.level === '0' ? 1 : 5) *
-                                                parseFloat(yieldDps)) /
-                                                1000
+                                            parseInt(
+                                                ((Math.round(Date.now() - Math.round(miner.startTimestamp * 1000)) *
+                                                    (miner.level === '0' ? 1 : 5) *
+                                                    parseFloat(yieldDps)) /
+                                                    1000).toString(),
+                                                10
+                                            ).toString()
                                         ),
                                         'ether'
                                     )
