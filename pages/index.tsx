@@ -109,8 +109,23 @@ const Home: NextPage = () => {
                                 from: blockchain.account,
                                 value: totalPrice,
                             })
-                            .once('error', (err: any) => {
-                                console.log(err);
+                            .once('sending', function (payload: any) {
+                                console.log(payload);
+                            })
+                            .once('sent', function (payload: any) {
+                                console.log(payload);
+                            })
+                            .once('transactionHash', function (hash: any) {
+                                dispatch(setBotSpeech(`Requesting ${quantity} ${quantity === '1' ? 'miner' : 'miners'}... Please wait`));
+                                console.log(hash);
+                            })
+                            .once('receipt', function (hash: any) {
+                                dispatch(setBotSpeech(`Your ${quantity === '1' ? 'miner has' : 'miners have'} arrived!`));
+                                console.log(hash);
+                            })
+                            .on('error', function (error: any) {
+                                dispatch(setBotError(`Oh no! Your ${quantity === '1' ? 'miner' : 'miners'} couldn't make it!`));
+                                console.log(error);
                             })
                             .then((res: any) => {
                                 if (blockchain.account) {
