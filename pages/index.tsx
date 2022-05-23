@@ -25,8 +25,8 @@ const Home: NextPage = () => {
     const saleDetails = [
         // 'Fair sale (first come, first serve)',
         `Price: ${Web3.utils.fromWei(contractData.price)} ${networkConfig.nativeCurrency.symbol}`,
-        `Total Supply: ${contractData.maxTotalSupply} Miners`,
-        `Presale Supply: ${contractData.maxPresaleSupply} Miners`,
+        `Total Supply: ${10000} Miners`,
+        `Presale Supply: ${500} Miners`,
         // `${blockchain.hasMetaMask ? 100 - contractData.superPercentage : 0}% chance to mint a Regular Miner`,
         `${contractData.superPercentage}% chance to mint a Super Miner`,
     ];
@@ -174,17 +174,17 @@ const Home: NextPage = () => {
     const getSupplyPercentage = () => {
         let percentage = '0%';
 
-        if (contractData.totalSupply) {
-            if (contractData.baseSalesOpen || (contractData.gameStarted && !contractData.presaleOpen)) {
-                const num = ((contractData.totalSupply / contractData.maxTotalSupply) * 100).toFixed(2);
+        // if (contractData.totalSupply) {
+        //     if (contractData.baseSalesOpen || (contractData.gameStarted && !contractData.presaleOpen)) {
+        //         const num = ((contractData.totalSupply / contractData.maxTotalSupply) * 100).toFixed(2);
 
-                percentage = num + '%';
-            } else {
-                const num = ((contractData.totalSupply / contractData.maxPresaleSupply) * 100).toFixed(2);
+        //         percentage = num + '%';
+        //     } else {
+        //         const num = ((contractData.totalSupply / contractData.maxPresaleSupply) * 100).toFixed(2);
 
-                percentage = num + '%';
-            }
-        }
+        //         percentage = num + '%';
+        //     }
+        // }
 
         return percentage;
     };
@@ -192,17 +192,17 @@ const Home: NextPage = () => {
     const getSupplyFraction = () => {
         let fraction = '- / -';
 
-        if (contractData.totalSupply) {
-            if (contractData.baseSalesOpen || (contractData.gameStarted && !contractData.presaleOpen)) {
-                fraction = contractData.totalSupply + ' / ' + contractData.maxTotalSupply;
+        // if (contractData.totalSupply) {
+        //     if (contractData.baseSalesOpen || (contractData.gameStarted && !contractData.presaleOpen)) {
+        //         fraction = contractData.totalSupply + ' / ' + contractData.maxTotalSupply;
 
-                if (contractData.totalSupply >= contractData.maxTotalSupply) {
-                    fraction = 'Sold Out';
-                }
-            } else {
-                fraction = contractData.totalSupply + ' / ' + contractData.maxPresaleSupply;
-            }
-        }
+        //         if (contractData.totalSupply >= contractData.maxTotalSupply) {
+        //             fraction = 'Sold Out';
+        //         }
+        //     } else {
+        //         fraction = contractData.totalSupply + ' / ' + contractData.maxPresaleSupply;
+        //     }
+        // }
 
         return fraction;
     };

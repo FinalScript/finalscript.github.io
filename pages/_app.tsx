@@ -24,7 +24,7 @@ function MyApp({ Component, pageProps }: AppProps) {
     const blockchain = useSelector((state: BlockchainState) => state.blockchain);
     const generalReducer = useSelector((state: GeneralState) => state.general);
     const router = useRouter();
-    const [pageLoading, setPageLoading] = useState<boolean>(false);
+    const [pageLoading, setPageLoading] = useState<boolean>(true);
     const particlesInit = async (main: any) => {
         // you can initialize the tsParticles instance (main) here, adding custom shapes or presets
         // this loads the tsparticles package bundle, it's the easiest method for getting everything ready
@@ -68,26 +68,26 @@ function MyApp({ Component, pageProps }: AppProps) {
     }, [blockchain.hasMetaMask, blockchain.isRightNetwork]);
 
     useEffect(() => {
-        // const handleStart = () => {
-        //     setPageLoading(true);
-        //     dispatch({
-        //         type: 'SET_LOADING',
-        //         payload: { isLoading: true },
-        //     });
-        // };
-        // const handleComplete = () => {
-        //     setTimeout(() => {
-        //         setPageLoading(false);
-        //         dispatch({
-        //             type: 'SET_LOADING',
-        //             payload: { isLoading: false },
-        //         });
-        //     }, 800);
-        // };
+        const handleStart = () => {
+            setPageLoading(true);
+            dispatch({
+                type: 'SET_LOADING',
+                payload: { isLoading: true },
+            });
+        };
+        const handleComplete = () => {
+            setTimeout(() => {
+                setPageLoading(false);
+                dispatch({
+                    type: 'SET_LOADING',
+                    payload: { isLoading: false },
+                });
+            }, 800);
+        };
 
-        // router.events.on('routeChangeStart', handleStart);
-        // router.events.on('routeChangeComplete', handleComplete);
-        // router.events.on('routeChangeError', handleComplete);
+        router.events.on('routeChangeStart', handleStart);
+        router.events.on('routeChangeComplete', handleComplete);
+        router.events.on('routeChangeError', handleComplete);
     }, [router]);
 
     useEffect(() => {
