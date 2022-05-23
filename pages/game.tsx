@@ -5,11 +5,10 @@ import { useSelector } from 'react-redux';
 import { BlockchainState } from '../types';
 import { contractAddresses, siteProtection } from '../config';
 import Web3 from 'web3';
-import { decimalToHexString } from '../utils';
 
 const game: NextPage = () => {
     const blockchain = useSelector((state: BlockchainState) => state.blockchain);
-    
+
     const [miners, setMiners] = useState<number[]>([]);
     const [selectedMiners, setSelectedMiners] = useState<number[]>([]);
 
@@ -19,7 +18,7 @@ const game: NextPage = () => {
 
     const [cooldowns, setCooldowns] = useState<number[]>([]);
     const [selectedCooldowns, setSelectedCooldowns] = useState<number[]>([]);
-    const [cooldownsdata, setCooldownsData] = useState<any>({});
+    const [cooldownsData, setCooldownsData] = useState<any>({});
     const [cooldownRemainingInterval, setCooldownRemainingInterval] = useState<any>();
 
     const [myDiamonds, setMyDiamonds] = useState<any>(0);
@@ -139,7 +138,7 @@ const game: NextPage = () => {
     };
 
     const getCooldowns = async () => {
-        const cooldownsState = [];
+        const cooldownsState: any = [];
         clearTimeout(cooldownRemainingInterval);
 
         if (blockchain.mineContract?.methods && blockchain.account) {
@@ -158,7 +157,7 @@ const game: NextPage = () => {
                         setInterval(() => {
                             for (const cooldown of cooldowns) {
                                 const futureTime = new Date((parseInt(cooldown.startTimestamp) + parseInt(unstakeCooldownDuration)) * 1000);
-                                
+
                                 const timeLeft = futureTime.getTime() - new Date().getTime();
 
                                 const timeRemaining = {
@@ -168,13 +167,19 @@ const game: NextPage = () => {
                                 };
 
                                 setCooldownsData((prevState: any) => {
-                                    return { ...prevState, [cooldown.tokenId]: { ...prevState[cooldown.tokenId], timeRemaining } };
+                                    return {
+                                        ...prevState,
+                                        [cooldown.tokenId]: {
+                                            ...prevState[cooldown.tokenId],
+                                            timeDiff: timeLeft,
+                                            timeRemaining,
+                                            withdraw: timeLeft > 0 ? false : true,
+                                        },
+                                    };
                                 });
                             }
                         }, 1000)
                     );
-
-                    cooldownsState.sort((a, b) => a - b);
                 }
             }
         }
@@ -497,12 +502,14 @@ const game: NextPage = () => {
                                             <div
                                                 key={cooldown}
                                                 onClick={() => {
-                                                    const index = selectedCooldowns.indexOf(cooldown);
+                                                    if (cooldownsData[cooldown]?.withdraw) {
+                                                        const index = selectedCooldowns.indexOf(cooldown);
 
-                                                    if (index > -1) {
-                                                        setSelectedCooldowns(selectedCooldowns.filter((item) => item !== cooldown));
-                                                    } else {
-                                                        setSelectedCooldowns([...selectedCooldowns, cooldown]);
+                                                        if (index > -1) {
+                                                            setSelectedCooldowns(selectedCooldowns.filter((item) => item !== cooldown));
+                                                        } else {
+                                                            setSelectedCooldowns([...selectedCooldowns, cooldown]);
+                                                        }
                                                     }
                                                 }}
                                                 className={
@@ -510,18 +517,20 @@ const game: NextPage = () => {
                                                     (selectedCooldowns.indexOf(cooldown) !== -1 ? ' bg-gray-500' : 'bg-gray-700')
                                                 }>
                                                 <p className='text-lg'>{cooldown}</p>
-                                                {cooldownsdata[cooldown]?.timeRemaining && (
+                                                {cooldownsData[cooldown]?.timeRemaining && !cooldownsData[cooldown]?.withdraw ? (
                                                     <p className='text-sm text-gray-300 flex space-x-1 justify-center'>
-                                                        {cooldownsdata[cooldown].timeRemaining.h !== 0 && (
-                                                            <span>{cooldownsdata[cooldown].timeRemaining.h}h</span>
+                                                        {cooldownsData[cooldown].timeRemaining.h !== 0 && (
+                                                            <span>{cooldownsData[cooldown].timeRemaining.h}h</span>
                                                         )}
-                                                        {cooldownsdata[cooldown].timeRemaining.m !== 0 && (
-                                                            <span>{cooldownsdata[cooldown].timeRemaining.m}m</span>
+                                                        {cooldownsData[cooldown].timeRemaining.m !== 0 && (
+                                                            <span>{cooldownsData[cooldown].timeRemaining.m}m</span>
                                                         )}
-                                                        {cooldownsdata[cooldown].timeRemaining.s !== 0 && (
-                                                            <span>{cooldownsdata[cooldown].timeRemaining.s}s</span>
+                                                        {cooldownsData[cooldown].timeRemaining.s !== 0 && (
+                                                            <span>{cooldownsData[cooldown].timeRemaining.s}s</span>
                                                         )}
                                                     </p>
+                                                ) : (
+                                                    <p className='text-sm text-green-500 flex space-x-1 justify-center'>Ready!</p>
                                                 )}
                                                 {/* <div className='w-[100px] h-[200px]'>
                                 <img src={miner.image} className='object-cover w-full h-full' />
