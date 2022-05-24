@@ -5,6 +5,7 @@ import { useSelector } from 'react-redux';
 import { BlockchainState } from '../types';
 import { contractAddresses, siteProtection } from '../config';
 import Web3 from 'web3';
+import BigNumber from 'bignumber.js';
 
 const game: NextPage = () => {
     const blockchain = useSelector((state: BlockchainState) => state.blockchain);
@@ -23,8 +24,8 @@ const game: NextPage = () => {
     const [cooldownsData, setCooldownsData] = useState<any>({});
     const [cooldownRemainingInterval, setCooldownRemainingInterval] = useState<any>();
 
-    const [myDiamonds, setMyDiamonds] = useState<any>(0);
-    const [earnedDiamonds, setEarnedDiamonds] = useState<any>(0);
+    const [myDiamonds, setMyDiamonds] = useState<BigNumber>();
+    const [earnedDiamonds, setEarnedDiamonds] = useState<BigNumber>();
     const [earnedDiamondsInterval, setEarnedDiamondsInterval] = useState<any>();
 
     useEffect(() => {
@@ -39,7 +40,7 @@ const game: NextPage = () => {
         setStaked([]);
 
         if (blockchain.mineContract && blockchain.account) {
-            getStakedMiners();
+            getStaked();
         }
 
         setCooldowns([]);
@@ -60,7 +61,7 @@ const game: NextPage = () => {
             diamonds = await blockchain.diamondContract?.methods.balanceOf(blockchain.account).call();
         }
 
-        setMyDiamonds(parseFloat(Web3.utils.fromWei(Web3.utils.toBN(diamonds))));
+        setMyDiamonds(new BigNumber(Web3.utils.fromWei(diamonds.toString())));
     };
 
     const getMyMiners = async () => {
@@ -89,7 +90,7 @@ const game: NextPage = () => {
         setMiners(minersState);
     };
 
-    const getStakedMiners = async () => {
+    const getStaked = async () => {
         const minersState = [];
         clearTimeout(earnedDiamondsInterval);
 
@@ -111,32 +112,26 @@ const game: NextPage = () => {
 
                     setEarnedDiamondsInterval(
                         setInterval(() => {
-                            let totalAcccrued = parseFloat(Web3.utils.fromWei('0', 'ether'));
+                            let totalAcccrued = new BigNumber(0);
 
                             for (const miner of miners) {
-                                const accrued =
-                                    parseFloat(
-                                        Web3.utils.fromWei(
-                                            Web3.utils.toBN(
-                                                (Math.round(Date.now() - Math.round(miner.startTimestamp * 1000)) *
-                                                    (miner.level === '0' ? 1 : 5) *
-                                                    parseFloat(yieldDps)) /
-                                                    1000 /
-                                                    10000
-                                            ),
-                                            'ether'
-                                        )
-                                    ) * 10000;
-
-                                if (miner.tokenId === '34') {
-                                    
-                                }
+                                const accrued = new BigNumber(
+                                    Web3.utils.fromWei(
+                                        BigInt(
+                                            (Math.round(Date.now() - Math.round(miner.startTimestamp * 1000)) *
+                                                (miner.level === '0' ? 1 : 5) *
+                                                parseFloat(yieldDps)) /
+                                                1000
+                                        ).toString(),
+                                        'ether'
+                                    )
+                                );
 
                                 setStakedData((prevState: any) => {
                                     return { ...prevState, [miner.tokenId]: { ...prevState[miner.tokenId], earned: accrued } };
                                 });
 
-                                totalAcccrued += accrued;
+                                totalAcccrued = totalAcccrued.plus(accrued);
                             }
 
                             setEarnedDiamonds(totalAcccrued);
@@ -226,7 +221,7 @@ const game: NextPage = () => {
                     console.log(hash);
                 })
                 .once('receipt', function (hash: any) {
-                    getStakedMiners();
+                    getStaked();
 
                     getMyDiamonds();
                 })
@@ -255,7 +250,7 @@ const game: NextPage = () => {
                         value: 0,
                     })
                     .once('receipt', function (hash: any) {
-                        getStakedMiners();
+                        getStaked();
 
                         getMyMiners();
                     })
@@ -279,7 +274,7 @@ const game: NextPage = () => {
                                 value: 0,
                             })
                             .once('receipt', function (hash: any) {
-                                getStakedMiners();
+                                getStaked();
 
                                 getMyMiners();
                             })
@@ -301,7 +296,7 @@ const game: NextPage = () => {
                     value: 0,
                 })
                 .once('receipt', function (hash: any) {
-                    getStakedMiners();
+                    getStaked();
 
                     getCooldowns();
                 })
@@ -351,12 +346,12 @@ const game: NextPage = () => {
                                             <span>Earned Diamonds: </span>
                                         </h5>
                                         <h5 className='flex flex-col items-start'>
-                                            <span>{myDiamonds.toFixed(5)}</span>
-                                            <span>{earnedDiamonds.toFixed(5)}</span>
+                                            <span>{myDiamonds?.toFixed(5)}</span>
+                                            <span>{earnedDiamonds?.toFixed(5)}</span>
                                         </h5>
                                     </div>
                                     <button
-                                        disabled={earnedDiamonds === 0}
+                                        disabled={earnedDiamonds?.eq(0)}
                                         onClick={claimDiamonds}
                                         className='mt-4 py-1 px-3 bg-rose-500 disabled:hover:bg-rose-500 hover:bg-rose-600 rounded-md'>
                                         Claim
