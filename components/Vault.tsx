@@ -12,11 +12,15 @@ interface Props {
 const Vault = ({ vaultContract, account }: Props) => {
     const [totalBalance, setTotalBalance] = useState<BigNumber>();
     const [stakedBalance, setStakedBalance] = useState<BigNumber>();
+    const [unlockAmounts, setUnlockAmounts] = useState<BigNumber>();
+    const [unlockTimestamp, setUnlockTimestamp] = useState<any>();
     const [input, setInput] = useState('0');
 
     useEffect(() => {
         getStakedBalance();
         getTotalBalance();
+        getUnlockAmounts();
+        getUnlockTimestamp();
     }, [vaultContract, account]);
 
     const getTotalBalance = async () => {
@@ -43,6 +47,39 @@ const Vault = ({ vaultContract, account }: Props) => {
         setStakedBalance(new BigNumber(Web3.utils.fromWei(new BigNumber(diamonds).times(diamondBalance).div(totalSupply).toFixed(0))));
     };
 
+    const getUnlockAmounts = async () => {
+        let diamonds = 0;
+
+        if (vaultContract?.methods && account) {
+            diamonds = await vaultContract?.methods.unlockAmounts(account).call();
+        }
+
+        setUnlockAmounts(new BigNumber(Web3.utils.fromWei(new BigNumber(diamonds).toFixed(0))));
+    };
+
+    const getUnlockTimestamp = async () => {
+        if (vaultContract?.methods && account) {
+            let startTimestamp = await vaultContract?.methods.unlockTimestamps(account).call();
+
+            const futureTime = new Date(parseInt(startTimestamp) * 1000);
+            setInterval(() => {
+                const timeLeft = futureTime.getTime() - new Date().getTime();
+
+                const timeRemaining = {
+                    h: Math.floor(timeLeft / 1000 / 60 / 60),
+                    m: Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60)),
+                    s: Math.floor((timeLeft % (1000 * 60)) / 1000),
+                };
+
+                setUnlockTimestamp({
+                    timeDiff: timeLeft,
+                    timeRemaining,
+                    withdraw: timeLeft < 0 ? false : true,
+                });
+            }, 1000);
+        }
+    };
+
     const stake = async () => {
         if (vaultContract?.methods && account) {
             vaultContract?.methods.stake(Web3.utils.toWei(input)).send({
@@ -55,7 +92,12 @@ const Vault = ({ vaultContract, account }: Props) => {
 
     const quickUnstake = async () => {
         if (vaultContract?.methods && account) {
-            vaultContract?.methods.quickUnstake(Web3.utils.toWei(input)).send({
+            const diamondBalance = await vaultContract?.methods.diamondBalance().call();
+            const totalSupply = await vaultContract?.methods.totalSupply().call();
+
+            // new BigNumber(input).times(totalSupply).div(diamondBalance).toFormat()
+
+            vaultContract?.methods.quickUnstake(Web3.utils.toWei(new BigNumber(input).times(totalSupply).div(diamondBalance).toFixed(10))).send({
                 to: contractAddresses.vault,
                 from: account,
                 value: 0,
@@ -65,7 +107,12 @@ const Vault = ({ vaultContract, account }: Props) => {
 
     const delayedUnstake = async () => {
         if (vaultContract?.methods && account) {
-            vaultContract?.methods.claimDelayedUnstake(Web3.utils.toWei(input)).send({
+            const diamondBalance = await vaultContract?.methods.diamondBalance().call();
+            const totalSupply = await vaultContract?.methods.totalSupply().call();
+
+            // new BigNumber(input).times(totalSupply).div(diamondBalance).toFormat()
+
+            vaultContract?.methods.prepareDelayedUnstake(Web3.utils.toWei(new BigNumber(input).times(totalSupply).div(diamondBalance).toFixed(10))).send({
                 to: contractAddresses.vault,
                 from: account,
                 value: 0,
@@ -91,7 +138,21 @@ const Vault = ({ vaultContract, account }: Props) => {
                 </div>
                 <div className='flex justify-between w-full'>
                     <p>Pending Balance</p>
-                    <p>0</p>
+                    <p>{unlockAmounts?.toFormat(2)}</p>
+                </div>
+                <div className='flex justify-between w-full'>
+                    <p>Withdrawable In</p>
+                    <div>
+                        {unlockTimestamp?.timeRemaining && unlockTimestamp?.withdraw ? (
+                            <span className='text-sm text-gray-300 flex space-x-1 justify-center'>
+                                {unlockTimestamp.timeRemaining.h && <span>{unlockTimestamp.timeRemaining.h}h</span>}
+                                {unlockTimestamp.timeRemaining.m && <span>{unlockTimestamp.timeRemaining.m}m</span>}
+                                {unlockTimestamp.timeRemaining.s && <span>{unlockTimestamp.timeRemaining.s}s</span>}
+                            </span>
+                        ) : (
+                            <span className='text-sm text-green-500 flex space-x-1 justify-center'>Ready!</span>
+                        )}
+                    </div>
                 </div>
             </div>
             <div className='w-full flex flex-col space-y-3'>
