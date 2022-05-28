@@ -1,4 +1,5 @@
 import { GeneralData } from '../../types';
+import { ADD_ALERT, REMOVE_ALERT, SET_BOT_SPEECH, SET_ENTERED_PASSWORD, SET_LOADING, TOGGLE_BOT } from '../constants';
 
 const initialState = {
     isLoading: true,
@@ -11,27 +12,27 @@ const initialState = {
 
 const generalReducer = (state: GeneralData = initialState, action: any) => {
     switch (action.type) {
-        case 'TOGGLE_BOT':
+        case TOGGLE_BOT:
             return {
                 ...state,
                 botToggled: !state.botToggled,
             };
-        case 'SET_BOT_SPEECH':
+        case SET_BOT_SPEECH:
             return {
                 ...state,
                 botCurrentSpeech: action.payload.speech,
             };
-        case 'SET_ENTERED_PASSWORD':
+        case SET_ENTERED_PASSWORD:
             return {
                 ...state,
                 enteredPassword: action.payload.enteredPassword,
             };
-        case 'SET_LOADING':
+        case SET_LOADING:
             return {
                 ...state,
                 isLoading: action.payload.isLoading,
             };
-        case 'ADD_ALERT':
+        case ADD_ALERT:
             if (!state.alerts.find((x) => x.key === action.payload.newAlert.key)) {
                 const addingAlertsCopy = [...state.alerts];
 
@@ -50,7 +51,7 @@ const generalReducer = (state: GeneralData = initialState, action: any) => {
             return {
                 ...state,
             };
-        case 'REMOVE_ALERT':
+        case REMOVE_ALERT:
             const removeAlertsCopy = [...state.alerts];
 
             const updatedRemoveAlerts = removeAlertsCopy.filter((item) => item.key !== action.payload.key);

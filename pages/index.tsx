@@ -1,12 +1,12 @@
 import type { NextPage } from 'next';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import Web3 from 'web3';
 import { contractAddresses, networkConfig, siteProtection } from '../config';
 import { checkBalance, connect, switchNetwork } from '../redux/blockchain/blockchainActions';
-import { BlockchainState, ContractDataState, GeneralState } from '../types';
+import { BlockchainState, MintDataState, GeneralState } from '../types';
 import Image from 'next/image';
-import { checkIsWhiteListed, fetchData } from '../redux/data/dataActions';
+import { checkIsWhiteListed, fetchData } from '../redux/mint/mintActions';
 import { motion } from 'framer-motion';
 import { addAlert, setBotError, setBotSpeech } from '../redux/general/generalActions';
 import { InstallMetaMask } from '../components/InstallMetaMask';
@@ -18,24 +18,47 @@ const Home: NextPage = () => {
     const dispatch = useDispatch<any>();
     const router = useRouter();
     const blockchain = useSelector((state: BlockchainState) => state.blockchain);
-    const contractData = useSelector((state: ContractDataState) => state.contractData);
+    const mintData = useSelector((state: MintDataState) => state.mintData);
     const generalReducer = useSelector((state: GeneralState) => state.general);
     const [quantity, setQuantity] = useState('');
     const [totalPrice, setTotalPrice] = useState(0.0);
     const saleDetails = [
         // 'Fair sale (first come, first serve)',
-        `Price: ${Web3.utils.fromWei(contractData.price)} ${networkConfig.nativeCurrency.symbol}`,
-        `Total Supply: ${10000} Miners`,
-        `Presale Supply: ${500} Miners`,
-        // `${blockchain.hasMetaMask ? 100 - contractData.superPercentage : 0}% chance to mint a Regular Miner`,
-        `${contractData.superPercentage}% chance to mint a Super Miner`,
+        // `Price: ${Web3.utils.fromWei(mintData.price)} ${networkConfig.nativeCurrency.symbol}`,
+        // `Total Supply: ${mintData.totalSupply} Miners`,
+        // `Presale Supply: ${mintData.presaleSupply} Miners`,
+        `Price: - ${networkConfig.nativeCurrency.symbol}`,
+        `Total Supply: - Miners`,
+        `Presale Supply: - Miners`,
+        // `${blockchain.hasMetaMask ? 100 - mintData.superPercentage : 0}% chance to mint a Regular Miner`,
+        `${mintData.superPercentage}% chance to mint a Super Miner`,
     ];
 
     useEffect(() => {
         //dispatch(connect());
     }, []);
 
-    const handlePlay = () => {
+    useEffect(() => {
+        dispatch(fetchData());
+    }, [blockchain.minerContract]);
+
+    useEffect(() => {
+        setQuantity('');
+
+        if (blockchain.account) {
+            dispatch(checkIsWhiteListed(blockchain.account));
+        }
+    }, [blockchain.account, blockchain.network]);
+
+    useEffect(() => {
+        if (quantity !== '') {
+            setTotalPrice(parseFloat(mintData.price) * parseFloat(quantity) + parseFloat(mintData.nftTax));
+        } else {
+            setTotalPrice(0.0);
+        }
+    }, [quantity]);
+
+    const handlePlay = useCallback(() => {
         if (
             siteProtection.whitelistOnly &&
             !siteProtection.whitelistedWallets.find((address) => address.toLowerCase() === blockchain.account?.toLowerCase() || '')
@@ -44,9 +67,9 @@ const Home: NextPage = () => {
         } else {
             router.push('/game');
         }
-    };
+    }, [blockchain.account]);
 
-    const mint = () => {
+    const mint = useCallback(() => {
         setTimeout(() => {
             if (
                 siteProtection.whitelistOnly &&
@@ -55,11 +78,11 @@ const Home: NextPage = () => {
                 dispatch(setBotError(`Woah there, game is still in development, you're not allowed to enter yet!`));
             } else {
                 if (quantity === '') {
-                    dispatch(setBotError(`Please enter a quantity (0-${contractData.maxPerMint})`));
+                    dispatch(setBotError(`Please enter a quantity (0-${mintData.maxPerMint})`));
                 }
 
                 if (blockchain.minerContract && blockchain.account && quantity !== '') {
-                    if (contractData.baseSalesOpen) {
+                    if (mintData.baseSalesOpen) {
                         blockchain.minerContract?.methods
                             .mintBase(parseInt(quantity))
                             .send({
@@ -100,7 +123,7 @@ const Home: NextPage = () => {
                                 );
                                 console.log(res);
                             });
-                    } else if (contractData.presaleOpen && contractData.isWhiteListed) {
+                    } else if (mintData.presaleOpen && mintData.isWhiteListed) {
                         blockchain.minerContract?.methods
                             .presaleMintBase(parseInt(quantity))
                             .send({
@@ -149,75 +172,69 @@ const Home: NextPage = () => {
                 }
             }
         }, 100);
-    };
+    }, [blockchain.minerContract, blockchain.account, mintData]);
 
-    useEffect(() => {
-        dispatch(fetchData());
-    }, [blockchain.minerContract]);
-
-    useEffect(() => {
-        setQuantity('');
-
-        if (blockchain.account) {
-            dispatch(checkIsWhiteListed(blockchain.account));
-        }
-    }, [blockchain.account, blockchain.network]);
-
-    useEffect(() => {
-        if (quantity !== '') {
-            setTotalPrice(parseFloat(contractData.price) * parseFloat(quantity) + parseFloat(contractData.nftTax));
-        } else {
-            setTotalPrice(0.0);
-        }
-    }, [quantity]);
-
-    const getSupplyPercentage = () => {
+    const supplyPercentage = useMemo(() => {
         let percentage = '0%';
 
-        // if (contractData.totalSupply) {
-        //     if (contractData.baseSalesOpen || (contractData.gameStarted && !contractData.presaleOpen)) {
-        //         const num = ((contractData.totalSupply / contractData.maxTotalSupply) * 100).toFixed(2);
+        // if (mintData.totalSupply) {
+        //     if (mintData.baseSalesOpen || mintData.gameStarted) {
+        //         const num = ((mintData.totalSupply / mintData.maxBaseSupply) * 100).toFixed(2);
 
         //         percentage = num + '%';
         //     } else {
-        //         const num = ((contractData.totalSupply / contractData.maxPresaleSupply) * 100).toFixed(2);
+        //         const num = ((mintData.totalSupply / mintData.maxPresaleSupply) * 100).toFixed(2);
 
         //         percentage = num + '%';
         //     }
         // }
 
         return percentage;
-    };
+    }, [mintData]);
 
-    const getSupplyFraction = () => {
+    const supplyFraction = useMemo(() => {
         let fraction = '- / -';
 
-        // if (contractData.totalSupply) {
-        //     if (contractData.baseSalesOpen || (contractData.gameStarted && !contractData.presaleOpen)) {
-        //         fraction = contractData.totalSupply + ' / ' + contractData.maxTotalSupply;
+        // if (mintData.totalSupply) {
+        //     if (mintData.baseSalesOpen || mintData.gameStarted) {
+        //         fraction = mintData.totalSupply + ' / ' + mintData.maxBaseSupply;
 
-        //         if (contractData.totalSupply >= contractData.maxTotalSupply) {
+        //         if (mintData.totalSupply >= mintData.maxBaseSupply) {
         //             fraction = 'Sold Out';
         //         }
         //     } else {
-        //         fraction = contractData.totalSupply + ' / ' + contractData.maxPresaleSupply;
+        //         fraction = mintData.totalSupply + ' / ' + mintData.maxPresaleSupply;
         //     }
         // }
 
         return fraction;
-    };
+    }, [mintData]);
 
-    const getAbleToMint = () => {
-        if (contractData.gameStarted) {
+    const ableToMint = useMemo(() => {
+        if (mintData.gameStarted) {
             return false;
-        } else if (contractData.baseSalesOpen) {
+        } else if (mintData.baseSalesOpen) {
             return true;
-        } else if (contractData.presaleOpen && contractData.isWhiteListed) {
+        } else if (mintData.presaleOpen && mintData.isWhiteListed) {
             return true;
         } else {
             return false;
         }
-    };
+    }, [mintData]);
+
+    const ableToMintMessage = useMemo(() => {
+        // if (mintData.gameStarted) {
+        //     return 'Game has already started';
+        // } else if (mintData.baseSalesOpen) {
+        //     return 'Mint';
+        // } else if (mintData.presaleOpen && mintData.isWhiteListed) {
+        //     return 'Mint';
+        // } else {
+        //     return "You're not whitelisted";
+        // }
+
+        return '';
+    }, [mintData]);
 
     return (
         <div className='relative overflow-hidden h-screen w-screen max-w-[100vw] px-0 md:px-10 lg:px-16 xl:px-24'>
@@ -255,25 +272,25 @@ const Home: NextPage = () => {
                                         </div>
                                         <div className='relative section'>
                                             <div className='flex justify-end'>
-                                                <p className='font-medium text-gray-900'>{getSupplyFraction()}</p>
+                                                <p className='font-medium text-gray-900'>{supplyFraction}</p>
                                             </div>
                                             <div className='w-full bg-yellow-900 rounded-full progress'>
-                                                <div className='bg-green-500 h-full rounded-full' style={{ width: getSupplyPercentage() }}></div>
+                                                <div className='bg-green-500 h-full rounded-full' style={{ width: supplyPercentage }}></div>
                                             </div>
                                         </div>
                                         <div className='relative flex flex-col section'>
                                             <label htmlFor='quantity' className='text-gray-900 flex justify-between'>
                                                 <span className='font-bold'>Quantity</span>
-                                                <span className='tracking-widest'>MAX ( {contractData.maxPerMint} )</span>
+                                                <span className='tracking-widest'>MAX ( {mintData.maxPerMint} )</span>
                                             </label>
                                             <input
-                                                disabled={!getAbleToMint()}
-                                                title={contractData.isWhiteListed || !contractData.baseSalesOpen ? '' : "You're not whitelisted"}
+                                                disabled={!ableToMint}
+                                                title={ableToMintMessage}
                                                 type='text'
                                                 id='quantity'
                                                 name='quantity'
                                                 min={0}
-                                                max={contractData.maxPerMint}
+                                                max={mintData.maxPerMint}
                                                 onSelect={(e) => {
                                                     if (quantity === '0') {
                                                         setQuantity('');
@@ -290,14 +307,14 @@ const Home: NextPage = () => {
                                                         setQuantity('');
                                                     }
                                                 }}
-                                                placeholder={`Max ${contractData.maxPerMint} at a time`}
+                                                placeholder={`Max ${mintData.maxPerMint} at a time`}
                                                 className='w-full text-center disabled:cursor-not-allowed placeholder:text-gray-700 bg-zinc-400 bg-opacity-20 focus:bg-transparent focus:ring-2 rounded border-gray-600 outline-none transition-colors duration-200 ease-in-out'
                                             />
                                         </div>
                                         <div className='section font-bold'>
                                             <div className='relative tracking-widest flex justify-between'>
                                                 <h5>NFT Tax</h5>
-                                                <h5>{totalPrice === 0 ? '--' : Web3.utils.fromWei(contractData.nftTax) + ' AVAX'}</h5>
+                                                <h5>{totalPrice === 0 ? '--' : Web3.utils.fromWei(mintData.nftTax) + ' AVAX'}</h5>
                                             </div>
                                             <div className='relative tracking-widest flex justify-between'>
                                                 <h4>Total</h4>
@@ -310,7 +327,7 @@ const Home: NextPage = () => {
                                                 blockchain.account ? (
                                                     <>
                                                         <button
-                                                            disabled={blockchain.isRightNetwork ? !getAbleToMint() : false}
+                                                            disabled={blockchain.isRightNetwork ? !ableToMint : false}
                                                             onClick={() => {
                                                                 if (!blockchain.isRightNetwork) {
                                                                     switchNetwork();
@@ -318,11 +335,7 @@ const Home: NextPage = () => {
                                                                     mint();
                                                                 }
                                                             }}
-                                                            title={
-                                                                contractData.isWhiteListed || !contractData.baseSalesOpen || !blockchain.isRightNetwork
-                                                                    ? ''
-                                                                    : "You're not whitelisted"
-                                                            }
+                                                            title={blockchain.isRightNetwork ? ableToMintMessage : ''}
                                                             className={
                                                                 'w-full text-white text-shadow-white font-bold border-0 disabled:cursor-not-allowed focus:outline-none rounded shadow-center-lg ' +
                                                                 (blockchain.isRightNetwork

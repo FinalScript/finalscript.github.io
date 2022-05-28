@@ -1,24 +1,25 @@
 // log
 import { Dispatch } from 'redux';
+import { MINTDATA_FAILED, MINTDATA_SUCCESS, UPDATE_ISWHITELISTED } from '../constants';
 import { store } from '../store';
 
 const fetchDataSucces = (payload: any) => {
     return {
-        type: 'FETCH_DATA_SUCCESS',
+        type: MINTDATA_SUCCESS,
         payload,
     };
 };
 
 const fetchDataFailed = (payload: any) => {
     return {
-        type: 'FETCH_DATA_FAILED',
+        type: MINTDATA_FAILED,
         payload: payload,
     };
 };
 
 const updateIsWhiteListed = (payload: any) => {
     return {
-        type: 'UPDATE_IS_WHITELISTED',
+        type: UPDATE_ISWHITELISTED,
         payload: payload,
     };
 };

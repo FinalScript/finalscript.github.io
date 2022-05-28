@@ -1,4 +1,5 @@
-import { ContractData } from '../../types';
+import { MintData } from '../../types';
+import { MINTDATA_FAILED, MINTDATA_SUCCESS, UPDATE_ISWHITELISTED } from '../constants';
 
 const initialState = {
     isWhiteListed: false,
@@ -19,9 +20,9 @@ const initialState = {
     errorMsg: '',
 };
 
-const dataReducer = (state: ContractData = initialState, action: any) => {
+const mintReducer = (state: MintData = initialState, action: any) => {
     switch (action.type) {
-        case 'FETCH_DATA_SUCCESS':
+        case MINTDATA_SUCCESS:
             return {
                 ...state,
                 error: false,
@@ -41,14 +42,14 @@ const dataReducer = (state: ContractData = initialState, action: any) => {
                 superPercentage: action.payload.superPercentage,
             };
 
-        case 'FETCH_DATA_FAILED':
+        case MINTDATA_FAILED:
             return {
                 ...state,
                 error: true,
                 errorMsg: action.payload.errorMsg,
             };
 
-        case 'UPDATE_IS_WHITELISTED':
+        case UPDATE_ISWHITELISTED:
             return {
                 ...state,
                 error: true,
@@ -60,4 +61,4 @@ const dataReducer = (state: ContractData = initialState, action: any) => {
     }
 };
 
-export default dataReducer;
+export default mintReducer;

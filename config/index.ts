@@ -8,10 +8,10 @@ export const networkConfig = {
 };
 
 export const contractAddresses = {
-    miner: '0x68071b628211eB53c494E640e3EC9425e10BF37f',
-    mine: '0x3DDa4835732C0748456C31EFEB129084828E91f2',
-    diamond: '0x160Bc480C57b63F479F31DE94c13C4a3C0AcCE49',
-    vault: '0xC73A2906ca86eC802e57e119F8C2746890c6B887',
+    miner: '0x809fC7086BE9BCE0c2143145e10DE8e76A70BAB9',
+    mine: '0x745B47aA97584B476564c6B81847A24Ff296D8E2',
+    diamond: '0x48c0518D6E068c893674cFBf21092748cfB14596',
+    vault: '0x0CF1a4A96f19Bd1FB2c7D6A728182cB36E9b0bb5',
 };
 
 export const siteProtection = {

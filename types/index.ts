@@ -17,6 +17,7 @@ export interface BlockchainData {
     minerContract?: Contract;
     mineContract?: Contract;
     diamondContract?: Contract;
+    vaultContract?: Contract;
     web3?: Web3;
 }
 
@@ -24,7 +25,7 @@ export interface BlockchainState {
     blockchain: BlockchainData;
 }
 
-export interface ContractData {
+export interface MintData {
     isWhiteListed: boolean;
     gameStarted: boolean;
     presaleOpen: boolean;
@@ -41,8 +42,8 @@ export interface ContractData {
     superPercentage: number;
 }
 
-export interface ContractDataState {
-    contractData: ContractData;
+export interface MintDataState {
+    mintData: MintData;
 }
 
 export interface CustomAlert {

@@ -1,11 +1,24 @@
 import { NextPage } from 'next';
 import Head from 'next/head';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { BlockchainState } from '../types';
 import { contractAddresses, siteProtection } from '../config';
 import Web3 from 'web3';
 import BigNumber from 'bignumber.js';
+import Vault from '../components/Vault';
+
+const fmt = {
+    decimalSeparator: '.',
+    groupSeparator: ',',
+    groupSize: 3,
+    secondaryGroupSize: 0,
+    fractionGroupSeparator: ' ',
+    fractionGroupSize: 0,
+};
+
+// Set the global formatting options
+BigNumber.config({ FORMAT: fmt });
 
 const game: NextPage = () => {
     const blockchain = useSelector((state: BlockchainState) => state.blockchain);
@@ -22,11 +35,13 @@ const game: NextPage = () => {
     const [cooldowns, setCooldowns] = useState<number[]>([]);
     const [selectedCooldowns, setSelectedCooldowns] = useState<number[]>([]);
     const [cooldownsData, setCooldownsData] = useState<any>({});
-    const [cooldownRemainingInterval, setCooldownRemainingInterval] = useState<any>();
+    const cooldownRemainingInterval = useRef<any>();
 
     const [myDiamonds, setMyDiamonds] = useState<BigNumber>();
     const [earnedDiamonds, setEarnedDiamonds] = useState<BigNumber>();
-    const [earnedDiamondsInterval, setEarnedDiamondsInterval] = useState<any>();
+    const earnedDiamondsInterval = useRef<any>();
+
+    const [form, setForm] = useState({ level: 0, quantity: 0 });
 
     useEffect(() => {
         setMiners([]);
@@ -92,7 +107,8 @@ const game: NextPage = () => {
 
     const getStaked = async () => {
         const minersState = [];
-        clearTimeout(earnedDiamondsInterval);
+        clearTimeout(earnedDiamondsInterval.current);
+        setEarnedDiamonds(new BigNumber(0));
 
         if (blockchain.mineContract?.methods && blockchain.account) {
             const numMiners = await blockchain.mineContract?.methods.ownedStakesBalance(blockchain.account).call();
@@ -110,19 +126,19 @@ const game: NextPage = () => {
                     }
                     const yieldDps = await blockchain.mineContract?.methods.YIELD_CPS().call();
 
-                    setEarnedDiamondsInterval(
-                        setInterval(() => {
+                    earnedDiamondsInterval.current = setInterval(
+                        () => {
                             let totalAcccrued = new BigNumber(0);
 
                             for (const miner of miners) {
                                 const accrued = new BigNumber(
                                     Web3.utils.fromWei(
-                                        BigInt(
+                                        new BigNumber(
                                             (Math.round(Date.now() - Math.round(miner.startTimestamp * 1000)) *
-                                                (miner.level === '0' ? 1 : 5) *
+                                                (miner.level === '0' ? 1 : 25) *
                                                 parseFloat(yieldDps)) /
                                                 1000
-                                        ).toString(),
+                                        ).toFixed(0),
                                         'ether'
                                     )
                                 );
@@ -135,7 +151,8 @@ const game: NextPage = () => {
                             }
 
                             setEarnedDiamonds(totalAcccrued);
-                        }, 100)
+                        },
+                        miners.length > 15 ? 80 : 150
                     );
 
                     // getEarnedDiamonds(stakedIds);
@@ -150,7 +167,7 @@ const game: NextPage = () => {
 
     const getCooldowns = async () => {
         const cooldownsState: any = [];
-        clearTimeout(cooldownRemainingInterval);
+        clearTimeout(cooldownRemainingInterval.current);
 
         if (blockchain.mineContract?.methods && blockchain.account) {
             const numMiners = await blockchain.mineContract?.methods.ownedCooldownsBalance(blockchain.account).call();
@@ -168,38 +185,45 @@ const game: NextPage = () => {
                         });
                     }
 
-                    setCooldownRemainingInterval(
-                        setInterval(() => {
-                            for (const cooldown of cooldowns) {
-                                const futureTime = new Date((parseInt(cooldown.startTimestamp) + parseInt(unstakeCooldownDuration)) * 1000);
+                    updateRemainingCooldownTime(cooldowns, unstakeCooldownDuration);
 
-                                const timeLeft = futureTime.getTime() - new Date().getTime();
-
-                                const timeRemaining = {
-                                    h: Math.floor(timeLeft / 1000 / 60 / 60),
-                                    m: Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60)),
-                                    s: Math.floor((timeLeft % (1000 * 60)) / 1000),
-                                };
-
-                                setCooldownsData((prevState: any) => {
-                                    return {
-                                        ...prevState,
-                                        [cooldown.tokenId]: {
-                                            ...prevState[cooldown.tokenId],
-                                            timeDiff: timeLeft,
-                                            timeRemaining,
-                                            withdraw: timeLeft > 0 ? false : true,
-                                        },
-                                    };
-                                });
-                            }
-                        }, 1000)
+                    cooldownRemainingInterval.current = setInterval(
+                        () => {
+                            updateRemainingCooldownTime(cooldowns, unstakeCooldownDuration);
+                        },
+                        cooldowns.length < 15 ? 1000 : 60000
                     );
                 }
             }
         }
 
         setCooldowns(cooldownsState);
+    };
+
+    const updateRemainingCooldownTime = (cooldowns: any, unstakeCooldownDuration: any) => {
+        for (const cooldown of cooldowns) {
+            const futureTime = new Date((parseInt(cooldown.startTimestamp) + parseInt(unstakeCooldownDuration)) * 1000);
+
+            const timeLeft = futureTime.getTime() - new Date().getTime();
+
+            const timeRemaining = {
+                h: Math.floor(timeLeft / 1000 / 60 / 60),
+                m: Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60)),
+                s: cooldowns.length < 15 ? Math.floor((timeLeft % (1000 * 60)) / 1000) : null,
+            };
+
+            setCooldownsData((prevState: any) => {
+                return {
+                    ...prevState,
+                    [cooldown.tokenId]: {
+                        ...prevState[cooldown.tokenId],
+                        timeDiff: timeLeft,
+                        timeRemaining,
+                        withdraw: timeLeft > 0 ? false : true,
+                    },
+                };
+            });
+        }
     };
 
     const claimDiamonds = async () => {
@@ -297,7 +321,7 @@ const game: NextPage = () => {
                 })
                 .once('receipt', function (hash: any) {
                     getStaked();
-
+                    getMyDiamonds();
                     getCooldowns();
                 })
                 .catch((err: any) => {
@@ -326,241 +350,359 @@ const game: NextPage = () => {
         }
     };
 
+    const mintUpgrade = async () => {
+        if (blockchain.minerContract?.methods && blockchain.account) {
+            const isApproved = await blockchain.minerContract?.methods.isApprovedForAll(blockchain.account, contractAddresses.miner).call();
+
+            if (isApproved) {
+                blockchain.minerContract?.methods
+                    .mintUpgrade(form.level, form.quantity)
+                    .send({
+                        to: contractAddresses.miner,
+                        from: blockchain.account,
+                        value: 0,
+                    })
+                    .once('receipt', function (hash: any) {
+                        console.log(hash);
+                    })
+                    .catch((err: any) => {
+                        console.log(err);
+                    });
+            } else {
+                blockchain.minerContract?.methods
+                    .setApprovalForAll(contractAddresses.miner, true)
+                    .send({
+                        to: contractAddresses.miner,
+                        from: blockchain.account,
+                        value: 0,
+                    })
+                    .once('receipt', (hash: any) => {
+                        blockchain.minerContract?.methods
+                            .mintUpgrade(form.level, form.quantity)
+                            .send({
+                                to: contractAddresses.miner,
+                                from: blockchain.account,
+                                value: 0,
+                            })
+                            .once('receipt', function (hash: any) {
+                                console.log(hash);
+                            })
+                            .catch((err: any) => {
+                                console.log(err);
+                            });
+                    });
+            }
+        }
+    };
+
+    if (
+        siteProtection.whitelistOnly &&
+        !siteProtection.whitelistedWallets.find((address) => address.toLowerCase() === blockchain.account?.toLowerCase() || '')
+    ) {
+        return <></>;
+    }
+
     return (
         <>
             <Head>
                 <title>Game | MinerVerse</title>
             </Head>
 
-            {siteProtection.whitelistOnly &&
-                (!siteProtection.whitelistedWallets.find((address) => address.toLowerCase() === blockchain.account?.toLowerCase() || '') ? (
-                    <></>
-                ) : (
-                    <section className='text-gray-900 bg-gray-900 body-font h-full'>
-                        <div className='flex flex-col justify-center items-center space-y-5 overflow-auto pt-44 pb-11'>
-                            <div className='px-11 text-center w-full'>
-                                <div className='text-xl text-center flex flex-col items-center bg-gray-700 text-white shadow-lg p-6 rounded-lg'>
-                                    <div className='flex items-center space-x-5'>
-                                        <h5 className='flex flex-col items-start'>
-                                            <span>Total Diamonds: </span>
-                                            <span>Earned Diamonds: </span>
-                                        </h5>
-                                        <h5 className='flex flex-col items-start'>
-                                            <span>{myDiamonds?.toFixed(5)}</span>
-                                            <span>{earnedDiamonds?.toFixed(5)}</span>
-                                        </h5>
-                                    </div>
-                                    <button
-                                        disabled={earnedDiamonds?.eq(0)}
-                                        onClick={claimDiamonds}
-                                        className='mt-4 py-1 px-3 bg-rose-500 disabled:hover:bg-rose-500 hover:bg-rose-600 rounded-md'>
-                                        Claim
-                                    </button>
-                                </div>
-                            </div>
-                            {/* <div className='text-xl text-center bg-gray-700 text-white shadow-lg p-2 px-12 rounded-lg'>
-                            <label>Token ID</label>
+            <section className='text-gray-900 bg-gray-900 body-font h-full'>
+                <div className='flex flex-col justify-center items-center space-y-5 overflow-auto pt-44 pb-11'>
+                    {/* <div className='px-11 flex flex-col items-center space-y-3 text-xl text-center bg-gray-700 text-white shadow-lg p-2 rounded-lg'>
+                        <div>
+                            <label>Level</label>
                             <input
-                                value={toStake}
+                                value={form.level}
                                 onChange={(e) => {
-                                    setToStake(parseInt(e.target.value));
+                                    setForm((prevState: any) => {
+                                        return { ...prevState, level: e.target.value };
+                                    });
                                 }}
                                 type='number'
                                 max={20000}
                                 placeholder='0'
                                 className='text-center border-none outline-none ml-3 w-[200px] bg-gray-700 text-white'
                             />
-                            <button onClick={stake} className='ml-4 bg-rose-500 rounded-lg p-2 px-4'>
-                                Stake
-                            </button>
-                        </div> */}
-                            <div className='px-11 text-center w-full'>
-                                <div className='flex items-center justify-between w-full mb-4 p-2 px-3 bg-gray-700 text-white rounded-lg shadow-lg'>
-                                    <h3 className='font-bold text-xl'>Staked</h3>
-                                    <div className='flex space-x-3'>
-                                        <button
-                                            onClick={() => {
-                                                setSelectedStaked([]);
-                                            }}
-                                            className='py-1 px-3 bg-gray-400 hover:bg-gray-500 rounded-md'>
-                                            Unselect
-                                        </button>
-                                        <button
-                                            onClick={() => {
-                                                setSelectedStaked([...staked]);
-                                            }}
-                                            className='py-1 px-3 bg-gray-400 hover:bg-gray-500 rounded-md'>
-                                            Select All
-                                        </button>
-                                        <button
-                                            disabled={selectedStaked.length === 0}
-                                            onClick={unstake}
-                                            className='py-1 px-3 bg-rose-500 disabled:hover:bg-rose-500 hover:bg-rose-600 rounded-md'>
-                                            Unstake
-                                        </button>
-                                    </div>
-                                </div>
-                                <div className='flex flex-wrap justify-center'>
-                                    {staked.map((miner: any) => {
-                                        return (
-                                            <div
-                                                key={miner}
-                                                onClick={() => {
-                                                    const index = selectedStaked.indexOf(miner);
-
-                                                    if (index > -1) {
-                                                        setSelectedStaked(selectedStaked.filter((item) => item !== miner));
-                                                    } else {
-                                                        setSelectedStaked([...selectedStaked, miner]);
-                                                    }
-                                                }}
-                                                className={
-                                                    'relative shadow-lg p-4 mr-1 mb-1 w-[100px] cursor-pointer ' +
-                                                    (generalData[miner]?.level === 1 ? ' text-red-500 ' : 'text-white ') +
-                                                    (selectedStaked.indexOf(miner) !== -1 ? ' bg-gray-500' : 'bg-gray-700')
-                                                }>
-                                                <div className='flex flex-col items-center'>
-                                                    <p className='text-lg'>{miner}</p>
-                                                    {stakedData[miner]?.earned && (
-                                                        <p className='text-sm text-gray-300'>{stakedData[miner].earned.toFixed(3)}</p>
-                                                    )}
-                                                </div>
-                                                {/* <div className='w-[100px] h-[200px]'>
-                                <img src={miner.image} className='object-cover w-full h-full' />
-                            </div> */}
-                                            </div>
-                                        );
-                                    })}
+                        </div>
+                        <div>
+                            <label>Quantity</label>
+                            <input
+                                value={form.quantity}
+                                onChange={(e) => {
+                                    setForm((prevState: any) => {
+                                        return { ...prevState, quantity: e.target.value };
+                                    });
+                                }}
+                                type='number'
+                                max={20000}
+                                placeholder='0'
+                                className='text-center border-none outline-none ml-3 w-[200px] bg-gray-700 text-white'
+                            />
+                        </div>
+                        <button onClick={mintUpgrade} className='ml-4 bg-rose-500 rounded-lg p-2 px-4'>
+                            Mint Upgrade
+                        </button>
+                    </div> */}
+                    <div className='flex space-x-5'>
+                        <div className='text-xl text-center flex flex-col items-center bg-gray-700 text-white shadow-lg p-6 px-11 w-[400px] rounded-lg'>
+                            <div className='flex'>
+                                <h5 className='flex flex-col items-start w-[100px]'>
+                                    <span>Balance: </span>
+                                    <span>Earned: </span>
+                                </h5>
+                                <div className='relative w-[100px]'>
+                                    <h5 className='flex flex-col items-start absolute top-0 left-0 whitespace-nowrap'>
+                                        <span>{myDiamonds?.toFormat(5)}</span>
+                                        <span>{earnedDiamonds?.toFormat(5)}</span>
+                                    </h5>
                                 </div>
                             </div>
-                            <div className='px-11 text-center w-full'>
-                                <div className='flex items-center justify-between w-full mb-4 p-2 px-3 bg-gray-700 text-white rounded-lg shadow-lg'>
-                                    <h3 className='font-bold text-xl'>Not Staked</h3>
-                                    <div className='flex space-x-3'>
-                                        <button
-                                            onClick={() => {
-                                                setSelectedMiners([]);
-                                            }}
-                                            className='py-1 px-3 bg-gray-400 hover:bg-gray-500 rounded-md'>
-                                            Unselect
-                                        </button>
-                                        <button
-                                            onClick={() => {
-                                                setSelectedMiners([...miners]);
-                                            }}
-                                            className='py-1 px-3 bg-gray-400 hover:bg-gray-500 rounded-md'>
-                                            Select All
-                                        </button>
-                                        <button
-                                            disabled={selectedMiners.length === 0}
-                                            onClick={stake}
-                                            className='py-1 px-3 bg-rose-500 disabled:hover:bg-rose-500 hover:bg-rose-600 rounded-md'>
-                                            Stake
-                                        </button>
-                                    </div>
-                                </div>
-                                <div className='flex flex-wrap justify-center'>
-                                    {miners.map((miner: any) => {
-                                        return (
-                                            <div
-                                                key={miner}
-                                                onClick={() => {
-                                                    const index = selectedMiners.indexOf(miner);
-
-                                                    if (index > -1) {
-                                                        setSelectedMiners(selectedMiners.filter((item) => item !== miner));
-                                                    } else {
-                                                        setSelectedMiners([...selectedMiners, miner]);
-                                                    }
-                                                }}
-                                                className={
-                                                    'relative shadow-lg p-4 mr-1 mb-1 w-[100px] cursor-pointer ' +
-                                                    (generalData[miner]?.level === 1 ? ' text-red-500 ' : 'text-white ') +
-                                                    (selectedMiners.indexOf(miner) !== -1 ? ' bg-gray-500' : 'bg-gray-700')
-                                                }>
-                                                <p className=''>{miner}</p>
-                                                {/* <div className='w-[100px] h-[200px]'>
-                                <img src={miner.image} className='object-cover w-full h-full' />
-                            </div> */}
-                                            </div>
-                                        );
-                                    })}
-                                </div>
-                            </div>{' '}
-                            <div className='px-11 text-center w-full'>
-                                <div className='flex items-center justify-between w-full mb-4 p-2 px-3 bg-gray-700 text-white rounded-lg shadow-lg'>
-                                    <h3 className='font-bold text-xl'>Cooldown</h3>
-                                    <div className='flex space-x-3'>
-                                        <button
-                                            onClick={() => {
-                                                setSelectedCooldowns([]);
-                                            }}
-                                            className='py-1 px-3 bg-gray-400 hover:bg-gray-500 rounded-md'>
-                                            Unselect
-                                        </button>
-                                        <button
-                                            onClick={() => {
-                                                setSelectedCooldowns([...cooldowns]);
-                                            }}
-                                            className='py-1 px-3 bg-gray-400 hover:bg-gray-500 rounded-md'>
-                                            Select All
-                                        </button>
-                                        <button
-                                            disabled={selectedCooldowns.length === 0}
-                                            onClick={withdraw}
-                                            className='py-1 px-3 bg-rose-500 disabled:hover:bg-rose-500 hover:bg-rose-600 rounded-md'>
-                                            Withdraw
-                                        </button>
-                                    </div>
-                                </div>
-                                <div className='flex flex-wrap justify-center'>
-                                    {cooldowns.map((cooldown: any) => {
-                                        return (
-                                            <div
-                                                key={cooldown}
-                                                onClick={() => {
-                                                    if (cooldownsData[cooldown]?.withdraw) {
-                                                        const index = selectedCooldowns.indexOf(cooldown);
-
-                                                        if (index > -1) {
-                                                            setSelectedCooldowns(selectedCooldowns.filter((item) => item !== cooldown));
-                                                        } else {
-                                                            setSelectedCooldowns([...selectedCooldowns, cooldown]);
-                                                        }
-                                                    }
-                                                }}
-                                                className={
-                                                    'relative shadow-lg p-4 mr-1 mb-1 w-[120px] cursor-pointer ' +
-                                                    (generalData[cooldown]?.level === 1 ? ' text-red-500 ' : 'text-white ') +
-                                                    (selectedCooldowns.indexOf(cooldown) !== -1 ? ' bg-gray-500' : 'bg-gray-700')
-                                                }>
-                                                <p className='text-lg'>{cooldown}</p>
-                                                {cooldownsData[cooldown]?.timeRemaining && !cooldownsData[cooldown]?.withdraw ? (
-                                                    <p className='text-sm text-gray-300 flex space-x-1 justify-center'>
-                                                        {cooldownsData[cooldown].timeRemaining.h !== 0 && (
-                                                            <span>{cooldownsData[cooldown].timeRemaining.h}h</span>
-                                                        )}
-                                                        {cooldownsData[cooldown].timeRemaining.m !== 0 && (
-                                                            <span>{cooldownsData[cooldown].timeRemaining.m}m</span>
-                                                        )}
-                                                        {cooldownsData[cooldown].timeRemaining.s !== 0 && (
-                                                            <span>{cooldownsData[cooldown].timeRemaining.s}s</span>
-                                                        )}
-                                                    </p>
-                                                ) : (
-                                                    <p className='text-sm text-green-500 flex space-x-1 justify-center'>Ready!</p>
-                                                )}
-                                                {/* <div className='w-[100px] h-[200px]'>
-                                <img src={miner.image} className='object-cover w-full h-full' />
-                            </div> */}
-                                            </div>
-                                        );
-                                    })}
-                                </div>
+                            <button
+                                disabled={earnedDiamonds?.eq(0)}
+                                onClick={claimDiamonds}
+                                className='mt-4 py-1 px-3 bg-rose-500 disabled:hover:bg-rose-500 hover:bg-rose-600 rounded-md'>
+                                Claim
+                            </button>
+                        </div>
+                        <Vault vaultContract={blockchain.vaultContract} account={blockchain.account} />
+                    </div>
+                    <div className='px-11 text-center w-full'>
+                        <div className='flex items-center justify-between w-full mb-4 p-2 px-3 bg-gray-700 text-white rounded-lg shadow-lg'>
+                            <h3 className='font-bold text-xl'>Staked</h3>
+                            <div className='flex space-x-3'>
+                                <button
+                                    onClick={() => {
+                                        setSelectedStaked([]);
+                                    }}
+                                    className='py-1 px-3 bg-gray-400 hover:bg-gray-500 rounded-md'>
+                                    Unselect
+                                </button>
+                                <button
+                                    onClick={() => {
+                                        setSelectedStaked([...staked]);
+                                    }}
+                                    className='py-1 px-3 bg-gray-400 hover:bg-gray-500 rounded-md'>
+                                    Select All
+                                </button>
+                                <button
+                                    disabled={selectedStaked.length === 0}
+                                    onClick={unstake}
+                                    className='py-1 px-3 bg-rose-500 disabled:hover:bg-rose-500 hover:bg-rose-600 rounded-md'>
+                                    Unstake
+                                </button>
                             </div>
                         </div>
-                    </section>
-                ))}
+                        <div
+                            className='flex flex-wrap justify-center'
+                            onContextMenu={(e) => {
+                                e.preventDefault();
+                            }}>
+                            {staked.map((token: any) => {
+                                return (
+                                    <div
+                                        key={token}
+                                        onMouseDown={(e) => {
+                                            e.preventDefault();
+
+                                            if (e.buttons == 1 || e.buttons == 3) {
+                                                const index = selectedStaked.indexOf(token);
+
+                                                if (index > -1) {
+                                                    setSelectedStaked(selectedStaked.filter((item) => item !== token));
+                                                } else {
+                                                    setSelectedStaked([...selectedStaked, token]);
+                                                }
+                                            }
+                                        }}
+                                        onMouseEnter={(e) => {
+                                            e.preventDefault();
+
+                                            if (e.buttons == 1 || e.buttons == 3) {
+                                                const index = selectedStaked.indexOf(token);
+
+                                                if (index > -1) {
+                                                    setSelectedStaked(selectedStaked.filter((item) => item !== token));
+                                                } else {
+                                                    setSelectedStaked([...selectedStaked, token]);
+                                                }
+                                            }
+                                        }}
+                                        className={
+                                            'relative shadow-lg p-4 mr-1 mb-1 w-[100px] cursor-pointer select-none ' +
+                                            (generalData[token]?.level === 1 ? ' text-red-500 ' : 'text-white ') +
+                                            (selectedStaked.indexOf(token) !== -1 ? ' bg-gray-500' : 'bg-gray-700')
+                                        }>
+                                        <div className='flex flex-col items-center'>
+                                            <p className='text-lg'>{token}</p>
+                                            {stakedData[token]?.earned && <p className='text-sm text-gray-300'>{stakedData[token].earned.toFixed(3)}</p>}
+                                        </div>
+                                        {/* <div className='w-[100px] h-[200px]'>
+                                <img src={miner.image} className='object-cover w-full h-full' />
+                            </div> */}
+                                    </div>
+                                );
+                            })}
+                        </div>
+                    </div>
+                    <div className='px-11 text-center w-full'>
+                        <div className='flex items-center justify-between w-full mb-4 p-2 px-3 bg-gray-700 text-white rounded-lg shadow-lg'>
+                            <h3 className='font-bold text-xl'>Not Staked</h3>
+                            <div className='flex space-x-3'>
+                                <button
+                                    onClick={() => {
+                                        setSelectedMiners([]);
+                                    }}
+                                    className='py-1 px-3 bg-gray-400 hover:bg-gray-500 rounded-md'>
+                                    Unselect
+                                </button>
+                                <button
+                                    onClick={() => {
+                                        setSelectedMiners([...miners]);
+                                    }}
+                                    className='py-1 px-3 bg-gray-400 hover:bg-gray-500 rounded-md'>
+                                    Select All
+                                </button>
+                                <button
+                                    disabled={selectedMiners.length === 0}
+                                    onClick={stake}
+                                    className='py-1 px-3 bg-rose-500 disabled:hover:bg-rose-500 hover:bg-rose-600 rounded-md'>
+                                    Stake
+                                </button>
+                            </div>
+                        </div>
+                        <div
+                            className='flex flex-wrap justify-center'
+                            onContextMenu={(e) => {
+                                e.preventDefault();
+                            }}>
+                            {miners.map((token: any) => {
+                                return (
+                                    <div
+                                        key={token}
+                                        onMouseDown={(e) => {
+                                            e.preventDefault();
+
+                                            if (e.buttons == 1 || e.buttons == 3) {
+                                                const index = selectedMiners.indexOf(token);
+
+                                                if (index > -1) {
+                                                    setSelectedMiners(selectedMiners.filter((item) => item !== token));
+                                                } else {
+                                                    setSelectedMiners([...selectedMiners, token]);
+                                                }
+                                            }
+                                        }}
+                                        onMouseEnter={(e) => {
+                                            e.preventDefault();
+
+                                            if (e.buttons == 1 || e.buttons == 3) {
+                                                const index = selectedMiners.indexOf(token);
+
+                                                if (index > -1) {
+                                                    setSelectedMiners(selectedMiners.filter((item) => item !== token));
+                                                } else {
+                                                    setSelectedMiners([...selectedMiners, token]);
+                                                }
+                                            }
+                                        }}
+                                        className={
+                                            'relative shadow-lg p-4 mr-1 mb-1 w-[100px] cursor-pointer select-none ' +
+                                            (generalData[token]?.level === 1 ? ' text-red-500 ' : 'text-white ') +
+                                            (selectedMiners.indexOf(token) !== -1 ? ' bg-gray-500' : 'bg-gray-700')
+                                        }>
+                                        <p className=''>{token}</p>
+                                        {/* <div className='w-[100px] h-[200px]'>
+                                <img src={miner.image} className='object-cover w-full h-full' />
+                            </div> */}
+                                    </div>
+                                );
+                            })}
+                        </div>
+                    </div>{' '}
+                    <div className='px-11 text-center w-full'>
+                        <div className='flex items-center justify-between w-full mb-4 p-2 px-3 bg-gray-700 text-white rounded-lg shadow-lg'>
+                            <h3 className='font-bold text-xl'>Cooldown</h3>
+                            <div className='flex space-x-3'>
+                                <button
+                                    onClick={() => {
+                                        setSelectedCooldowns([]);
+                                    }}
+                                    className='py-1 px-3 bg-gray-400 hover:bg-gray-500 rounded-md'>
+                                    Unselect
+                                </button>
+                                <button
+                                    onClick={() => {
+                                        setSelectedCooldowns([...cooldowns]);
+                                    }}
+                                    className='py-1 px-3 bg-gray-400 hover:bg-gray-500 rounded-md'>
+                                    Select All
+                                </button>
+                                <button
+                                    disabled={selectedCooldowns.length === 0}
+                                    onClick={withdraw}
+                                    className='py-1 px-3 bg-rose-500 disabled:hover:bg-rose-500 hover:bg-rose-600 rounded-md'>
+                                    Withdraw
+                                </button>
+                            </div>
+                        </div>
+                        <div className='flex flex-wrap justify-center'>
+                            {cooldowns.map((token: any) => {
+                                return (
+                                    <div
+                                        key={token}
+                                        onMouseDown={(e) => {
+                                            e.preventDefault();
+
+                                            if (e.buttons == 1 || e.buttons == 3) {
+                                                const index = selectedCooldowns.indexOf(token);
+
+                                                if (index > -1) {
+                                                    setSelectedCooldowns(selectedCooldowns.filter((item) => item !== token));
+                                                } else {
+                                                    setSelectedCooldowns([...selectedCooldowns, token]);
+                                                }
+                                            }
+                                        }}
+                                        onMouseEnter={(e) => {
+                                            e.preventDefault();
+
+                                            if (e.buttons == 1 || e.buttons == 3) {
+                                                const index = selectedCooldowns.indexOf(token);
+
+                                                if (index > -1) {
+                                                    setSelectedCooldowns(selectedCooldowns.filter((item) => item !== token));
+                                                } else {
+                                                    setSelectedCooldowns([...selectedCooldowns, token]);
+                                                }
+                                            }
+                                        }}
+                                        className={
+                                            'relative shadow-lg p-4 mr-1 mb-1 w-[120px] cursor-pointer select-none ' +
+                                            (generalData[token]?.level === 1 ? ' text-red-500 ' : 'text-white ') +
+                                            (selectedCooldowns.indexOf(token) !== -1 ? ' bg-gray-500' : 'bg-gray-700')
+                                        }>
+                                        <p className='text-lg'>{token}</p>
+                                        {cooldownsData[token]?.timeRemaining && !cooldownsData[token]?.withdraw ? (
+                                            <p className='text-sm text-gray-300 flex space-x-1 justify-center'>
+                                                {cooldownsData[token].timeRemaining.h && <span>{cooldownsData[token].timeRemaining.h}h</span>}
+                                                {cooldownsData[token].timeRemaining.m && <span>{cooldownsData[token].timeRemaining.m}m</span>}
+                                                {cooldownsData[token].timeRemaining.s && <span>{cooldownsData[token].timeRemaining.s}s</span>}
+                                            </p>
+                                        ) : (
+                                            <p className='text-sm text-green-500 flex space-x-1 justify-center'>Ready!</p>
+                                        )}
+                                        {/* <div className='w-[100px] h-[200px]'>
+                                <img src={miner.image} className='object-cover w-full h-full' />
+                            </div> */}
+                                    </div>
+                                );
+                            })}
+                        </div>
+                    </div>
+                </div>
+            </section>
         </>
     );
 };
