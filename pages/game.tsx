@@ -48,6 +48,7 @@ const game: NextPage = () => {
 
         if (blockchain.minerContract && blockchain.account) {
             getMyMiners();
+            getLevels();
         }
     }, [blockchain.minerContract, blockchain.account]);
 
@@ -89,6 +90,7 @@ const game: NextPage = () => {
                 const miners = await blockchain.minerContract.methods.batchedMinerOfOwner(blockchain.account, 0, numMiners).call();
 
                 if (miners) {
+                    console.log(miners);
                     for (const miner of miners) {
                         minersState.push(parseInt(miner['tokenId']));
 
@@ -107,7 +109,7 @@ const game: NextPage = () => {
 
     const getStaked = async () => {
         const minersState = [];
-        clearTimeout(earnedDiamondsInterval.current);
+        clearInterval(earnedDiamondsInterval.current);
         setEarnedDiamonds(new BigNumber(0));
 
         if (blockchain.mineContract?.methods && blockchain.account) {
@@ -135,7 +137,15 @@ const game: NextPage = () => {
                                     Web3.utils.fromWei(
                                         new BigNumber(
                                             (Math.round(Date.now() - Math.round(miner.startTimestamp * 1000)) *
-                                                (miner.level === '0' ? 1 : 25) *
+                                                (miner.level === '0'
+                                                    ? 1
+                                                    : miner.level === '1'
+                                                    ? 25
+                                                    : miner.level === '2'
+                                                    ? 5
+                                                    : miner.level === '3'
+                                                    ? 1000
+                                                    : 0) *
                                                 parseFloat(yieldDps)) /
                                                 1000
                                         ).toFixed(0),
@@ -152,7 +162,7 @@ const game: NextPage = () => {
 
                             setEarnedDiamonds(totalAcccrued);
                         },
-                        miners.length > 15 ? 80 : 150
+                        miners.length > 15 ? 120 : 80
                     );
 
                     // getEarnedDiamonds(stakedIds);
@@ -167,7 +177,7 @@ const game: NextPage = () => {
 
     const getCooldowns = async () => {
         const cooldownsState: any = [];
-        clearTimeout(cooldownRemainingInterval.current);
+        clearInterval(cooldownRemainingInterval.current);
 
         if (blockchain.mineContract?.methods && blockchain.account) {
             const numMiners = await blockchain.mineContract?.methods.ownedCooldownsBalance(blockchain.account).call();
@@ -198,6 +208,29 @@ const game: NextPage = () => {
         }
 
         setCooldowns(cooldownsState);
+    };
+
+    const getLevels = async () => {
+        if (blockchain.minerContract?.methods && blockchain.account) {
+            const levels = [];
+            let error = false;
+
+            let count = 0;
+            while (!error) {
+                let yes;
+
+                try {
+                    yes = await blockchain.minerContract?.methods.levels(count).call();
+                    levels.push(yes);
+                } catch (e) {
+                    error = true;
+                }
+
+                count++;
+            }
+
+            console.log(levels);
+        }
     };
 
     const updateRemainingCooldownTime = (cooldowns: any, unstakeCooldownDuration: any) => {
@@ -268,11 +301,7 @@ const game: NextPage = () => {
             if (isApproved) {
                 blockchain.mineContract?.methods
                     .stakeMany(selectedMiners)
-                    .send({
-                        to: contractAddresses.mine,
-                        from: blockchain.account,
-                        value: 0,
-                    })
+                    .send({ gasLimit: String(7999999), to: contractAddresses.mine, from: blockchain.account, value: 0 })
                     .once('receipt', function (hash: any) {
                         getStaked();
 
@@ -292,11 +321,7 @@ const game: NextPage = () => {
                     .then(() => {
                         blockchain.mineContract?.methods
                             .stakeMany(selectedMiners)
-                            .send({
-                                to: contractAddresses.mine,
-                                from: blockchain.account,
-                                value: 0,
-                            })
+                            .send({ gasLimit: String(7000000), to: contractAddresses.mine, from: blockchain.account, value: 0 })
                             .once('receipt', function (hash: any) {
                                 getStaked();
 
@@ -314,11 +339,7 @@ const game: NextPage = () => {
         if (blockchain.diamondContract?.methods && blockchain.mineContract?.methods && blockchain.account) {
             blockchain.mineContract?.methods
                 .claimDiamondsAndMaybeUnstake(selectedStaked, true)
-                .send({
-                    to: contractAddresses.mine,
-                    from: blockchain.account,
-                    value: 0,
-                })
+                .send({ gasLimit: String(7000000), to: contractAddresses.mine, from: blockchain.account, value: 0 })
                 .once('receipt', function (hash: any) {
                     getStaked();
                     getMyDiamonds();
@@ -334,11 +355,7 @@ const game: NextPage = () => {
         if (blockchain.mineContract?.methods && blockchain.account) {
             blockchain.mineContract?.methods
                 .withdrawMiner(selectedCooldowns)
-                .send({
-                    to: contractAddresses.mine,
-                    from: blockchain.account,
-                    value: 0,
-                })
+                .send({ gasLimit: String(7000000), to: contractAddresses.mine, from: blockchain.account, value: 0 })
                 .once('receipt', function (hash: any) {
                     getMyMiners();
 
@@ -395,6 +412,23 @@ const game: NextPage = () => {
         }
     };
 
+    const getCssByLevel = (level: any) => {
+        switch (level) {
+            case 0:
+                return ' text-white';
+            case 1:
+                return ' text-red-500';
+            case 2:
+                return ' text-green-500';
+            case 3:
+                return ' text-amber-500';
+            case 4:
+                return ' text-cyan-500';
+            default:
+                break;
+        }
+    };
+
     if (
         siteProtection.whitelistOnly &&
         !siteProtection.whitelistedWallets.find((address) => address.toLowerCase() === blockchain.account?.toLowerCase() || '')
@@ -410,7 +444,7 @@ const game: NextPage = () => {
 
             <section className='text-gray-900 bg-gray-900 body-font h-full'>
                 <div className='flex flex-col justify-center items-center space-y-5 overflow-auto pt-44 pb-11'>
-                    {/* <div className='px-11 flex flex-col items-center space-y-3 text-xl text-center bg-gray-700 text-white shadow-lg p-2 rounded-lg'>
+                    <div className='px-11 flex flex-col items-center space-y-3 text-xl text-center bg-gray-700 text-white shadow-lg p-2 rounded-lg'>
                         <div>
                             <label>Level</label>
                             <input
@@ -444,9 +478,9 @@ const game: NextPage = () => {
                         <button onClick={mintUpgrade} className='ml-4 bg-rose-500 rounded-lg p-2 px-4'>
                             Mint Upgrade
                         </button>
-                    </div> */}
+                    </div>
                     <div className='flex space-x-5'>
-                        <div className='text-xl text-center flex flex-col items-center bg-gray-700 text-white shadow-lg p-6 px-11 w-[400px] rounded-lg'>
+                        <div className='text-xl text-center flex flex-col items-center justify-center bg-gray-700 text-white shadow-lg p-6 px-11 w-[400px] rounded-lg'>
                             <div className='flex'>
                                 <h5 className='flex flex-col items-start w-[100px]'>
                                     <span>Balance: </span>
@@ -531,8 +565,8 @@ const game: NextPage = () => {
                                         }}
                                         className={
                                             'relative shadow-lg p-4 mr-1 mb-1 w-[100px] cursor-pointer select-none ' +
-                                            (generalData[token]?.level === 1 ? ' text-red-500 ' : 'text-white ') +
-                                            (selectedStaked.indexOf(token) !== -1 ? ' bg-gray-500' : 'bg-gray-700')
+                                            (selectedStaked.indexOf(token) !== -1 ? ' bg-gray-500 ' : 'bg-gray-700 ') +
+                                            getCssByLevel(generalData[token]?.level)
                                         }>
                                         <div className='flex flex-col items-center'>
                                             <p className='text-lg'>{token}</p>
@@ -609,8 +643,8 @@ const game: NextPage = () => {
                                         }}
                                         className={
                                             'relative shadow-lg p-4 mr-1 mb-1 w-[100px] cursor-pointer select-none ' +
-                                            (generalData[token]?.level === 1 ? ' text-red-500 ' : 'text-white ') +
-                                            (selectedMiners.indexOf(token) !== -1 ? ' bg-gray-500' : 'bg-gray-700')
+                                            (selectedMiners.indexOf(token) !== -1 ? ' bg-gray-500' : 'bg-gray-700 ') +
+                                            getCssByLevel(generalData[token]?.level)
                                         }>
                                         <p className=''>{token}</p>
                                         {/* <div className='w-[100px] h-[200px]'>
@@ -680,8 +714,8 @@ const game: NextPage = () => {
                                         }}
                                         className={
                                             'relative shadow-lg p-4 mr-1 mb-1 w-[120px] cursor-pointer select-none ' +
-                                            (generalData[token]?.level === 1 ? ' text-red-500 ' : 'text-white ') +
-                                            (selectedCooldowns.indexOf(token) !== -1 ? ' bg-gray-500' : 'bg-gray-700')
+                                            (selectedCooldowns.indexOf(token) !== -1 ? ' bg-gray-500 ' : 'bg-gray-700 ') +
+                                            getCssByLevel(generalData[token]?.level)
                                         }>
                                         <p className='text-lg'>{token}</p>
                                         {cooldownsData[token]?.timeRemaining && !cooldownsData[token]?.withdraw ? (
