@@ -132,6 +132,8 @@ const game: NextPage = () => {
                 const miners = await blockchain.mineContract.methods.batchedStakesOfOwner(blockchain.account, 0, numMiners).call();
 
                 if (miners) {
+                    const yields: any = {};
+
                     for (const miner of miners) {
                         minersState.push(parseInt(miner['tokenId']));
 
@@ -142,6 +144,10 @@ const game: NextPage = () => {
                                 ? `super/${miner['tokenId']}.png`
                                 : `craftables/${miner.level}.png`
                         }`;
+
+                        const level = await blockchain.minerContract?.methods.levels(miner.level).call();
+
+                        yields[miner.level] = parseInt(level.yield);
 
                         setGeneralData((prevState: any) => {
                             return { ...prevState, [miner.tokenId]: { ...prevState[miner.tokenId], level: parseInt(miner.level), img: imgUrl } };
@@ -157,17 +163,7 @@ const game: NextPage = () => {
                                 const accrued = new BigNumber(
                                     Web3.utils.fromWei(
                                         new BigNumber(
-                                            (Math.round(Date.now() - Math.round(miner.startTimestamp * 1000)) *
-                                                (miner.level === '0'
-                                                    ? 1
-                                                    : miner.level === '1'
-                                                    ? 25
-                                                    : miner.level === '2'
-                                                    ? 5
-                                                    : miner.level === '3'
-                                                    ? 1000
-                                                    : 0) *
-                                                parseFloat(yieldDps)) /
+                                            (Math.round(Date.now() - Math.round(miner.startTimestamp * 1000)) * yields[miner.level] * parseFloat(yieldDps)) /
                                                 1000
                                         ).toFixed(0),
                                         'ether'
