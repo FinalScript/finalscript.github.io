@@ -262,7 +262,7 @@ const game: NextPage = () => {
                         maxSupply: level.maxSupply,
                         supply: level.supply,
                         price: level.price,
-                        dpm: metaData.attributes[0].value,
+                        dpm: level.yield,
                     });
                 } catch (e) {
                     error = true;
@@ -526,7 +526,7 @@ const game: NextPage = () => {
                         </button>
                     </div> */}
                     <div className='flex space-x-5'>
-                        <div className='text-xl text-center flex flex-col items-center justify-center bg-gray-700 text-white shadow-lg p-6 px-11 w-[400px] rounded-lg'>
+                        <div className='text-xl text-center flex flex-col items-center justify-center bg-gray-700 text-white shadow-lg p-6 px-11 w-[600px] rounded-lg'>
                             <div className='flex'>
                                 <h5 className='flex flex-col items-start w-[100px]'>
                                     <span>Balance: </span>
@@ -661,7 +661,7 @@ const game: NextPage = () => {
                                                     <img src={generalData[token].img} className='object-contain w-full h-full' />
                                                 </div>
                                             )}
-                                            {stakedData[token]?.earned && <p className='text-sm text-gray-300'>{stakedData[token].earned.toFixed(3)}</p>}
+                                            {stakedData[token]?.earned && <p className='text-sm text-gray-300'>{stakedData[token].earned.toFormat(3)}</p>}
                                         </div>
                                         {/* <div className='w-[100px] h-[200px]'>
                                 <img src={miner.image} className='object-cover w-full h-full' />
@@ -739,7 +739,7 @@ const game: NextPage = () => {
                                         }>
                                         <p className=''>{token}</p>
                                         {generalData[token].img && (
-                                            <div className='w-[150px] h-[200px]'>
+                                            <div className='w-[80px] h-[120px]'>
                                                 <img src={generalData[token].img} className='object-contain w-full h-full' />
                                             </div>
                                         )}
@@ -812,7 +812,7 @@ const game: NextPage = () => {
                                         }>
                                         <p className='text-lg'>{token}</p>
                                         {generalData[token].img && (
-                                            <div className='w-[150px] h-[200px]'>
+                                            <div className='w-[80px] h-[120px]'>
                                                 <img src={generalData[token].img} className='object-contain w-full h-full' />
                                             </div>
                                         )}
