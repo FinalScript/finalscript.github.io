@@ -94,8 +94,16 @@ const game: NextPage = () => {
                     for (const miner of miners) {
                         minersState.push(parseInt(miner['tokenId']));
 
+                        const imgUrl = `${
+                            parseInt(miner.level) === 0
+                                ? `miners/${miner['tokenId']}.png`
+                                : parseInt(miner.level) === 1
+                                ? `super/${miner['tokenId']}.png`
+                                : `craftables/${miner.level}.png`
+                        }`;
+
                         setGeneralData((prevState: any) => {
-                            return { ...prevState, [miner.tokenId]: { ...prevState[miner.tokenId], level: parseInt(miner.level) } };
+                            return { ...prevState, [miner.tokenId]: { ...prevState[miner.tokenId], level: parseInt(miner.level), img: imgUrl } };
                         });
                     }
 
@@ -122,8 +130,16 @@ const game: NextPage = () => {
                     for (const miner of miners) {
                         minersState.push(parseInt(miner['tokenId']));
 
+                        const imgUrl = `${
+                            parseInt(miner.level) === 0
+                                ? `miners/${miner['tokenId']}.png`
+                                : parseInt(miner.level) === 1
+                                ? `super/${miner['tokenId']}.png`
+                                : `craftables/${miner.level}.png`
+                        }`;
+
                         setGeneralData((prevState: any) => {
-                            return { ...prevState, [miner.tokenId]: { ...prevState[miner.tokenId], level: parseInt(miner.level) } };
+                            return { ...prevState, [miner.tokenId]: { ...prevState[miner.tokenId], level: parseInt(miner.level), img: imgUrl } };
                         });
                     }
                     const yieldDps = await blockchain.mineContract?.methods.YIELD_CPS().call();
@@ -190,8 +206,16 @@ const game: NextPage = () => {
                     for (const cooldown of cooldowns) {
                         cooldownsState.push(parseInt(cooldown['tokenId']));
 
+                        const imgUrl = `${
+                            parseInt(cooldown.level) === 0
+                                ? `miners/${cooldown['tokenId']}.png`
+                                : parseInt(cooldown.level) === 1
+                                ? `super/${cooldown['tokenId']}.png`
+                                : `craftables/${cooldown.level}.png`
+                        }`;
+
                         setGeneralData((prevState: any) => {
-                            return { ...prevState, [cooldown.tokenId]: { ...prevState[cooldown.tokenId], level: parseInt(cooldown.level) } };
+                            return { ...prevState, [cooldown.tokenId]: { ...prevState[cooldown.tokenId], level: parseInt(cooldown.level), img: imgUrl } };
                         });
                     }
 
@@ -564,12 +588,17 @@ const game: NextPage = () => {
                                             }
                                         }}
                                         className={
-                                            'relative shadow-lg p-4 mr-1 mb-1 w-[100px] cursor-pointer select-none ' +
+                                            'relative shadow-lg p-3 mr-1 mb-1 cursor-pointer select-none ' +
                                             (selectedStaked.indexOf(token) !== -1 ? ' bg-gray-500 ' : 'bg-gray-700 ') +
                                             getCssByLevel(generalData[token]?.level)
                                         }>
                                         <div className='flex flex-col items-center'>
                                             <p className='text-lg'>{token}</p>
+                                            {generalData[token].img && (
+                                                <div className='w-[80px] h-[120px]'>
+                                                    <img src={generalData[token].img} className='object-cover w-full h-full' />
+                                                </div>
+                                            )}
                                             {stakedData[token]?.earned && <p className='text-sm text-gray-300'>{stakedData[token].earned.toFixed(3)}</p>}
                                         </div>
                                         {/* <div className='w-[100px] h-[200px]'>
@@ -642,14 +671,16 @@ const game: NextPage = () => {
                                             }
                                         }}
                                         className={
-                                            'relative shadow-lg p-4 mr-1 mb-1 w-[100px] cursor-pointer select-none ' +
+                                            'relative shadow-lg p-4 mr-1 mb-1 cursor-pointer select-none ' +
                                             (selectedMiners.indexOf(token) !== -1 ? ' bg-gray-500' : 'bg-gray-700 ') +
                                             getCssByLevel(generalData[token]?.level)
                                         }>
                                         <p className=''>{token}</p>
-                                        {/* <div className='w-[100px] h-[200px]'>
-                                <img src={miner.image} className='object-cover w-full h-full' />
-                            </div> */}
+                                        {generalData[token].img && (
+                                            <div className='w-[150px] h-[200px]'>
+                                                <img src={generalData[token].img} className='object-cover w-full h-full' />
+                                            </div>
+                                        )}
                                     </div>
                                 );
                             })}
@@ -713,11 +744,16 @@ const game: NextPage = () => {
                                             }
                                         }}
                                         className={
-                                            'relative shadow-lg p-4 mr-1 mb-1 w-[120px] cursor-pointer select-none ' +
+                                            'relative shadow-lg p-4 mr-1 mb-1 cursor-pointer select-none ' +
                                             (selectedCooldowns.indexOf(token) !== -1 ? ' bg-gray-500 ' : 'bg-gray-700 ') +
                                             getCssByLevel(generalData[token]?.level)
                                         }>
                                         <p className='text-lg'>{token}</p>
+                                        {generalData[token].img && (
+                                            <div className='w-[150px] h-[200px]'>
+                                                <img src={generalData[token].img} className='object-cover w-full h-full' />
+                                            </div>
+                                        )}
                                         {cooldownsData[token]?.timeRemaining && !cooldownsData[token]?.withdraw ? (
                                             <p className='text-sm text-gray-300 flex space-x-1 justify-center'>
                                                 {cooldownsData[token].timeRemaining.h && <span>{cooldownsData[token].timeRemaining.h}h</span>}
