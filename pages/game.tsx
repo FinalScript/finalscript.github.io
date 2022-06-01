@@ -41,7 +41,13 @@ const game: NextPage = () => {
     const [earnedDiamonds, setEarnedDiamonds] = useState<BigNumber>();
     const earnedDiamondsInterval = useRef<any>();
 
+    const [levelsData, setLevelsData] = useState<any>([]);
+
     const [form, setForm] = useState({ level: 0, quantity: 0 });
+
+    useEffect(() => {
+        console.log(levelsData);
+    }, [levelsData]);
 
     useEffect(() => {
         setMiners([]);
@@ -90,7 +96,6 @@ const game: NextPage = () => {
                 const miners = await blockchain.minerContract.methods.batchedMinerOfOwner(blockchain.account, 0, numMiners).call();
 
                 if (miners) {
-                    console.log(miners);
                     for (const miner of miners) {
                         minersState.push(parseInt(miner['tokenId']));
 
@@ -235,17 +240,34 @@ const game: NextPage = () => {
     };
 
     const getLevels = async () => {
+        setLevelsData([]);
+
         if (blockchain.minerContract?.methods && blockchain.account) {
             const levels = [];
             let error = false;
 
-            let count = 0;
+            const gateway = 'https://gateway.pinata.cloud/ipfs/';
+            const baseUri = await blockchain.minerContract?.methods.contractURI().call();
+            const contractUri = gateway + baseUri.replace('ipfs://', '').replace('contract-meta.json', '');
+
+            let count = 3;
             while (!error) {
-                let yes;
+                let level: any;
 
                 try {
-                    yes = await blockchain.minerContract?.methods.levels(count).call();
-                    levels.push(yes);
+                    level = await blockchain.minerContract?.methods.levels(count).call();
+
+                    const metaData = await (await fetch(contractUri + count + '.json')).json();
+
+                    levels.push({
+                        level: count,
+                        name: metaData.name,
+                        description: metaData.story,
+                        maxSupply: level.maxSupply,
+                        supply: level.supply,
+                        price: level.price,
+                        dpm: metaData.attributes[0].value,
+                    });
                 } catch (e) {
                     error = true;
                 }
@@ -253,7 +275,7 @@ const game: NextPage = () => {
                 count++;
             }
 
-            console.log(levels);
+            setLevelsData(levels);
         }
     };
 
@@ -391,13 +413,13 @@ const game: NextPage = () => {
         }
     };
 
-    const mintUpgrade = async () => {
+    const mintUpgrade = async (level: any, quantity: any) => {
         if (blockchain.minerContract?.methods && blockchain.account) {
             const isApproved = await blockchain.minerContract?.methods.isApprovedForAll(blockchain.account, contractAddresses.miner).call();
 
             if (isApproved) {
                 blockchain.minerContract?.methods
-                    .mintUpgrade(form.level, form.quantity)
+                    .mintUpgrade(level, quantity)
                     .send({
                         to: contractAddresses.miner,
                         from: blockchain.account,
@@ -419,7 +441,7 @@ const game: NextPage = () => {
                     })
                     .once('receipt', (hash: any) => {
                         blockchain.minerContract?.methods
-                            .mintUpgrade(form.level, form.quantity)
+                            .mintUpgrade(level, quantity)
                             .send({
                                 to: contractAddresses.miner,
                                 from: blockchain.account,
@@ -448,6 +470,8 @@ const game: NextPage = () => {
                 return ' text-amber-500';
             case 4:
                 return ' text-cyan-500';
+            case 5:
+                return ' text-pink-500';
             default:
                 break;
         }
@@ -468,7 +492,7 @@ const game: NextPage = () => {
 
             <section className='text-gray-900 bg-gray-900 body-font h-full'>
                 <div className='flex flex-col justify-center items-center space-y-5 overflow-auto pt-44 pb-11'>
-                    <div className='px-11 flex flex-col items-center space-y-3 text-xl text-center bg-gray-700 text-white shadow-lg p-2 rounded-lg'>
+                    {/* <div className='px-11 flex flex-col items-center space-y-3 text-xl text-center bg-gray-700 text-white shadow-lg p-2 rounded-lg'>
                         <div>
                             <label>Level</label>
                             <input
@@ -499,10 +523,12 @@ const game: NextPage = () => {
                                 className='text-center border-none outline-none ml-3 w-[200px] bg-gray-700 text-white'
                             />
                         </div>
-                        <button onClick={mintUpgrade} className='ml-4 bg-rose-500 rounded-lg p-2 px-4'>
+                        <button onClick={() => {
+                            mintUpgrade()
+                        }} className='ml-4 bg-rose-500 rounded-lg p-2 px-4'>
                             Mint Upgrade
                         </button>
-                    </div>
+                    </div> */}
                     <div className='flex space-x-5'>
                         <div className='text-xl text-center flex flex-col items-center justify-center bg-gray-700 text-white shadow-lg p-6 px-11 w-[400px] rounded-lg'>
                             <div className='flex'>
@@ -525,6 +551,46 @@ const game: NextPage = () => {
                             </button>
                         </div>
                         <Vault vaultContract={blockchain.vaultContract} account={blockchain.account} />
+                    </div>
+                    <div className='px-11 text-center w-full'>
+                        <div className='text-xl text-center flex flex-col items-center justify-center bg-gray-700 text-white shadow-lg p-6 w-full rounded-lg'>
+                            <h2 className='font-bold'>Shop</h2>
+                            <div className='flex flex-col w-full mt-3'>
+                                {levelsData.map((data: any) => {
+                                    return (
+                                        <div key={data.level} className='p-2 rounded-lg w-full mb-2 flex'>
+                                            <div className='w-[120px] h-[120px] mr-6'>
+                                                <img src={`craftables/${data.level}.png`} className='object-contain w-full h-full' />
+                                            </div>
+                                            <div className='flex flex-col'>
+                                                <div className='flex items-center space-x-2 font-light text-sm text-gray-300'>
+                                                    <p className='font-bold text-white'>{data.name} - </p>
+                                                    <p>{data.price} 💎</p>
+                                                    <p> | </p>
+                                                    <p>{data.dpm} DPM</p>
+                                                    <p> | </p>
+                                                    <p>
+                                                        {data.supply} / {data.maxSupply} Minted
+                                                    </p>
+                                                </div>
+                                                <div className='flex items-center mt-2 font-light text-sm text-gray-200'>
+                                                    <p>{data.description}</p>
+                                                </div>
+                                                <div className='flex items-center mt-auto font-light text-sm text-gray-200'>
+                                                    <button
+                                                        onClick={() => {
+                                                            mintUpgrade(data.level, 1);
+                                                        }}
+                                                        className='mt-2 bg-rose-500 rounded-lg p-1 px-4 text-base'>
+                                                        Mint
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    );
+                                })}
+                            </div>
+                        </div>
                     </div>
                     <div className='px-11 text-center w-full'>
                         <div className='flex items-center justify-between w-full mb-4 p-2 px-3 bg-gray-700 text-white rounded-lg shadow-lg'>
@@ -596,7 +662,7 @@ const game: NextPage = () => {
                                             <p className='text-lg'>{token}</p>
                                             {generalData[token].img && (
                                                 <div className='w-[80px] h-[120px]'>
-                                                    <img src={generalData[token].img} className='object-cover w-full h-full' />
+                                                    <img src={generalData[token].img} className='object-contain w-full h-full' />
                                                 </div>
                                             )}
                                             {stakedData[token]?.earned && <p className='text-sm text-gray-300'>{stakedData[token].earned.toFixed(3)}</p>}
@@ -678,7 +744,7 @@ const game: NextPage = () => {
                                         <p className=''>{token}</p>
                                         {generalData[token].img && (
                                             <div className='w-[150px] h-[200px]'>
-                                                <img src={generalData[token].img} className='object-cover w-full h-full' />
+                                                <img src={generalData[token].img} className='object-contain w-full h-full' />
                                             </div>
                                         )}
                                     </div>
@@ -751,7 +817,7 @@ const game: NextPage = () => {
                                         <p className='text-lg'>{token}</p>
                                         {generalData[token].img && (
                                             <div className='w-[150px] h-[200px]'>
-                                                <img src={generalData[token].img} className='object-cover w-full h-full' />
+                                                <img src={generalData[token].img} className='object-contain w-full h-full' />
                                             </div>
                                         )}
                                         {cooldownsData[token]?.timeRemaining && !cooldownsData[token]?.withdraw ? (
