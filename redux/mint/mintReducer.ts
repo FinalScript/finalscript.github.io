@@ -16,8 +16,8 @@ const initialState = {
     nftTax: '0',
     price: '0',
     superPercentage: 0,
-    presaleStartTime: 0,
-    baseSaleStartTime: 0,
+    presaleStartTime: '0',
+    baseSaleStartTime: '0',
     error: false,
     errorMsg: '',
 };

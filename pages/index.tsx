@@ -60,28 +60,7 @@ const Home: NextPage = () => {
             hour = minute * 60,
             day = hour * 24;
 
-        if (!mintData.presaleOpen) {
-            if (mintData.presaleStartTime) {
-                countdownTimerInterval.current = setInterval(() => {
-                    const futureTime = new Date(parseInt(mintData.presaleStartTime) * 1000);
-
-                    const timeLeft = futureTime.getTime() - new Date().getTime();
-
-                    const timeRemaining =
-                        timeLeft > 0
-                            ? {
-                                  d: Math.floor(timeLeft / day),
-                                  h: Math.floor((timeLeft % day) / hour),
-                                  m: Math.floor((timeLeft % hour) / minute),
-                                  s: Math.floor((timeLeft % minute) / second),
-                                  until: 'PRESALE',
-                              }
-                            : null;
-
-                    setCountdownTimer(timeRemaining);
-                }, 1000);
-            }
-        } else if (!mintData.baseSalesOpen) {
+        if (!mintData.baseSalesOpen) {
             if (mintData.baseSaleStartTime) {
                 countdownTimerInterval.current = setInterval(() => {
                     const futureTime = new Date(parseInt(mintData.presaleStartTime) * 1000);
@@ -96,6 +75,27 @@ const Home: NextPage = () => {
                                   m: Math.floor((timeLeft % hour) / minute),
                                   s: Math.floor((timeLeft % minute) / second),
                                   until: 'Sales',
+                              }
+                            : null;
+
+                    setCountdownTimer(timeRemaining);
+                }, 1000);
+            }
+        } else if (!mintData.presaleOpen) {
+            if (mintData.presaleStartTime) {
+                countdownTimerInterval.current = setInterval(() => {
+                    const futureTime = new Date(parseInt(mintData.presaleStartTime) * 1000);
+
+                    const timeLeft = futureTime.getTime() - new Date().getTime();
+
+                    const timeRemaining =
+                        timeLeft > 0
+                            ? {
+                                  d: Math.floor(timeLeft / day),
+                                  h: Math.floor((timeLeft % day) / hour),
+                                  m: Math.floor((timeLeft % hour) / minute),
+                                  s: Math.floor((timeLeft % minute) / second),
+                                  until: 'PRESALE',
                               }
                             : null;
 
