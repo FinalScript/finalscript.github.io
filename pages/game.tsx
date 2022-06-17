@@ -6,7 +6,6 @@ import { BlockchainState } from '../types';
 import { contractAddresses, siteProtection } from '../config';
 import Web3 from 'web3';
 import BigNumber from 'bignumber.js';
-import Numeral from 'numeral';
 import Vault from '../components/Vault';
 import { abbreviateNumber } from '../utils';
 import Event from '../components/Event';
