@@ -2,6 +2,7 @@ import { BlockchainData } from '../../types';
 import {
     CONNECTION_FAILED,
     DIAMOND_CONTRACT,
+    EVENT_CONTRACT,
     MINER_CONTRACT,
     MINE_CONTRACT,
     UPDATE_ACCOUNT,
@@ -23,6 +24,7 @@ const initialState = {
     mineContract: undefined,
     diamondContract: undefined,
     vaultContract: undefined,
+    eventContract: undefined,
     web3: undefined,
 };
 
@@ -77,6 +79,11 @@ const blockchainReducer = (state: BlockchainData = initialState, action: any) =>
             return {
                 ...state,
                 vaultContract: action.payload.vaultContract,
+            };
+        case EVENT_CONTRACT:
+            return {
+                ...state,
+                eventContract: action.payload.eventContract,
             };
         case UPDATE_HASMETAMASK:
             return {

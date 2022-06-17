@@ -106,7 +106,7 @@ function MyApp({ Component, pageProps }: AppProps) {
                 <meta name='viewport' content='initial-scale=1.0, width=device-width' />
             </Head>
             <>
-                <div className='absolute z-40 bottom-5 left-5'>
+                <div className='absolute z-40 bottom-5 w-full'>
                     <AnimatePresence>
                         {generalReducer.alerts.map((alert: CustomAlert) => {
                             return (

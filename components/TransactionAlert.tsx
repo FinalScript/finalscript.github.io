@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { removeAlert } from '../redux/general/generalActions';
 import { shortenAddress } from '../utils/shortenAddress';
@@ -12,10 +12,16 @@ interface Props {
 export const TransactionAlert = ({ deleteBy, link, hash }: Props) => {
     const dispatch = useDispatch();
 
+    useEffect(() => {
+        setTimeout(() => {
+            dispatch(removeAlert(deleteBy));
+        }, 15000);
+    }, []);
+
     return (
         <div
             id='alert-border-3'
-            className={'flex tracking-widest p-4 mb-4 bg-green-100 border-t-4 border-green-500 dark:bg-green-200 transition-all '}
+            className={'flex tracking-widest mx-auto w-[400px] p-4 mb-4 bg-green-100 border-t-4 border-green-500 dark:bg-green-200 transition-all '}
             role='alert'>
             <svg className='flex-shrink-0 w-5 h-5 text-green-700' fill='currentColor' viewBox='0 0 20 20' xmlns='http://www.w3.org/2000/svg'>
                 <path
@@ -24,7 +30,7 @@ export const TransactionAlert = ({ deleteBy, link, hash }: Props) => {
                     clipRule='evenodd'></path>
             </svg>
             <div className='ml-3 pr-4 text-sm font-medium text-green-700'>
-                View on block explorer:{' '}
+                View on snowtrace:{' '}
                 <a href={link} target='_blank' rel='noopener noreferrer' className='font-semibold underline hover:text-green-800'>
                     {shortenAddress(hash || '')}
                 </a>

@@ -70,6 +70,16 @@
         "type": "function"
     },
     {
+        "inputs": [
+            { "internalType": "address", "name": "_from", "type": "address" },
+            { "internalType": "uint256", "name": "_amount", "type": "uint256" }
+        ],
+        "name": "burn",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
         "inputs": [{ "internalType": "uint256", "name": "_amount", "type": "uint256" }],
         "name": "claimDelayedUnstake",
         "outputs": [],
@@ -98,6 +108,13 @@
         "inputs": [],
         "name": "diamondBalance",
         "outputs": [{ "internalType": "uint256", "name": "balance", "type": "uint256" }],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [{ "internalType": "uint256", "name": "_diamonds", "type": "uint256" }],
+        "name": "diamondsToShares",
+        "outputs": [{ "internalType": "uint256", "name": "output", "type": "uint256" }],
         "stateMutability": "view",
         "type": "function"
     },
@@ -133,6 +150,13 @@
         "name": "setDiamond",
         "outputs": [],
         "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [{ "internalType": "uint256", "name": "_share", "type": "uint256" }],
+        "name": "sharesToDiamonds",
+        "outputs": [{ "internalType": "uint256", "name": "output", "type": "uint256" }],
+        "stateMutability": "view",
         "type": "function"
     },
     {

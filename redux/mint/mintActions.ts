@@ -71,6 +71,10 @@ export const fetchData = () => {
 
                 const gameStarted = await minerContract?.methods.gameStarted().call();
 
+                const presaleStartTime = await minerContract?.methods.presaleStartTime().call();
+
+                const baseSaleStartTime = await minerContract?.methods.salesStartTime().call();
+
                 let price = 0;
 
                 if (baseSalesOpen) {
@@ -94,6 +98,8 @@ export const fetchData = () => {
                         baseSalesOpen,
                         gameStarted,
                         price,
+                        presaleStartTime,
+                        baseSaleStartTime,
                     })
                 );
             } else {

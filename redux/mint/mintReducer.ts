@@ -16,6 +16,8 @@ const initialState = {
     nftTax: '0',
     price: '0',
     superPercentage: 0,
+    presaleStartTime: 0,
+    baseSaleStartTime: 0,
     error: false,
     errorMsg: '',
 };
@@ -40,6 +42,8 @@ const mintReducer = (state: MintData = initialState, action: any) => {
                 nftTax: action.payload.nftTax,
                 price: action.payload.price,
                 superPercentage: action.payload.superPercentage,
+                presaleStartTime: action.payload.presaleStartTime,
+                baseSaleStartTime: action.payload.baseSaleStartTime,
             };
 
         case MINTDATA_FAILED:

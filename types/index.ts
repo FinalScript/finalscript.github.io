@@ -18,6 +18,7 @@ export interface BlockchainData {
     mineContract?: Contract;
     diamondContract?: Contract;
     vaultContract?: Contract;
+    eventContract?: Contract;
     web3?: Web3;
 }
 
@@ -40,6 +41,8 @@ export interface MintData {
     nftTax: string;
     price: string;
     superPercentage: number;
+    presaleStartTime: string;
+    baseSaleStartTime: string;
 }
 
 export interface MintDataState {

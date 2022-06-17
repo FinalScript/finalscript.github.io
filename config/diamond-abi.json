@@ -101,6 +101,13 @@
     { "inputs": [], "name": "owner", "outputs": [{ "internalType": "address", "name": "", "type": "address" }], "stateMutability": "view", "type": "function" },
     { "inputs": [], "name": "renounceOwnership", "outputs": [], "stateMutability": "nonpayable", "type": "function" },
     {
+        "inputs": [{ "internalType": "address", "name": "_eventAddress", "type": "address" }],
+        "name": "setEventAddress",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
         "inputs": [{ "internalType": "address", "name": "_mineAddress", "type": "address" }],
         "name": "setMineAddress",
         "outputs": [],

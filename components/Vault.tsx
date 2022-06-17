@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import BigNumber from 'bignumber.js';
 import Web3 from 'web3';
 import { contractAddresses } from '../config';
+import { abbreviateNumber } from '../utils';
 
 interface Props {
     vaultContract?: Contract | undefined;
@@ -44,7 +45,8 @@ const Vault = ({ vaultContract, account }: Props) => {
             totalSupply = await vaultContract?.methods.totalSupply().call();
         }
 
-        setStakedBalance(new BigNumber(Web3.utils.fromWei(new BigNumber(diamonds).times(diamondBalance).div(totalSupply).toFixed(0))));
+        const stakedBalance = new BigNumber(diamonds).times(diamondBalance).div(totalSupply);
+        setStakedBalance(new BigNumber(Web3.utils.fromWei(stakedBalance.isNaN() ? '0' : stakedBalance.toFixed(0))));
     };
 
     const getUnlockAmounts = async () => {
@@ -92,12 +94,9 @@ const Vault = ({ vaultContract, account }: Props) => {
 
     const quickUnstake = async () => {
         if (vaultContract?.methods && account) {
-            const diamondBalance = await vaultContract?.methods.diamondBalance().call();
-            const totalSupply = await vaultContract?.methods.totalSupply().call();
-
             // new BigNumber(input).times(totalSupply).div(diamondBalance).toFormat()
 
-            vaultContract?.methods.quickUnstake(Web3.utils.toWei(new BigNumber(input).times(totalSupply).div(diamondBalance).toFixed(10))).send({
+            vaultContract?.methods.quickUnstake(Web3.utils.toWei(input)).send({
                 to: contractAddresses.vault,
                 from: account,
                 value: 0,
@@ -126,19 +125,19 @@ const Vault = ({ vaultContract, account }: Props) => {
             <div className='w-full flex flex-col space-y-1 text-sm text-gray-200'>
                 <div className='flex justify-between w-full'>
                     <p>Total Vault Balance</p>
-                    <p>{totalBalance?.toFormat(2)}</p>
+                    <p>{totalBalance && abbreviateNumber(totalBalance)}</p>
                 </div>
                 <div className='flex justify-between w-full'>
                     <p>Staked Balance</p>
-                    <p>{stakedBalance?.toFormat(2)}</p>
+                    <p>{stakedBalance && abbreviateNumber(stakedBalance)}</p>
                 </div>
                 <div className='flex justify-between w-full'>
                     <p>% of Vault</p>
-                    <p>{totalBalance && stakedBalance && `${stakedBalance?.dividedBy(totalBalance).times(100).toFormat(3)}%`}</p>
+                    <p>{totalBalance && stakedBalance && `${stakedBalance?.dividedBy(totalBalance.eq(0) ? 1 : totalBalance).times(100).toFormat(5)}%`}</p>
                 </div>
                 <div className='flex justify-between w-full'>
                     <p>Pending Balance</p>
-                    <p>{unlockAmounts?.toFormat(2)}</p>
+                    <p>{unlockAmounts && abbreviateNumber(unlockAmounts)}</p>
                 </div>
                 <div className='flex justify-between w-full'>
                     <p>Withdrawable In</p>

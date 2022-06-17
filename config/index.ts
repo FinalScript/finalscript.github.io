@@ -5,13 +5,15 @@ export const networkConfig = {
     chainId: Web3.utils.toHex(43113),
     nativeCurrency: { name: 'AVAX', decimals: 18, symbol: 'AVAX' },
     rpcUrls: ['https://api.avax-test.network/ext/bc/C/rpc'],
+    snowtrace: 'https://testnet.snowtrace.io/tx/',
 };
 
 export const contractAddresses = {
-    miner: '0x809fC7086BE9BCE0c2143145e10DE8e76A70BAB9',
-    mine: '0x745B47aA97584B476564c6B81847A24Ff296D8E2',
-    diamond: '0x48c0518D6E068c893674cFBf21092748cfB14596',
-    vault: '0x0CF1a4A96f19Bd1FB2c7D6A728182cB36E9b0bb5',
+    miner: '0x58c7E85f951C1aED61ed447C1cBD0c805001CEB2',
+    mine: '0xF771098E47b48417Ff4e04405dccDBD3F3Cb410c',
+    diamond: '0x9D5b23619f56fE8115E202D59f9e42f6e1cb95e4',
+    vault: '0x9b273DF73138120df139C18bc080f2736Bb2A590',
+    event: '0xf386ae27E224DAb46D97cE074443eb652fdd060e',
 };
 
 export const siteProtection = {

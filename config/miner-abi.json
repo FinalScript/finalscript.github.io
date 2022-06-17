@@ -158,13 +158,6 @@
         "type": "function"
     },
     {
-        "inputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
-        "name": "baseTokenMintBlock",
-        "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
         "inputs": [
             { "internalType": "address", "name": "_owner", "type": "address" },
             { "internalType": "uint256", "name": "_offset", "type": "uint256" },
@@ -187,6 +180,13 @@
         "type": "function"
     },
     {
+        "inputs": [{ "internalType": "uint256", "name": "_id", "type": "uint256" }],
+        "name": "burnLock",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
         "inputs": [],
         "name": "contractURI",
         "outputs": [{ "internalType": "string", "name": "", "type": "string" }],
@@ -197,6 +197,13 @@
         "inputs": [],
         "name": "diamond",
         "outputs": [{ "internalType": "contract Diamond", "name": "", "type": "address" }],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "eventAddress",
+        "outputs": [{ "internalType": "address", "name": "", "type": "address" }],
         "stateMutability": "view",
         "type": "function"
     },
@@ -220,6 +227,13 @@
         "name": "getWhiteList",
         "outputs": [{ "internalType": "address[]", "name": "", "type": "address[]" }],
         "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [{ "internalType": "address[]", "name": "_users", "type": "address[]" }],
+        "name": "giveFreeNFTs",
+        "outputs": [],
+        "stateMutability": "nonpayable",
         "type": "function"
     },
     {
@@ -260,6 +274,13 @@
     },
     {
         "inputs": [],
+        "name": "lockLV",
+        "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [],
         "name": "mineAddress",
         "outputs": [{ "internalType": "address", "name": "", "type": "address" }],
         "stateMutability": "view",
@@ -270,6 +291,16 @@
         "name": "mintBase",
         "outputs": [],
         "stateMutability": "payable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            { "internalType": "uint16", "name": "_numTokens", "type": "uint16" },
+            { "internalType": "address", "name": "_to", "type": "address" }
+        ],
+        "name": "mintLock",
+        "outputs": [],
+        "stateMutability": "nonpayable",
         "type": "function"
     },
     {
@@ -378,6 +409,13 @@
         "type": "function"
     },
     {
+        "inputs": [{ "internalType": "address", "name": "_eventAddress", "type": "address" }],
+        "name": "setEventAddress",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
         "inputs": [{ "internalType": "uint256", "name": "_value", "type": "uint256" }],
         "name": "setMAX_BASE_SUPPLY",
         "outputs": [],
@@ -479,6 +517,16 @@
     {
         "inputs": [{ "internalType": "address", "name": "newOwner", "type": "address" }],
         "name": "transferOwnership",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            { "internalType": "uint256", "name": "_level", "type": "uint256" },
+            { "internalType": "uint256", "name": "_price", "type": "uint256" }
+        ],
+        "name": "updateUpgradePrice",
         "outputs": [],
         "stateMutability": "nonpayable",
         "type": "function"

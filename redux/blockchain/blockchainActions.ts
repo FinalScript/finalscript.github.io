@@ -11,9 +11,11 @@ import minerAbi from '../../config/miner-abi.json';
 import mineAbi from '../../config/mine-abi.json';
 import diamondAbi from '../../config/diamond-abi.json';
 import vaultAbi from '../../config/vault-abi.json';
+import eventAbi from '../../config/event-abi.json';
 
 import {
     DIAMOND_CONTRACT,
+    EVENT_CONTRACT,
     MINER_CONTRACT,
     MINE_CONTRACT,
     UPDATE_ACCOUNT,
@@ -88,6 +90,13 @@ const updateVaultContract = (vaultContract: Contract | null) => {
     };
 };
 
+const updateEventContract = (eventContract: Contract | null) => {
+    return {
+        type: EVENT_CONTRACT,
+        payload: { eventContract },
+    };
+};
+
 const updateHasMetaMask = (hasMetaMask: boolean) => {
     return {
         type: UPDATE_HASMETAMASK,
@@ -139,11 +148,13 @@ export const checkConnection = () => {
                     const mineContractObj = new web3.eth.Contract(mineAbi as AbiItem[], contractAddresses.mine);
                     const diamondContractObj = new web3.eth.Contract(diamondAbi as AbiItem[], contractAddresses.diamond);
                     const vaultContractObj = new web3.eth.Contract(vaultAbi as AbiItem[], contractAddresses.vault);
+                    const eventContractObj = new web3.eth.Contract(eventAbi as AbiItem[], contractAddresses.event);
 
                     dispatch(updateMinerContract(minerContractObj));
                     dispatch(updateMineContract(mineContractObj));
                     dispatch(updateDiamondContract(diamondContractObj));
                     dispatch(updateVaultContract(vaultContractObj));
+                    dispatch(updateEventContract(eventContractObj));
 
                     dispatch(updateRightNetwork(true));
                 } else {
@@ -190,11 +201,13 @@ export const checkConnection = () => {
                         const mineContractObj = new web3.eth.Contract(mineAbi as AbiItem[], contractAddresses.mine);
                         const diamondContractObj = new web3.eth.Contract(diamondAbi as AbiItem[], contractAddresses.diamond);
                         const vaultContractObj = new web3.eth.Contract(vaultAbi as AbiItem[], contractAddresses.vault);
+                        const eventContractObj = new web3.eth.Contract(eventAbi as AbiItem[], contractAddresses.event);
 
                         dispatch(updateMinerContract(minerContractObj));
                         dispatch(updateMineContract(mineContractObj));
                         dispatch(updateDiamondContract(diamondContractObj));
                         dispatch(updateVaultContract(vaultContractObj));
+                        dispatch(updateEventContract(eventContractObj));
 
                         dispatch(setBotSpeech(`Welcome back to the ${networkConfig.chainName}!`));
                         dispatch(updateRightNetwork(true));

@@ -33,7 +33,7 @@
     },
     {
         "inputs": [],
-        "name": "YIELD_CPS",
+        "name": "YIELD_DPS",
         "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
         "stateMutability": "view",
         "type": "function"
@@ -84,6 +84,13 @@
         "type": "function"
     },
     {
+        "inputs": [{ "internalType": "uint256", "name": "_id", "type": "uint256" }],
+        "name": "burnLock",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
         "inputs": [
             { "internalType": "uint256[]", "name": "_tokenIds", "type": "uint256[]" },
             { "internalType": "bool", "name": "unstake", "type": "bool" }
@@ -121,6 +128,13 @@
         "type": "function"
     },
     {
+        "inputs": [],
+        "name": "eventAddress",
+        "outputs": [{ "internalType": "address", "name": "", "type": "address" }],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
         "inputs": [{ "internalType": "uint256[]", "name": "_tokenIds", "type": "uint256[]" }],
         "name": "getDiamondsAccruedForMany",
         "outputs": [{ "internalType": "uint256[]", "name": "", "type": "uint256[]" }],
@@ -150,6 +164,20 @@
     },
     { "inputs": [], "name": "owner", "outputs": [{ "internalType": "address", "name": "", "type": "address" }], "stateMutability": "view", "type": "function" },
     { "inputs": [], "name": "renounceOwnership", "outputs": [], "stateMutability": "nonpayable", "type": "function" },
+    {
+        "inputs": [{ "internalType": "address", "name": "_eventAddress", "type": "address" }],
+        "name": "setEventAddress",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [{ "internalType": "uint256", "name": "_amount", "type": "uint256" }],
+        "name": "setYieldDps",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
     {
         "inputs": [{ "internalType": "uint256[]", "name": "_tokenIds", "type": "uint256[]" }],
         "name": "stakeMany",

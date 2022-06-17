@@ -1,6 +1,6 @@
 .mint-container {
     h2 {
-        font-size: 3vh;
+        font-size: 4vh;
     }
 
     h3 {
@@ -54,6 +54,16 @@
         font-size: 1.9vh;
         padding-top: 0.5vh;
         padding-bottom: 0.5vh;
+    }
+}
+
+.countdown {
+    font-size: 2vh;
+    text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+
+    p {
+        margin: 0;
+        font-size: 2vh;
     }
 }
 

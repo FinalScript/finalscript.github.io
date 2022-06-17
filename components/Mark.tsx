@@ -13,7 +13,7 @@ export const Mark = () => {
     const [markAlreadyClicked, setMarkAlreadyClicked] = useState(false);
 
     useEffect(() => {
-        const markAlreadyClicked = sessionStorage.getItem('markAlreadyClicked') === 'true';
+        const markAlreadyClicked = localStorage.getItem('markAlreadyClicked') === 'true';
 
         setMarkAlreadyClicked(markAlreadyClicked);
     }, []);
@@ -24,7 +24,7 @@ export const Mark = () => {
         } else {
             if (!markAlreadyClicked) {
                 setMarkAlreadyClicked(true);
-                sessionStorage.setItem('markAlreadyClicked', 'true');
+                localStorage.setItem('markAlreadyClicked', 'true');
             }
             dispatch(toggleBot());
         }

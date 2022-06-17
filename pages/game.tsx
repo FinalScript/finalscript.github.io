@@ -6,7 +6,10 @@ import { BlockchainState } from '../types';
 import { contractAddresses, siteProtection } from '../config';
 import Web3 from 'web3';
 import BigNumber from 'bignumber.js';
+import Numeral from 'numeral';
 import Vault from '../components/Vault';
+import { abbreviateNumber } from '../utils';
+import Event from '../components/Event';
 
 const fmt = {
     decimalSeparator: '.',
@@ -44,10 +47,6 @@ const game: NextPage = () => {
     const [levelsData, setLevelsData] = useState<any>([]);
 
     const [form, setForm] = useState({ level: 0, quantity: 0 });
-
-    useEffect(() => {
-        console.log(levelsData);
-    }, [levelsData]);
 
     useEffect(() => {
         setMiners([]);
@@ -100,7 +99,9 @@ const game: NextPage = () => {
                         minersState.push(parseInt(miner['tokenId']));
 
                         const imgUrl = `${
-                            parseInt(miner.level) === 0
+                            !miner.revealed
+                                ? 'unrevealed-miner.jpg'
+                                : parseInt(miner.level) === 0
                                 ? `miners/${miner['tokenId']}.png`
                                 : parseInt(miner.level) === 1
                                 ? `super/${miner['tokenId']}.png`
@@ -108,7 +109,10 @@ const game: NextPage = () => {
                         }`;
 
                         setGeneralData((prevState: any) => {
-                            return { ...prevState, [miner.tokenId]: { ...prevState[miner.tokenId], level: parseInt(miner.level), img: imgUrl } };
+                            return {
+                                ...prevState,
+                                [miner.tokenId]: { ...prevState[miner.tokenId], level: parseInt(miner.level), img: imgUrl, revealed: miner.revealed },
+                            };
                         });
                     }
 
@@ -150,31 +154,38 @@ const game: NextPage = () => {
                         yields[miner.level] = parseInt(level.yield);
 
                         setGeneralData((prevState: any) => {
-                            return { ...prevState, [miner.tokenId]: { ...prevState[miner.tokenId], level: parseInt(miner.level), img: imgUrl } };
+                            return {
+                                ...prevState,
+                                [miner.tokenId]: { ...prevState[miner.tokenId], level: parseInt(miner.level), img: imgUrl, revealed: miner.revealed },
+                            };
                         });
                     }
-                    const yieldDps = await blockchain.mineContract?.methods.YIELD_CPS().call();
+                    const yieldDps = await blockchain.mineContract?.methods.YIELD_DPS().call();
 
                     earnedDiamondsInterval.current = setInterval(
                         () => {
                             let totalAcccrued = new BigNumber(0);
 
                             for (const miner of miners) {
-                                const accrued = new BigNumber(
-                                    Web3.utils.fromWei(
-                                        new BigNumber(
-                                            (Math.round(Date.now() - Math.round(miner.startTimestamp * 1000)) * yields[miner.level] * parseFloat(yieldDps)) /
-                                                1000
-                                        ).toFixed(0),
-                                        'ether'
-                                    )
-                                );
+                                if (yields[miner.level] !== 0) {
+                                    const accrued = new BigNumber(
+                                        Web3.utils.fromWei(
+                                            new BigNumber(
+                                                (Math.round(Date.now() - Math.round(miner.startTimestamp * 1000)) *
+                                                    yields[miner.level] *
+                                                    parseFloat(yieldDps)) /
+                                                    1000
+                                            ).toFixed(0),
+                                            'ether'
+                                        )
+                                    );
 
-                                setStakedData((prevState: any) => {
-                                    return { ...prevState, [miner.tokenId]: { ...prevState[miner.tokenId], earned: accrued } };
-                                });
+                                    setStakedData((prevState: any) => {
+                                        return { ...prevState, [miner.tokenId]: { ...prevState[miner.tokenId], earned: accrued } };
+                                    });
 
-                                totalAcccrued = totalAcccrued.plus(accrued);
+                                    totalAcccrued = totalAcccrued.plus(accrued);
+                                }
                             }
 
                             setEarnedDiamonds(totalAcccrued);
@@ -216,7 +227,15 @@ const game: NextPage = () => {
                         }`;
 
                         setGeneralData((prevState: any) => {
-                            return { ...prevState, [cooldown.tokenId]: { ...prevState[cooldown.tokenId], level: parseInt(cooldown.level), img: imgUrl } };
+                            return {
+                                ...prevState,
+                                [cooldown.tokenId]: {
+                                    ...prevState[cooldown.tokenId],
+                                    level: parseInt(cooldown.level),
+                                    img: imgUrl,
+                                    revealed: cooldown.revealed,
+                                },
+                            };
                         });
                     }
 
@@ -246,7 +265,7 @@ const game: NextPage = () => {
             const baseUri = await blockchain.minerContract?.methods.contractURI().call();
             const contractUri = gateway + baseUri.replace('ipfs://', '').replace('contract-meta.json', '');
 
-            let count = 3;
+            let count = 2;
             while (!error) {
                 let level: any;
 
@@ -261,7 +280,7 @@ const game: NextPage = () => {
                         description: metaData.story,
                         maxSupply: level.maxSupply,
                         supply: level.supply,
-                        price: level.price,
+                        price: Web3.utils.fromWei(level.price),
                         dpm: level.yield,
                     });
                 } catch (e) {
@@ -468,6 +487,10 @@ const game: NextPage = () => {
                 return ' text-cyan-500';
             case 5:
                 return ' text-pink-500';
+            case 6:
+                return ' text-purple-500';
+            case 7:
+                return ' text-teal-400';
             default:
                 break;
         }
@@ -525,26 +548,29 @@ const game: NextPage = () => {
                             Mint Upgrade
                         </button>
                     </div> */}
-                    <div className='flex space-x-5'>
-                        <div className='text-xl text-center flex flex-col items-center justify-center bg-gray-700 text-white shadow-lg p-6 px-11 w-[600px] rounded-lg'>
-                            <div className='flex'>
-                                <h5 className='flex flex-col items-start w-[100px]'>
-                                    <span>Balance: </span>
-                                    <span>Earned: </span>
-                                </h5>
-                                <div className='relative w-[100px]'>
-                                    <h5 className='flex flex-col items-start absolute top-0 left-0 whitespace-nowrap'>
-                                        <span>{myDiamonds?.toFormat(5)}</span>
-                                        <span>{earnedDiamonds?.toFormat(5)}</span>
+                    <div className='flex space-x-5 items-start'>
+                        <div className='flex flex-col space-y-5'>
+                            <div className='text-xl text-center flex flex-col items-center justify-center bg-gray-700 text-white shadow-lg p-6 px-11 w-[500px] rounded-lg'>
+                                <div className='flex'>
+                                    <h5 className='flex flex-col items-start w-[100px]'>
+                                        <span>Balance: </span>
+                                        <span>Earned: </span>
                                     </h5>
+                                    <div className='relative w-[300px]'>
+                                        <h5 className='flex flex-col items-start absolute top-0 left-0 whitespace-nowrap font-space-mono'>
+                                            <span>{myDiamonds && abbreviateNumber(myDiamonds, 5)}</span>
+                                            <span>{earnedDiamonds && abbreviateNumber(earnedDiamonds, 5)}</span>
+                                        </h5>
+                                    </div>
                                 </div>
+                                <button
+                                    disabled={earnedDiamonds?.eq(0)}
+                                    onClick={claimDiamonds}
+                                    className='mt-4 py-1 px-3 bg-rose-500 disabled:hover:bg-rose-500 hover:bg-rose-600 rounded-md'>
+                                    Claim
+                                </button>
                             </div>
-                            <button
-                                disabled={earnedDiamonds?.eq(0)}
-                                onClick={claimDiamonds}
-                                className='mt-4 py-1 px-3 bg-rose-500 disabled:hover:bg-rose-500 hover:bg-rose-600 rounded-md'>
-                                Claim
-                            </button>
+                            <Event eventContract={blockchain.eventContract} account={blockchain.account} />
                         </div>
                         <Vault vaultContract={blockchain.vaultContract} account={blockchain.account} />
                     </div>
@@ -614,11 +640,7 @@ const game: NextPage = () => {
                                 </button>
                             </div>
                         </div>
-                        <div
-                            className='flex flex-wrap justify-center'
-                            onContextMenu={(e) => {
-                                e.preventDefault();
-                            }}>
+                        <div className='flex flex-wrap justify-center'>
                             {staked.map((token: any) => {
                                 return (
                                     <div
@@ -661,7 +683,7 @@ const game: NextPage = () => {
                                                     <img src={generalData[token].img} className='object-contain w-full h-full' />
                                                 </div>
                                             )}
-                                            {stakedData[token]?.earned && <p className='text-sm text-gray-300'>{stakedData[token].earned.toFormat(3)}</p>}
+                                            <p className='text-sm text-gray-300'>{abbreviateNumber(stakedData[token]?.earned || new BigNumber(0), 3)}</p>
                                         </div>
                                         {/* <div className='w-[100px] h-[200px]'>
                                 <img src={miner.image} className='object-cover w-full h-full' />
@@ -697,11 +719,7 @@ const game: NextPage = () => {
                                 </button>
                             </div>
                         </div>
-                        <div
-                            className='flex flex-wrap justify-center'
-                            onContextMenu={(e) => {
-                                e.preventDefault();
-                            }}>
+                        <div className='flex flex-wrap justify-center'>
                             {miners.map((token: any) => {
                                 return (
                                     <div
@@ -734,7 +752,7 @@ const game: NextPage = () => {
                                         }}
                                         className={
                                             'relative shadow-lg p-4 mr-1 mb-1 cursor-pointer select-none ' +
-                                            (selectedMiners.indexOf(token) !== -1 ? ' bg-gray-500' : 'bg-gray-700 ') +
+                                            (selectedMiners.indexOf(token) !== -1 ? ' bg-gray-500 ' : 'bg-gray-700 ') +
                                             getCssByLevel(generalData[token]?.level)
                                         }>
                                         <p className=''>{token}</p>
@@ -747,7 +765,7 @@ const game: NextPage = () => {
                                 );
                             })}
                         </div>
-                    </div>{' '}
+                    </div>
                     <div className='px-11 text-center w-full'>
                         <div className='flex items-center justify-between w-full mb-4 p-2 px-3 bg-gray-700 text-white rounded-lg shadow-lg'>
                             <h3 className='font-bold text-xl'>Cooldown</h3>

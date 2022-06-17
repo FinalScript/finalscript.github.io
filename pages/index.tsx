@@ -1,5 +1,5 @@
 import type { NextPage } from 'next';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import Web3 from 'web3';
 import { contractAddresses, networkConfig, siteProtection } from '../config';
@@ -24,15 +24,17 @@ const Home: NextPage = () => {
     const [totalPrice, setTotalPrice] = useState(0.0);
     const saleDetails = [
         // 'Fair sale (first come, first serve)',
-        // `Price: ${Web3.utils.fromWei(mintData.price)} ${networkConfig.nativeCurrency.symbol}`,
-        // `Total Supply: ${mintData.totalSupply} Miners`,
-        // `Presale Supply: ${mintData.presaleSupply} Miners`,
-        `Price: - ${networkConfig.nativeCurrency.symbol}`,
-        `Total Supply: - Miners`,
-        `Presale Supply: - Miners`,
+        `Price: ${Web3.utils.fromWei(mintData.price)} ${networkConfig.nativeCurrency.symbol}`,
+        `Total Supply: ${mintData.maxTotalSupply} Miners`,
+        `Presale Supply: ${mintData.maxPresaleSupply} Miners`,
+        // `Price: - ${networkConfig.nativeCurrency.symbol}`,
+        // `Total Supply: - Miners`,
+        // `Presale Supply: - Miners`,
         // `${blockchain.hasMetaMask ? 100 - mintData.superPercentage : 0}% chance to mint a Regular Miner`,
         `${mintData.superPercentage}% chance to mint a Super Miner`,
     ];
+    const [countdownTimer, setCountdownTimer] = useState<any>();
+    const countdownTimerInterval = useRef<any>();
 
     useEffect(() => {
         //dispatch(connect());
@@ -49,6 +51,59 @@ const Home: NextPage = () => {
             dispatch(checkIsWhiteListed(blockchain.account));
         }
     }, [blockchain.account, blockchain.network]);
+
+    useEffect(() => {
+        clearInterval(countdownTimerInterval.current);
+
+        const second = 1000,
+            minute = second * 60,
+            hour = minute * 60,
+            day = hour * 24;
+
+        if (!mintData.presaleOpen) {
+            if (mintData.presaleStartTime) {
+                countdownTimerInterval.current = setInterval(() => {
+                    const futureTime = new Date(parseInt(mintData.presaleStartTime) * 1000);
+
+                    const timeLeft = futureTime.getTime() - new Date().getTime();
+
+                    const timeRemaining =
+                        timeLeft > 0
+                            ? {
+                                  d: Math.floor(timeLeft / day),
+                                  h: Math.floor((timeLeft % day) / hour),
+                                  m: Math.floor((timeLeft % hour) / minute),
+                                  s: Math.floor((timeLeft % minute) / second),
+                                  until: 'PRESALE',
+                              }
+                            : null;
+
+                    setCountdownTimer(timeRemaining);
+                }, 1000);
+            }
+        } else if (!mintData.baseSalesOpen) {
+            if (mintData.baseSaleStartTime) {
+                countdownTimerInterval.current = setInterval(() => {
+                    const futureTime = new Date(parseInt(mintData.presaleStartTime) * 1000);
+
+                    const timeLeft = futureTime.getTime() - new Date().getTime();
+
+                    const timeRemaining =
+                        timeLeft > 0
+                            ? {
+                                  d: Math.floor(timeLeft / day),
+                                  h: Math.floor((timeLeft % day) / hour),
+                                  m: Math.floor((timeLeft % hour) / minute),
+                                  s: Math.floor((timeLeft % minute) / second),
+                                  until: 'Sales',
+                              }
+                            : null;
+
+                    setCountdownTimer(timeRemaining);
+                }, 1000);
+            }
+        }
+    }, [mintData.baseSaleStartTime, mintData.presaleStartTime, mintData.baseSalesOpen, mintData.presaleOpen]);
 
     useEffect(() => {
         if (quantity !== '') {
@@ -118,7 +173,7 @@ const Home: NextPage = () => {
                                         isError: false,
                                         key: 'Transaction-' + res.transactionHash,
                                         hash: res.transactionHash,
-                                        link: `https://testnet.snowtrace.io/tx/${res.transactionHash}`,
+                                        link: `${networkConfig.snowtrace}${res.transactionHash}`,
                                     })
                                 );
                                 console.log(res);
@@ -160,7 +215,7 @@ const Home: NextPage = () => {
                                         isError: false,
                                         key: 'Transaction-' + res.transactionHash,
                                         hash: res.transactionHash,
-                                        link: `https://testnet.snowtrace.io/tx/${res.transactionHash}`,
+                                        link: `${networkConfig.snowtrace}${res.transactionHash}`,
                                     })
                                 );
                                 console.log(res.transactionHash);
@@ -172,22 +227,22 @@ const Home: NextPage = () => {
                 }
             }
         }, 100);
-    }, [blockchain.minerContract, blockchain.account, mintData]);
+    }, [blockchain.minerContract, blockchain.account, mintData, quantity, totalPrice]);
 
     const supplyPercentage = useMemo(() => {
         let percentage = '0%';
 
-        // if (mintData.totalSupply) {
-        //     if (mintData.baseSalesOpen || mintData.gameStarted) {
-        //         const num = ((mintData.totalSupply / mintData.maxBaseSupply) * 100).toFixed(2);
+        if (mintData.totalSupply) {
+            if (mintData.baseSalesOpen || mintData.gameStarted) {
+                const num = ((mintData.totalSupply / mintData.maxBaseSupply) * 100).toFixed(2);
 
-        //         percentage = num + '%';
-        //     } else {
-        //         const num = ((mintData.totalSupply / mintData.maxPresaleSupply) * 100).toFixed(2);
+                percentage = num + '%';
+            } else {
+                const num = ((mintData.totalSupply / mintData.maxPresaleSupply) * 100).toFixed(2);
 
-        //         percentage = num + '%';
-        //     }
-        // }
+                percentage = num + '%';
+            }
+        }
 
         return percentage;
     }, [mintData]);
@@ -195,17 +250,17 @@ const Home: NextPage = () => {
     const supplyFraction = useMemo(() => {
         let fraction = '- / -';
 
-        // if (mintData.totalSupply) {
-        //     if (mintData.baseSalesOpen || mintData.gameStarted) {
-        //         fraction = mintData.totalSupply + ' / ' + mintData.maxBaseSupply;
+        if (mintData.totalSupply) {
+            if (mintData.baseSalesOpen || mintData.gameStarted) {
+                fraction = mintData.totalSupply + ' / ' + mintData.maxBaseSupply;
 
-        //         if (mintData.totalSupply >= mintData.maxBaseSupply) {
-        //             fraction = 'Sold Out';
-        //         }
-        //     } else {
-        //         fraction = mintData.totalSupply + ' / ' + mintData.maxPresaleSupply;
-        //     }
-        // }
+                if (mintData.totalSupply >= mintData.maxBaseSupply) {
+                    fraction = 'Sold Out';
+                }
+            } else {
+                fraction = mintData.totalSupply + ' / ' + mintData.maxPresaleSupply;
+            }
+        }
 
         return fraction;
     }, [mintData]);
@@ -213,27 +268,25 @@ const Home: NextPage = () => {
     const ableToMint = useMemo(() => {
         if (mintData.gameStarted) {
             return false;
-        } else if (mintData.baseSalesOpen) {
-            return true;
-        } else if (mintData.presaleOpen && mintData.isWhiteListed) {
-            return true;
-        } else {
+        } else if (!mintData.presaleOpen) {
             return false;
+        } else if (!mintData.isWhiteListed) {
+            return false;
+        } else {
+            return true;
         }
     }, [mintData]);
 
     const ableToMintMessage = useMemo(() => {
-        // if (mintData.gameStarted) {
-        //     return 'Game has already started';
-        // } else if (mintData.baseSalesOpen) {
-        //     return 'Mint';
-        // } else if (mintData.presaleOpen && mintData.isWhiteListed) {
-        //     return 'Mint';
-        // } else {
-        //     return "You're not whitelisted";
-        // }
-
-        return '';
+        if (mintData.gameStarted) {
+            return 'Game has already started';
+        } else if (!mintData.presaleOpen) {
+            return "Presale hasn't started";
+        } else if (!mintData.isWhiteListed) {
+            return "You're not whitelisted";
+        } else {
+            return 'Mint';
+        }
     }, [mintData]);
 
     return (
@@ -262,7 +315,7 @@ const Home: NextPage = () => {
                                         <Image src='/images/parchment.png' layout='fill' objectFit='fill' />
                                     </div>
                                     <div className='flex flex-col h-full mint-container'>
-                                        <h2 className='text-center font-bold rounded-t-xl'>
+                                        <h2 className='text-center font-bold text-black'>
                                             <span>Mint Miners</span>
                                         </h2>
                                         <div className='relative text-md flex items-center justify-center section'>
@@ -270,6 +323,15 @@ const Home: NextPage = () => {
                                                 <Image src='/images/MinerTrio.png' objectFit='contain' layout='fill' />
                                             </div>
                                         </div>
+                                        {countdownTimer && (
+                                            <div className='text-center text-white font-bold countdown'>
+                                                {countdownTimer.until && <p className=' '>{countdownTimer.until}</p>}
+                                                {countdownTimer.d != 0 && <span>{countdownTimer.d}d </span>}
+                                                {countdownTimer.h != 0 && <span>{countdownTimer.h}h </span>}
+                                                {countdownTimer.m != 0 && <span>{countdownTimer.m}m </span>}
+                                                {countdownTimer.s && <span className='text-red-500'>{countdownTimer.s}s </span>}
+                                            </div>
+                                        )}
                                         <div className='relative section'>
                                             <div className='flex justify-end'>
                                                 <p className='font-medium text-gray-900'>{supplyFraction}</p>
@@ -321,7 +383,6 @@ const Home: NextPage = () => {
                                                 <h4>{totalPrice === 0 ? '--' : Web3.utils.fromWei(totalPrice.toString()) + ' AVAX'} </h4>
                                             </div>
                                         </div>
-
                                         <div className='relative flex flex-col section'>
                                             {blockchain.hasMetaMask ? (
                                                 blockchain.account ? (
