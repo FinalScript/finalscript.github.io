@@ -60,28 +60,7 @@ const Home: NextPage = () => {
             hour = minute * 60,
             day = hour * 24;
 
-        if (!mintData.baseSalesOpen) {
-            if (mintData.baseSaleStartTime) {
-                countdownTimerInterval.current = setInterval(() => {
-                    const futureTime = new Date(parseInt(mintData.presaleStartTime) * 1000);
-
-                    const timeLeft = futureTime.getTime() - new Date().getTime();
-
-                    const timeRemaining =
-                        timeLeft > 0
-                            ? {
-                                  d: Math.floor(timeLeft / day),
-                                  h: Math.floor((timeLeft % day) / hour),
-                                  m: Math.floor((timeLeft % hour) / minute),
-                                  s: Math.floor((timeLeft % minute) / second),
-                                  until: 'Sales',
-                              }
-                            : null;
-
-                    setCountdownTimer(timeRemaining);
-                }, 1000);
-            }
-        } else if (!mintData.presaleOpen) {
+        if (!mintData.presaleOpen && !mintData.baseSalesOpen) {
             if (mintData.presaleStartTime) {
                 countdownTimerInterval.current = setInterval(() => {
                     const futureTime = new Date(parseInt(mintData.presaleStartTime) * 1000);
@@ -96,6 +75,27 @@ const Home: NextPage = () => {
                                   m: Math.floor((timeLeft % hour) / minute),
                                   s: Math.floor((timeLeft % minute) / second),
                                   until: 'PRESALE',
+                              }
+                            : null;
+
+                    setCountdownTimer(timeRemaining);
+                }, 1000);
+            }
+        } else if (mintData.presaleOpen && !mintData.baseSalesOpen) {
+            if (mintData.baseSaleStartTime) {
+                countdownTimerInterval.current = setInterval(() => {
+                    const futureTime = new Date(parseInt(mintData.baseSaleStartTime) * 1000);
+
+                    const timeLeft = futureTime.getTime() - new Date().getTime();
+
+                    const timeRemaining =
+                        timeLeft > 0
+                            ? {
+                                  d: Math.floor(timeLeft / day),
+                                  h: Math.floor((timeLeft % day) / hour),
+                                  m: Math.floor((timeLeft % hour) / minute),
+                                  s: Math.floor((timeLeft % minute) / second),
+                                  until: 'Public Sale',
                               }
                             : null;
 
@@ -126,104 +126,97 @@ const Home: NextPage = () => {
 
     const mint = useCallback(() => {
         setTimeout(() => {
-            if (
-                siteProtection.whitelistOnly &&
-                !siteProtection.whitelistedWallets.find((address) => address.toLowerCase() === blockchain.account?.toLowerCase() || '')
-            ) {
-                dispatch(setBotError(`Woah there, game is still in development, you're not allowed to enter yet!`));
-            } else {
-                if (quantity === '') {
-                    dispatch(setBotError(`Please enter a quantity (0-${mintData.maxPerMint})`));
-                }
+            if (quantity === '') {
+                dispatch(setBotError(`Please enter a quantity (0-${mintData.maxPerMint})`));
+            }
 
-                if (blockchain.minerContract && blockchain.account && quantity !== '') {
-                    if (mintData.baseSalesOpen) {
-                        blockchain.minerContract?.methods
-                            .mintBase(parseInt(quantity))
-                            .send({
-                                gasLimit: String(7000000),
-                                to: contractAddresses.miner,
-                                from: blockchain.account,
-                                value: totalPrice,
-                            })
-                            .once('sending', function (payload: any) {
-                                console.log(payload);
-                            })
-                            .once('sent', function (payload: any) {
-                                console.log(payload);
-                            })
-                            .once('transactionHash', function (hash: any) {
-                                dispatch(setBotSpeech(`Requesting ${quantity} ${quantity === '1' ? 'miner' : 'miners'}... Please wait`));
-                                console.log(hash);
-                            })
-                            .once('receipt', function (hash: any) {
-                                dispatch(setBotSpeech(`Your ${quantity === '1' ? 'miner has' : 'miners have'} arrived!`));
-                                console.log(hash);
-                            })
-                            .on('error', function (error: any) {
-                                dispatch(setBotError(`Oh no! Your ${quantity === '1' ? 'miner' : 'miners'} couldn't make it!`));
-                                console.log(error);
-                            })
-                            .then((res: any) => {
-                                if (blockchain.account) {
-                                    dispatch(checkBalance(blockchain.account));
-                                }
-                                dispatch(
-                                    addAlert({
-                                        isError: false,
-                                        key: 'Transaction-' + res.transactionHash,
-                                        hash: res.transactionHash,
-                                        link: `${networkConfig.snowtrace}${res.transactionHash}`,
-                                    })
-                                );
-                                console.log(res);
-                            });
-                    } else if (mintData.presaleOpen && mintData.isWhiteListed) {
-                        blockchain.minerContract?.methods
-                            .presaleMintBase(parseInt(quantity))
-                            .send({
-                                gasLimit: String(7000000),
-                                to: contractAddresses.miner,
-                                from: blockchain.account,
-                                value: totalPrice,
-                            })
-                            .once('sending', function (payload: any) {
-                                console.log(payload);
-                            })
-                            .once('sent', function (payload: any) {
-                                console.log(payload);
-                            })
-                            .once('transactionHash', function (hash: any) {
-                                dispatch(setBotSpeech(`Requesting ${quantity} ${quantity === '1' ? 'miner' : 'miners'}... Please wait`));
-                                console.log(hash);
-                            })
-                            .once('receipt', function (hash: any) {
-                                dispatch(setBotSpeech(`Your ${quantity === '1' ? 'miner has' : 'miners have'} arrived!`));
-                                console.log(hash);
-                            })
-                            .on('error', function (error: any) {
-                                dispatch(setBotError(`Oh no! Your ${quantity === '1' ? 'miner' : 'miners'} couldn't make it!`));
-                                console.log(error);
-                            })
-                            .then((res: any) => {
-                                if (blockchain.account) {
-                                    dispatch(checkBalance(blockchain.account));
-                                }
+            if (blockchain.minerContract && blockchain.account && quantity !== '') {
+                if (mintData.baseSalesOpen) {
+                    blockchain.minerContract?.methods
+                        .mintBase(parseInt(quantity))
+                        .send({
+                            gasLimit: String(7000000),
+                            to: contractAddresses.miner,
+                            from: blockchain.account,
+                            value: totalPrice,
+                        })
+                        .once('sending', function (payload: any) {
+                            console.log(payload);
+                        })
+                        .once('sent', function (payload: any) {
+                            console.log(payload);
+                        })
+                        .once('transactionHash', function (hash: any) {
+                            dispatch(setBotSpeech(`Requesting ${quantity} ${quantity === '1' ? 'miner' : 'miners'}... Please wait`));
+                            console.log(hash);
+                        })
+                        .once('receipt', function (hash: any) {
+                            dispatch(setBotSpeech(`Your ${quantity === '1' ? 'miner has' : 'miners have'} arrived!`));
+                            console.log(hash);
+                        })
+                        .on('error', function (error: any) {
+                            dispatch(setBotError(`Oh no! Your ${quantity === '1' ? 'miner' : 'miners'} couldn't make it!`));
+                            console.log(error);
+                        })
+                        .then((res: any) => {
+                            if (blockchain.account) {
+                                dispatch(checkBalance(blockchain.account));
+                            }
+                            dispatch(
+                                addAlert({
+                                    isError: false,
+                                    key: 'Transaction-' + res.transactionHash,
+                                    hash: res.transactionHash,
+                                    link: `${networkConfig.snowtrace}${res.transactionHash}`,
+                                })
+                            );
+                            console.log(res);
+                        });
+                } else if (mintData.presaleOpen && mintData.isWhiteListed) {
+                    blockchain.minerContract?.methods
+                        .presaleMintBase(parseInt(quantity))
+                        .send({
+                            gasLimit: String(7000000),
+                            to: contractAddresses.miner,
+                            from: blockchain.account,
+                            value: totalPrice,
+                        })
+                        .once('sending', function (payload: any) {
+                            console.log(payload);
+                        })
+                        .once('sent', function (payload: any) {
+                            console.log(payload);
+                        })
+                        .once('transactionHash', function (hash: any) {
+                            dispatch(setBotSpeech(`Requesting ${quantity} ${quantity === '1' ? 'miner' : 'miners'}... Please wait`));
+                            console.log(hash);
+                        })
+                        .once('receipt', function (hash: any) {
+                            dispatch(setBotSpeech(`Your ${quantity === '1' ? 'miner has' : 'miners have'} arrived!`));
+                            console.log(hash);
+                        })
+                        .on('error', function (error: any) {
+                            dispatch(setBotError(`Oh no! Your ${quantity === '1' ? 'miner' : 'miners'} couldn't make it!`));
+                            console.log(error);
+                        })
+                        .then((res: any) => {
+                            if (blockchain.account) {
+                                dispatch(checkBalance(blockchain.account));
+                            }
 
-                                dispatch(
-                                    addAlert({
-                                        isError: false,
-                                        key: 'Transaction-' + res.transactionHash,
-                                        hash: res.transactionHash,
-                                        link: `${networkConfig.snowtrace}${res.transactionHash}`,
-                                    })
-                                );
-                                console.log(res.transactionHash);
-                            })
-                            .catch((err: any) => {
-                                console.log(err);
-                            });
-                    }
+                            dispatch(
+                                addAlert({
+                                    isError: false,
+                                    key: 'Transaction-' + res.transactionHash,
+                                    hash: res.transactionHash,
+                                    link: `${networkConfig.snowtrace}${res.transactionHash}`,
+                                })
+                            );
+                            console.log(res.transactionHash);
+                        })
+                        .catch((err: any) => {
+                            console.log(err);
+                        });
                 }
             }
         }, 100);
@@ -234,11 +227,11 @@ const Home: NextPage = () => {
 
         if (mintData.totalSupply) {
             if (mintData.baseSalesOpen || mintData.gameStarted) {
-                const num = ((mintData.totalSupply / mintData.maxBaseSupply) * 100).toFixed(2);
+                const num = ((mintData.totalSupply / mintData.maxBaseSupply) * 100).toFixed(0);
 
                 percentage = num + '%';
             } else {
-                const num = ((mintData.totalSupply / mintData.maxPresaleSupply) * 100).toFixed(2);
+                const num = ((mintData.totalSupply / mintData.maxPresaleSupply) * 100).toFixed(0);
 
                 percentage = num + '%';
             }
@@ -268,9 +261,7 @@ const Home: NextPage = () => {
     const ableToMint = useMemo(() => {
         if (mintData.gameStarted) {
             return false;
-        } else if (!mintData.presaleOpen) {
-            return false;
-        } else if (!mintData.isWhiteListed) {
+        } else if (!mintData.presaleOpen && !mintData.isWhiteListed) {
             return false;
         } else {
             return true;
@@ -282,8 +273,10 @@ const Home: NextPage = () => {
             return 'Game has already started';
         } else if (!mintData.presaleOpen) {
             return "Presale hasn't started";
-        } else if (!mintData.isWhiteListed) {
-            return "You're not whitelisted";
+        } else if (mintData.presaleOpen && !mintData.baseSalesOpen) {
+            if (!mintData.isWhiteListed) {
+                return "You're not whitelisted";
+            }
         } else {
             return 'Mint';
         }
@@ -337,7 +330,7 @@ const Home: NextPage = () => {
                                                 <p className='font-medium text-gray-900'>{supplyFraction}</p>
                                             </div>
                                             <div className='w-full bg-yellow-900 rounded-full progress'>
-                                                <div className='bg-green-500 h-full rounded-full' style={{ width: supplyPercentage }}></div>
+                                                <div className='bg-green-500 h-full rounded-full max-w-full' style={{ width: supplyPercentage }}></div>
                                             </div>
                                         </div>
                                         <div className='relative flex flex-col section'>

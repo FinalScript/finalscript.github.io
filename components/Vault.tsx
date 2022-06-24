@@ -36,16 +36,14 @@ const Vault = ({ vaultContract, account }: Props) => {
 
     const getStakedBalance = async () => {
         let diamonds = 0,
-            diamondBalance = 0,
-            totalSupply = 0;
+            shares = 0;
 
         if (vaultContract?.methods && account) {
             diamonds = await vaultContract?.methods.balanceOf(account).call();
-            diamondBalance = await vaultContract?.methods.diamondBalance().call();
-            totalSupply = await vaultContract?.methods.totalSupply().call();
+            shares = await vaultContract?.methods.sharesToDiamonds(diamonds).call();
         }
 
-        const stakedBalance = new BigNumber(diamonds).times(diamondBalance).div(totalSupply);
+        const stakedBalance = new BigNumber(shares);
         setStakedBalance(new BigNumber(Web3.utils.fromWei(stakedBalance.isNaN() ? '0' : stakedBalance.toFixed(0))));
     };
 
@@ -95,8 +93,9 @@ const Vault = ({ vaultContract, account }: Props) => {
     const quickUnstake = async () => {
         if (vaultContract?.methods && account) {
             // new BigNumber(input).times(totalSupply).div(diamondBalance).toFormat()
+            const shares = await vaultContract?.methods.diamondsToShares(input).call();
 
-            vaultContract?.methods.quickUnstake(Web3.utils.toWei(input)).send({
+            vaultContract?.methods.quickUnstake(Web3.utils.toWei(shares)).send({
                 to: contractAddresses.vault,
                 from: account,
                 value: 0,
@@ -133,7 +132,14 @@ const Vault = ({ vaultContract, account }: Props) => {
                 </div>
                 <div className='flex justify-between w-full'>
                     <p>% of Vault</p>
-                    <p>{totalBalance && stakedBalance && `${stakedBalance?.dividedBy(totalBalance.eq(0) ? 1 : totalBalance).times(100).toFormat(5)}%`}</p>
+                    <p>
+                        {totalBalance &&
+                            stakedBalance &&
+                            `${stakedBalance
+                                ?.dividedBy(totalBalance.eq(0) ? 1 : totalBalance)
+                                .times(100)
+                                .toFormat(5)}%`}
+                    </p>
                 </div>
                 <div className='flex justify-between w-full'>
                     <p>Pending Balance</p>
