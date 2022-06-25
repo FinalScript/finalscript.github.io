@@ -261,7 +261,7 @@ const Home: NextPage = () => {
     const ableToMint = useMemo(() => {
         if (mintData.gameStarted) {
             return false;
-        } else if (!mintData.presaleOpen && !mintData.isWhiteListed) {
+        } else if (mintData.presaleOpen && !mintData.baseSalesOpen && !mintData.isWhiteListed) {
             return false;
         } else {
             return true;
