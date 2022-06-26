@@ -113,9 +113,11 @@ export const switchNetwork = async () => {
     } catch (err: any) {
         // This error code indicates that the chain has not been added to MetaMask.
         if (err.code === 4902) {
+            const networkObj = (({ snowtrace, ...o }) => o)(networkConfig);
+
             await window.ethereum.request({
                 method: 'wallet_addEthereumChain',
-                params: [networkConfig],
+                params: [networkObj],
             });
         }
     }
