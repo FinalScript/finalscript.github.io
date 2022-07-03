@@ -172,7 +172,7 @@ const Home: NextPage = () => {
                             );
                             console.log(res);
                         });
-                } else if (mintData.presaleOpen && mintData.isWhiteListed) {
+                } else if (mintData.presaleOpen) {
                     blockchain.minerContract?.methods
                         .presaleMintBase(parseInt(quantity))
                         .send({
@@ -261,8 +261,6 @@ const Home: NextPage = () => {
     const ableToMint = useMemo(() => {
         if (mintData.gameStarted) {
             return false;
-        } else if (mintData.presaleOpen && !mintData.baseSalesOpen && !mintData.isWhiteListed) {
-            return false;
         } else {
             return true;
         }
@@ -273,10 +271,6 @@ const Home: NextPage = () => {
             return 'Game has already started';
         } else if (!mintData.presaleOpen) {
             return "Presale hasn't started";
-        } else if (mintData.presaleOpen && !mintData.baseSalesOpen) {
-            if (!mintData.isWhiteListed) {
-                return "You're not whitelisted";
-            }
         } else {
             return 'Mint';
         }
