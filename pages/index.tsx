@@ -333,7 +333,6 @@ const Home: NextPage = () => {
                                                 <span className='tracking-widest'>MAX ( {mintData.maxPerMint} )</span>
                                             </label>
                                             <input
-                                                disabled={!ableToMint}
                                                 title={ableToMintMessage}
                                                 type='text'
                                                 id='quantity'
