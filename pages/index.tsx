@@ -384,7 +384,7 @@ const Home: NextPage = () => {
                                                             }}
                                                             title={blockchain.isRightNetwork ? ableToMintMessage : ''}
                                                             className={
-                                                                'w-full text-white text-shadow-white font-bold border-0 disabled:cursor-not-allowed focus:outline-none rounded shadow-center-lg ' +
+                                                                'w-full text-white text-shadow-white font-bold border-0 focus:outline-none rounded shadow-center-lg ' +
                                                                 (blockchain.isRightNetwork
                                                                     ? 'bg-cyan-400  hover:bg-cyan-500 disabled:hover:bg-cyan-400 shadow-cyan-400'
                                                                     : ' bg-red-600 cursor-pointer shadow-red-700')
