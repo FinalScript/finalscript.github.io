@@ -374,7 +374,7 @@ const Home: NextPage = () => {
                                                 blockchain.account ? (
                                                     <>
                                                         <button
-                                                            disabled={blockchain.isRightNetwork ? !ableToMint : false}
+                                                            disabled={blockchain.isRightNetwork}
                                                             onClick={() => {
                                                                 if (!blockchain.isRightNetwork) {
                                                                     switchNetwork();
