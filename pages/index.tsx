@@ -172,7 +172,7 @@ const Home: NextPage = () => {
                             );
                             console.log(res);
                         });
-                } else if (mintData.presaleOpen && mintData.isWhiteListed) {
+                } else if (mintData.presaleOpen) {
                     blockchain.minerContract?.methods
                         .presaleMintBase(parseInt(quantity))
                         .send({
@@ -259,24 +259,12 @@ const Home: NextPage = () => {
     }, [mintData]);
 
     const ableToMint = useMemo(() => {
-        if (mintData.gameStarted) {
-            return false;
-        } else if (mintData.presaleOpen && !mintData.baseSalesOpen && !mintData.isWhiteListed) {
-            return false;
-        } else {
-            return true;
-        }
+        return true;
     }, [mintData]);
 
     const ableToMintMessage = useMemo(() => {
-        if (mintData.gameStarted) {
-            return 'Game has already started';
-        } else if (!mintData.presaleOpen) {
+        if (!mintData.presaleOpen) {
             return "Presale hasn't started";
-        } else if (mintData.presaleOpen && !mintData.baseSalesOpen) {
-            if (!mintData.isWhiteListed) {
-                return "You're not whitelisted";
-            }
         } else {
             return 'Mint';
         }
@@ -339,6 +327,7 @@ const Home: NextPage = () => {
                                                 <span className='tracking-widest'>MAX ( {mintData.maxPerMint} )</span>
                                             </label>
                                             <input
+                                                disabled={!ableToMint}
                                                 title={ableToMintMessage}
                                                 type='text'
                                                 id='quantity'
@@ -380,7 +369,7 @@ const Home: NextPage = () => {
                                                 blockchain.account ? (
                                                     <>
                                                         <button
-                                                            disabled={blockchain.isRightNetwork}
+                                                            disabled={blockchain.isRightNetwork ? !ableToMint : false}
                                                             onClick={() => {
                                                                 if (!blockchain.isRightNetwork) {
                                                                     switchNetwork();
@@ -390,7 +379,7 @@ const Home: NextPage = () => {
                                                             }}
                                                             title={blockchain.isRightNetwork ? ableToMintMessage : ''}
                                                             className={
-                                                                'w-full text-white text-shadow-white font-bold border-0 focus:outline-none rounded shadow-center-lg ' +
+                                                                'w-full text-white text-shadow-white font-bold border-0 disabled:cursor-not-allowed focus:outline-none rounded shadow-center-lg ' +
                                                                 (blockchain.isRightNetwork
                                                                     ? 'bg-cyan-400  hover:bg-cyan-500 disabled:hover:bg-cyan-400 shadow-cyan-400'
                                                                     : ' bg-red-600 cursor-pointer shadow-red-700')
